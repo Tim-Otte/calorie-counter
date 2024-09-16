@@ -1,0 +1,16 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "calorie_counter",
+  "todayPageTitle": "Today",
+  "monthlyOverviewPageTitle": "Calendar",
+
+  "settingsPageTitle": "Settings",
+  "settingsGeneralSection": "General",
+  "settingEnforceDarkMode": "Dark mode",
+  "settingEnforceDarkModeDescriptionEnabled": "Enforcing dark mode",
+  "settingEnforceDarkModeDescriptionDisabled": "Using system default",
+
+  "measurementUnitMetric": "Metric",
+  "measurementUnitImperial": "Metric"
+}
