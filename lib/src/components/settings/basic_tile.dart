@@ -5,21 +5,23 @@ import 'tile_type.dart';
 
 class MaterialBasicSettingsTile extends MaterialSettingsTile {
   MaterialBasicSettingsTile({
+    Key? key,
     required Widget? leading,
     required Widget title,
     Widget? description,
     Widget? trailing,
+    Widget? value,
     required Function(BuildContext) onTap,
     bool enabled = true,
-    Key? key,
   }) : super(
+          key: key,
           tileType: SettingsTileType.switchTile,
           leading: leading,
           title: title,
           onTap: onTap,
           enabled: enabled,
-          key: key,
           description: description,
+          value: value,
           trailing: trailing != null
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),

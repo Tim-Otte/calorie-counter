@@ -27,28 +27,30 @@ class MaterialSettingsSection extends StatelessWidget {
     }
 
     final theme = Theme.of(context);
-    final scaleFactor = MediaQuery.of(context).textScaleFactor;
+    final textScaler = MediaQuery.of(context).textScaler;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.only(
-            top: 24 * scaleFactor,
-            bottom: 10 * scaleFactor,
-            start: 24,
-            end: 24,
+    return Padding(
+      padding: EdgeInsets.only(bottom: textScaler.scale(20)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.only(
+              bottom: textScaler.scale(10),
+              start: 24,
+              end: 24,
+            ),
+            child: DefaultTextStyle(
+              style: theme.textTheme.titleMedium!,
+              child: title!,
+            ),
           ),
-          child: DefaultTextStyle(
-            style: theme.textTheme.titleMedium!,
-            child: title!,
+          Container(
+            color: theme.colorScheme.surface,
+            child: tileList,
           ),
-        ),
-        Container(
-          color: theme.colorScheme.background,
-          child: tileList,
-        ),
-      ],
+        ],
+      ),
     );
   }
 

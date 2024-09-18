@@ -1,16 +1,31 @@
 {
   "@@locale": "en",
 
+  "apply": "Apply",
+  "cancel": "Cancel",
+  "notSet": "Not set",
+
   "appTitle": "calorie_counter",
   "todayPageTitle": "Today",
   "monthlyOverviewPageTitle": "Calendar",
 
   "settingsPageTitle": "Settings",
   "settingsGeneralSection": "General",
-  "settingEnforceDarkMode": "Dark mode",
-  "settingEnforceDarkModeDescriptionEnabled": "Enforcing dark mode",
-  "settingEnforceDarkModeDescriptionDisabled": "Using system default",
+  "settingTheme": "Theme",
+  "settingMeasurementUnit": "Unit of measurement",
+  "settingsPersonalInformationSection": "Personal information",
+  "settingDateOfBirth": "Date of birth",
+  "settingHeight": "Height",
+  "settingWeight": "Weight",
 
   "measurementUnitMetric": "Metric",
-  "measurementUnitImperial": "Metric"
+  "measurementUnitMetricSubtitle": "e.g.: kg, cm",
+  "measurementUnitImperial": "Imperial",
+  "measurementUnitImperialSubtitle": "e.g.: lb, ft",
+  
+  "themeModeLight": "Light",
+  "themeModeDark": "Dark",
+  "themeModeSystem": "System",
+
+  "validationErrorInvalidInput": "Invalid value"
 }

@@ -1,0 +1,31 @@
+{
+  "@@locale": "de",
+
+  "apply": "Anwenden",
+  "cancel": "Abbrechen",
+  "notSet": "Nicht ausgewählt",
+
+  "appTitle": "calorie_counter",
+  "todayPageTitle": "Heute",
+  "monthlyOverviewPageTitle": "Kalender",
+
+  "settingsPageTitle": "Einstellungen",
+  "settingsGeneralSection": "Allgemein",
+  "settingTheme": "Design",
+  "settingMeasurementUnit": "Maßeinheiten",
+  "settingsPersonalInformationSection": "Persönliche Informationen",
+  "settingDateOfBirth": "Geburtsdatum",
+  "settingHeight": "Körpergröße",
+  "settingWeight": "Gewicht",
+
+  "measurementUnitMetric": "Metrisch",
+  "measurementUnitMetricSubtitle": "z.B.: kg, cm",
+  "measurementUnitImperial": "Imperial",
+  "measurementUnitImperialSubtitle": "z.B.: lb, ft",
+  
+  "themeModeLight": "Hell",
+  "themeModeDark": "Dunkel",
+  "themeModeSystem": "System",
+
+  "validationErrorInvalidInput": "Ungültige Eingabe"
+}

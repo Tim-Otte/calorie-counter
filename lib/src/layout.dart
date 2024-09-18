@@ -22,11 +22,14 @@ class _MainLayoutState extends State<MainLayout> {
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
-      body: <Widget>[
-        const TodayPage(),
-        const MonthlyOverviewPage(),
-        SettingsPage(controller: super.widget.settingsController),
-      ].elementAt(currentPage),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: <Widget>[
+          const TodayPage(),
+          const MonthlyOverviewPage(),
+          SettingsPage(controller: super.widget.settingsController),
+        ].elementAt(currentPage),
+      ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (value) => setState(() {
           currentPage = value;

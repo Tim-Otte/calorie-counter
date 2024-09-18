@@ -8,7 +8,7 @@ class MonthlyOverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.settingsPageTitle),
+          title: Text(AppLocalizations.of(context)!.monthlyOverviewPageTitle),
           forceMaterialTransparency: true,
         ),
         body: const Text('test'));

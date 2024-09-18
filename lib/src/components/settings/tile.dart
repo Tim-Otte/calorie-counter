@@ -31,7 +31,9 @@ class MaterialSettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scaleFactor = MediaQuery.of(context).textScaleFactor;
+    final textScaler = MediaQuery.of(context).textScaler;
+    final secondaryBodyColor =
+        theme.textTheme.bodyMedium!.color!.withOpacity(0.75);
 
     return IgnorePointer(
       ignoring: !enabled,
@@ -65,8 +67,8 @@ class MaterialSettingsTile extends StatelessWidget {
                   padding: EdgeInsetsDirectional.only(
                     start: 24,
                     end: 24,
-                    bottom: 19 * scaleFactor,
-                    top: 19 * scaleFactor,
+                    bottom: textScaler.scale(19),
+                    top: textScaler.scale(19),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,7 +86,7 @@ class MaterialSettingsTile extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 4.0),
                           child: DefaultTextStyle(
                             style: TextStyle(
-                              color: theme.textTheme.bodyMedium!.color,
+                              color: secondaryBodyColor,
                             ),
                             child: value!,
                           ),
@@ -94,7 +96,7 @@ class MaterialSettingsTile extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 4.0),
                           child: DefaultTextStyle(
                             style: TextStyle(
-                              color: theme.textTheme.bodyMedium!.color,
+                              color: secondaryBodyColor,
                             ),
                             child: description!,
                           ),
