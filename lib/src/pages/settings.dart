@@ -126,8 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
           title: Text(localizations.settingDateOfBirth),
           description: Text(dateOfBirth == null
               ? localizations.notSet
-              : DateFormat.yMMMd(localizations.localeName)
-                  .format(dateOfBirth!)),
+              : "${DateFormat.yMMMd(localizations.localeName).format(dateOfBirth!)} / ${localizations.age}: ${(DateTime.now().difference(dateOfBirth!).inDays / 365.0).round()} ${localizations.years}"),
           onTap: (context) async {
             var result = await showDatePicker(
               context: context,

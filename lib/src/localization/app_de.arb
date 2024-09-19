@@ -4,6 +4,8 @@
   "apply": "Anwenden",
   "cancel": "Abbrechen",
   "notSet": "Nicht ausgewählt",
+  "age": "Alter",
+  "years": "Jahre",
 
   "appTitle": "calorie_counter",
   "todayPageTitle": "Heute",

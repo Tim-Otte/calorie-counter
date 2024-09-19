@@ -32,16 +32,19 @@ class Translator {
     }
   }
 
-  static String getSubtitle(
-      BuildContext context, MeasurementUnit measurementUnit) {
-    switch (measurementUnit) {
-      case MeasurementUnit.metric:
-        return AppLocalizations.of(context)!.measurementUnitMetricSubtitle;
-      case MeasurementUnit.imperial:
-        return AppLocalizations.of(context)!.measurementUnitImperialSubtitle;
-      default:
-        throw UnsupportedError(
-            'There is no translation for the given measurement unit subtitle');
+  static String getSubtitle<TEnum>(BuildContext context, TEnum enumValue) {
+    if (enumValue is MeasurementUnit) {
+      switch (enumValue) {
+        case MeasurementUnit.metric:
+          return AppLocalizations.of(context)!.measurementUnitMetricSubtitle;
+        case MeasurementUnit.imperial:
+          return AppLocalizations.of(context)!.measurementUnitImperialSubtitle;
+        default:
+          throw UnsupportedError(
+              'There is no translation for the given measurement unit subtitle');
+      }
+    } else {
+      throw UnsupportedError('Unsupported enum type');
     }
   }
 }
