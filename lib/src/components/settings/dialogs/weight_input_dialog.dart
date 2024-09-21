@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../models/measurement_unit.dart';
+import '../../../models/enums/measurement_unit.dart';
 import '../../../tools/regular_expressions.dart';
 import '../../../tools/unit_converter.dart';
-import 'input_dialog.dart';
+import 'base/input_dialog.dart';
 
 class WeightInputDialog extends StatelessWidget {
   const WeightInputDialog({
@@ -45,7 +45,7 @@ class WeightInputDialog extends StatelessWidget {
       initialValue = imperial.toStringAsFixed(1);
     }
 
-    return InputDialog<double>(
+    return TextInputDialog<double>(
       title: localizations.settingWeight,
       allowedCharactersExp: RegularExpressions.weightAllowedCharacters,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),

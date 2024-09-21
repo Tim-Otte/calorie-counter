@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../models/measurement_unit.dart';
+import '../models/enums/enums.dart';
 
 class Translator {
   static String getTranslation<TEnum>(BuildContext context, TEnum enumValue) {
@@ -23,6 +23,16 @@ class Translator {
           return AppLocalizations.of(context)!.themeModeLight;
         case ThemeMode.system:
           return AppLocalizations.of(context)!.themeModeSystem;
+        default:
+          throw UnsupportedError(
+              'There is no translation for the given theme mode');
+      }
+    } else if (enumValue is Gender) {
+      switch (enumValue) {
+        case Gender.female:
+          return AppLocalizations.of(context)!.genderFemale;
+        case Gender.male:
+          return AppLocalizations.of(context)!.genderMale;
         default:
           throw UnsupportedError(
               'There is no translation for the given theme mode');

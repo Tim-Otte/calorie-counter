@@ -1,9 +1,9 @@
-import 'package:calorie_counter/src/pages/monthly_overview.dart';
-import 'package:calorie_counter/src/pages/settings.dart';
-import 'package:calorie_counter/src/pages/today.dart';
-import 'package:calorie_counter/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'pages/pages.dart';
+import 'settings/settings_controller.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key, required this.settingsController});
@@ -31,9 +31,10 @@ class _MainLayoutState extends State<MainLayout> {
         ].elementAt(currentPage),
       ),
       bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (value) => setState(() {
-          currentPage = value;
-        }),
+        onDestinationSelected: (value) {
+          setState(() => currentPage = value);
+          HapticFeedback.selectionClick();
+        },
         selectedIndex: currentPage,
         indicatorColor: theme.primaryColor,
         destinations: <Widget>[

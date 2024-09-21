@@ -4,11 +4,11 @@ import 'tile.dart';
 
 class MaterialSettingsSection extends StatelessWidget {
   const MaterialSettingsSection({
+    super.key,
     required this.tiles,
     required this.margin,
     this.title,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final List<MaterialSettingsTile> tiles;
   final EdgeInsetsDirectional? margin;

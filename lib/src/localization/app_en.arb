@@ -16,6 +16,7 @@
   "settingTheme": "Theme",
   "settingMeasurementUnit": "Unit of measurement",
   "settingsPersonalInformationSection": "Personal information",
+  "settingGender": "Gender / Sex",
   "settingDateOfBirth": "Date of birth",
   "settingHeight": "Height",
   "settingWeight": "Weight",
@@ -28,6 +29,9 @@
   "themeModeLight": "Light",
   "themeModeDark": "Dark",
   "themeModeSystem": "System",
+
+  "genderFemale": "Female",
+  "genderMale": "Male",
 
   "validationErrorInvalidInput": "Invalid value"
 }

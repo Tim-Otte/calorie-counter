@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../models/measurement_unit.dart';
+import '../../../models/enums/measurement_unit.dart';
 import '../../../tools/regular_expressions.dart';
 import '../../../tools/unit_converter.dart';
-import 'input_dialog.dart';
+import 'base/input_dialog.dart';
 
 class HeightInputDialog extends StatelessWidget {
   const HeightInputDialog({
@@ -47,7 +47,7 @@ class HeightInputDialog extends StatelessWidget {
       initialValue = "${imperial.feet.round()}' ${imperial.inches.round()}\"";
     }
 
-    return InputDialog<double>(
+    return TextInputDialog<double>(
       title: localizations.settingHeight,
       allowedCharactersExp:
           RegularExpressions.getHeightAllowedCharacters(isMetric),

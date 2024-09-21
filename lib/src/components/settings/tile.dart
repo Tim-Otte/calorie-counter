@@ -4,6 +4,7 @@ import 'tile_type.dart';
 
 class MaterialSettingsTile extends StatelessWidget {
   const MaterialSettingsTile({
+    super.key,
     required this.tileType,
     this.leading,
     required this.title,
@@ -14,8 +15,7 @@ class MaterialSettingsTile extends StatelessWidget {
     this.initialValue,
     required this.enabled,
     this.trailing,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final SettingsTileType tileType;
   final Widget? leading;

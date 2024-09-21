@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../models/measurement_unit.dart';
-import 'radio_dialog.dart';
+import '../../../models/enums/measurement_unit.dart';
+import 'base/radio_dialog.dart';
 
 class MeasurementUnitDialog extends StatelessWidget {
   const MeasurementUnitDialog({super.key, required this.currentValue});

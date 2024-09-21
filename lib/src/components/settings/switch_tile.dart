@@ -5,23 +5,17 @@ import 'tile_type.dart';
 
 class MaterialSwitchSettingsTile extends MaterialSettingsTile {
   MaterialSwitchSettingsTile({
-    required Widget? leading,
-    required Widget title,
-    Widget? description,
+    required super.leading,
+    required Widget super.title,
+    super.description,
     Widget? trailing,
-    required Function(bool) onToggle,
+    required Function(bool) super.onToggle,
     required bool value,
-    bool enabled = true,
-    Key? key,
+    super.enabled = true,
+    super.key,
   }) : super(
           tileType: SettingsTileType.switchTile,
-          leading: leading,
-          title: title,
-          onToggle: onToggle,
           initialValue: value,
-          enabled: enabled,
-          key: key,
-          description: description,
           trailing: trailing != null
               ? Row(
                   children: [

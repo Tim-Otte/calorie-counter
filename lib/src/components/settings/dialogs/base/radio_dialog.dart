@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../tools/translator.dart';
+import '../../../../tools/translator.dart';
 
 class RadioDialog<TEnum> extends StatefulWidget {
   const RadioDialog({

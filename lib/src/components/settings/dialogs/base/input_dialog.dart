@@ -3,8 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class InputDialog<T> extends StatefulWidget {
-  const InputDialog({
+class TextInputDialog<T> extends StatefulWidget {
+  const TextInputDialog({
     super.key,
     required this.title,
     required this.allowedCharactersExp,
@@ -24,10 +24,10 @@ class InputDialog<T> extends StatefulWidget {
   final String? suffixText;
 
   @override
-  State<StatefulWidget> createState() => _InputDialogState<T>();
+  State<StatefulWidget> createState() => _TextInputDialogState<T>();
 }
 
-class _InputDialogState<T> extends State<InputDialog> {
+class _TextInputDialogState<T> extends State<TextInputDialog> {
   late T? currentValue;
   late bool isValidInput = false;
   final _formKey = GlobalKey<FormState>();
