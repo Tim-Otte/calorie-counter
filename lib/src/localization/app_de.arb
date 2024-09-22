@@ -21,6 +21,14 @@
   "settingHeight": "Körpergröße",
   "settingWeight": "Gewicht",
 
+  "aboutPersonalDataTitle": "Persönliche Informationen",
+  "aboutPersonalDataGenderTitle": "Geschlecht",
+  "aboutPersonalDataGenderBody": "Das von Ihnen gewählte Geschlecht wird zur Personalisierung von Fitnessberechnungen und Gesundheitsmetriken verwendet, die auf physiologischen Faktoren basieren, die zwischen den Geschlechtern variieren können. Transgender-Nutzer sollten das Geschlecht auswählen, das ihren aktuellen biologischen Merkmalen am besten entspricht, um genaue Berechnungen zu gewährleisten. Diese Informationen werden verwendet, um Unterschiede in der Körperzusammensetzung, wie Muskelmasse und Fettverteilung, zu berücksichtigen, die sich auf Messgrößen wie BMI und WHtR auswirken.",
+  "aboutPersonalDataAgeTitle": "Alter",
+  "aboutPersonalDataAgeBody": "Das Alter ist ein wichtiger Faktor bei der Bestimmung Ihres Fitness- und Gesundheitszustands. Mit zunehmendem Alter wirken sich Veränderungen der Muskelmasse und der Fettverteilung auf Ihre Fitnesswerte und Gesundheitsindikatoren aus.",
+  "aboutPersonalDataWeightHeightTitle": "Größe & Gewicht",
+  "aboutPersonalDataWeightHeightBody": "Sowohl Gewicht als auch Größe sind für die Berechnung von Kennzahlen wie BMI (Body Mass Index) und WHtR (Waist-to-Height Ratio) von grundlegender Bedeutung. Anhand dieser Werte werden Ihre allgemeine Körperzusammensetzung und Ihr Gesundheitsrisiko bestimmt.",
+
   "measurementUnitMetric": "Metrisch",
   "measurementUnitMetricSubtitle": "z.B.: kg, cm",
   "measurementUnitImperial": "Imperial",

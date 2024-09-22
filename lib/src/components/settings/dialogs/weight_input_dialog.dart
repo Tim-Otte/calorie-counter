@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../models/enums/measurement_unit.dart';
 import '../../../tools/regular_expressions.dart';
 import '../../../tools/unit_converter.dart';
-import 'base/input_dialog.dart';
+import '../../dialogs/input_dialog.dart';
 
 class WeightInputDialog extends StatelessWidget {
   const WeightInputDialog({

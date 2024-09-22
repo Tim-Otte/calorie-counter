@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 import '../components/settings/basic_tile.dart';
+import '../components/settings/bottom_sheets/about_personal_data_btm_sheet.dart';
 import '../components/settings/dialogs/dialogs.dart';
 import '../components/settings/section.dart';
 import '../models/enums/enums.dart';
@@ -22,7 +23,7 @@ class SettingsPage extends StatelessWidget {
       title: Text(localizations.settingsGeneralSection),
       tiles: [
         MaterialBasicSettingsTile(
-          leading: const Icon(Icons.palette),
+          prefix: const Icon(Icons.palette),
           title: Text(localizations.settingTheme),
           value: Text(
             Translator.getTranslation(context, controller.themeMode),
@@ -38,7 +39,7 @@ class SettingsPage extends StatelessWidget {
           },
         ),
         MaterialBasicSettingsTile(
-          leading: const Icon(Icons.straighten),
+          prefix: const Icon(Icons.straighten),
           title: Text(localizations.settingMeasurementUnit),
           value: Text(
               Translator.getTranslation(context, controller.measurementUnit)),
@@ -64,13 +65,25 @@ class SettingsPage extends StatelessWidget {
       title: Text(localizations.settingsPersonalInformationSection),
       tiles: [
         MaterialBasicSettingsTile(
-          leading: Icon(switch (controller.gender) {
+          prefix: Icon(switch (controller.gender) {
             Gender.male => Icons.man,
             Gender.female => Icons.woman,
           }),
           title: Text(localizations.settingGender),
           value: Text(
             Translator.getTranslation(context, controller.gender),
+          ),
+          suffix: IconButton(
+            onPressed: () => showModalBottomSheet(
+              context: context,
+              builder: (context) => const AboutPersonalDataBtmSheet(),
+              isScrollControlled: true,
+              useSafeArea: true,
+              showDragHandle: true,
+              enableDrag: true,
+            ),
+            icon: const Icon(Icons.info_outline),
+            color: Theme.of(context).colorScheme.primary,
           ),
           onTap: (context) async {
             var result = await showDialog<Gender>(
@@ -83,7 +96,7 @@ class SettingsPage extends StatelessWidget {
           },
         ),
         MaterialBasicSettingsTile(
-          leading: const Icon(Icons.calendar_month),
+          prefix: const Icon(Icons.calendar_month),
           title: Text(localizations.settingDateOfBirth),
           description: Text(
               "${DateFormat.yMMMd(localizations.localeName).format(controller.dateOfBirth)} / ${localizations.age}: ${(DateTime.now().difference(controller.dateOfBirth).inDays / 365.0).round()} ${localizations.years}"),
@@ -100,7 +113,7 @@ class SettingsPage extends StatelessWidget {
           },
         ),
         MaterialBasicSettingsTile(
-          leading: const Icon(Icons.height),
+          prefix: const Icon(Icons.height),
           title: Text(localizations.settingHeight),
           description: Text(controller.heightString),
           onTap: (context) async {
@@ -115,7 +128,7 @@ class SettingsPage extends StatelessWidget {
           },
         ),
         MaterialBasicSettingsTile(
-          leading: const Icon(Icons.scale),
+          prefix: const Icon(Icons.scale),
           title: Text(localizations.settingWeight),
           description: Text(controller.weightString),
           onTap: (context) async {

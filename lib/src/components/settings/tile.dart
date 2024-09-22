@@ -6,7 +6,7 @@ class MaterialSettingsTile extends StatelessWidget {
   const MaterialSettingsTile({
     super.key,
     required this.tileType,
-    this.leading,
+    this.prefix,
     required this.title,
     this.description,
     this.onTap,
@@ -14,11 +14,11 @@ class MaterialSettingsTile extends StatelessWidget {
     this.value,
     this.initialValue,
     required this.enabled,
-    this.trailing,
+    this.suffix,
   });
 
   final SettingsTileType tileType;
-  final Widget? leading;
+  final Widget? prefix;
   final Widget? title;
   final Widget? description;
   final Function(BuildContext context)? onTap;
@@ -26,7 +26,7 @@ class MaterialSettingsTile extends StatelessWidget {
   final Widget? value;
   final bool? initialValue;
   final bool enabled;
-  final Widget? trailing;
+  final Widget? suffix;
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +54,13 @@ class MaterialSettingsTile extends StatelessWidget {
           child: Row(
             children: [
               // Icon
-              if (leading != null)
+              if (prefix != null)
                 Padding(
                   padding: const EdgeInsetsDirectional.only(start: 24),
                   child: IconTheme(
-                    data: theme.iconTheme,
-                    child: leading!,
+                    data: theme.iconTheme
+                        .copyWith(color: theme.colorScheme.primary),
+                    child: prefix!,
                   ),
                 ),
               Expanded(
@@ -105,7 +106,7 @@ class MaterialSettingsTile extends StatelessWidget {
                   ),
                 ),
               ),
-              if (trailing != null) trailing!
+              if (suffix != null) suffix!
             ],
           ),
         ),

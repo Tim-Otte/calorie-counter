@@ -19,8 +19,6 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 10),
@@ -31,12 +29,12 @@ class _MainLayoutState extends State<MainLayout> {
         ].elementAt(currentPage),
       ),
       bottomNavigationBar: NavigationBar(
+        surfaceTintColor: Theme.of(context).colorScheme.primary,
         onDestinationSelected: (value) {
           setState(() => currentPage = value);
           HapticFeedback.selectionClick();
         },
         selectedIndex: currentPage,
-        indicatorColor: theme.primaryColor,
         destinations: <Widget>[
           NavigationDestination(
             icon: const Icon(Icons.today),

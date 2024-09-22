@@ -5,7 +5,7 @@ import 'tile_type.dart';
 
 class MaterialNavigationSettingsTile extends MaterialSettingsTile {
   const MaterialNavigationSettingsTile({
-    required super.leading,
+    required super.prefix,
     required Widget super.title,
     super.description,
     required Function(BuildContext) super.onTap,
@@ -13,7 +13,7 @@ class MaterialNavigationSettingsTile extends MaterialSettingsTile {
     super.key,
   }) : super(
           tileType: SettingsTileType.switchTile,
-          trailing: const Padding(
+          suffix: const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Icon(Icons.chevron_right),
           ),
