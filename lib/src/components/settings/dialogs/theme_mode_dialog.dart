@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../dialogs/radio_dialog.dart';
+import '../../dialogs/dialogs.dart';
 
 class ThemeModeDialog extends StatelessWidget {
   const ThemeModeDialog({super.key, required this.currentValue});
@@ -10,7 +10,7 @@ class ThemeModeDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RadioDialog<ThemeMode>(
+    return EnumRadioDialog<ThemeMode>(
       title: AppLocalizations.of(context)!.settingTheme,
       initialValue: currentValue,
       values: ThemeMode.values,

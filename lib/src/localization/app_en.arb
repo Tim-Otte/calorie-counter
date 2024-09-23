@@ -5,21 +5,36 @@
   "cancel": "Cancel",
   "notSet": "Not set",
   "age": "Age",
-  "years": "years",
 
-  "appTitle": "calorie_counter",
+  "appTitle": "Colorie Counter",
   "todayPageTitle": "Today",
   "monthlyOverviewPageTitle": "Calendar",
 
   "settingsPageTitle": "Settings",
   "settingsGeneralSection": "General",
   "settingTheme": "Theme",
+  "settingLanguage": "Language",
   "settingMeasurementUnit": "Unit of measurement",
   "settingsPersonalInformationSection": "Personal information",
   "settingGender": "Sex",
   "settingDateOfBirth": "Date of birth",
+  "settingDateOfBirthValue": "{dateOfBirth} / Age: {age} years",
+  "@settingDateOfBirthValue": {
+    "placeholders": {
+      "dateOfBirth": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      },
+      "age": {
+        "type": "int"
+      }
+    }
+  },
   "settingHeight": "Height",
   "settingWeight": "Weight",
+  "settingsAboutSection": "About",
+  "settingAboutVersion": "Version",
+  "settingAboutPackages": "Open Source Licenses",
 
   "aboutPersonalDataTitle": "About personal information",
   "aboutPersonalDataGenderTitle": "Sex",

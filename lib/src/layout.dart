@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import 'pages/pages.dart';
 import 'settings/settings_controller.dart';
@@ -19,6 +20,7 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 10),
@@ -28,8 +30,34 @@ class _MainLayoutState extends State<MainLayout> {
           SettingsPage(controller: super.widget.settingsController),
         ].elementAt(currentPage),
       ),
+      floatingActionButton: currentPage == 0
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  child: FloatingActionButton(
+                    onPressed: () {},
+                    mini: true,
+                    backgroundColor: const Color.fromARGB(172, 207, 207, 207),
+                    child: const Icon(
+                      Symbols.add,
+                      color: Color(0xff333333),
+                      weight: 800,
+                    ),
+                  ),
+                ),
+                FloatingActionButton(
+                  onPressed: () {},
+                  child: const Icon(Symbols.barcode_scanner),
+                )
+              ],
+            )
+          : null,
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       bottomNavigationBar: NavigationBar(
-        surfaceTintColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: colorScheme.primary.withOpacity(0.1),
+        indicatorColor: colorScheme.primary.withOpacity(0.69),
         onDestinationSelected: (value) {
           setState(() => currentPage = value);
           HapticFeedback.selectionClick();
@@ -37,15 +65,18 @@ class _MainLayoutState extends State<MainLayout> {
         selectedIndex: currentPage,
         destinations: <Widget>[
           NavigationDestination(
-            icon: const Icon(Icons.today),
+            icon: const Icon(Symbols.today),
+            selectedIcon: const Icon(Symbols.today, fill: 1),
             label: AppLocalizations.of(context)!.todayPageTitle,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.calendar_month),
+            icon: const Icon(Symbols.calendar_month),
+            selectedIcon: const Icon(Symbols.calendar_month, fill: 1),
             label: AppLocalizations.of(context)!.monthlyOverviewPageTitle,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Symbols.settings),
+            selectedIcon: const Icon(Symbols.settings, fill: 1),
             label: AppLocalizations.of(context)!.settingsPageTitle,
           ),
         ],

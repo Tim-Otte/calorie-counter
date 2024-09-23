@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../models/enums/gender.dart';
-import '../../dialogs/radio_dialog.dart';
+import '../../dialogs/dialogs.dart';
 
 class GenderDialog extends StatelessWidget {
   const GenderDialog({super.key, required this.currentValue});
@@ -11,7 +11,7 @@ class GenderDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RadioDialog<Gender>(
+    return EnumRadioDialog<Gender>(
       title: AppLocalizations.of(context)!.settingGender,
       initialValue: currentValue,
       values: Gender.values,

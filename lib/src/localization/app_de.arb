@@ -5,21 +5,36 @@
   "cancel": "Abbrechen",
   "notSet": "Nicht ausgewählt",
   "age": "Alter",
-  "years": "Jahre",
 
-  "appTitle": "calorie_counter",
+  "appTitle": "Kalorienzähler",
   "todayPageTitle": "Heute",
   "monthlyOverviewPageTitle": "Kalender",
 
   "settingsPageTitle": "Einstellungen",
   "settingsGeneralSection": "Allgemein",
   "settingTheme": "Design",
+  "settingLanguage": "Sprache",
   "settingMeasurementUnit": "Maßeinheiten",
   "settingsPersonalInformationSection": "Persönliche Informationen",
   "settingGender": "Geschlecht",
   "settingDateOfBirth": "Geburtsdatum",
+  "settingDateOfBirthValue": "{dateOfBirth} / Alter: {age} Jahre",
+  "@settingDateOfBirthValue": {
+    "placeholders": {
+      "dateOfBirth": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      },
+      "age": {
+        "type": "int"
+      }
+    }
+  },
   "settingHeight": "Körpergröße",
   "settingWeight": "Gewicht",
+  "settingsAboutSection": "Über",
+  "settingAboutVersion": "Version",
+  "settingAboutPackages": "Open Source Lizenzen",
 
   "aboutPersonalDataTitle": "Persönliche Informationen",
   "aboutPersonalDataGenderTitle": "Geschlecht",

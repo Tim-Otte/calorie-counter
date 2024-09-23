@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../tools/translator.dart';
+typedef StringResolver<T> = String Function(T value);
 
-class RadioDialog<TEnum> extends StatefulWidget {
+class RadioDialog<T> extends StatefulWidget {
   const RadioDialog({
     super.key,
     required this.title,
     required this.values,
     required this.initialValue,
-    this.showSubtitles = false,
+    required this.getTitle,
+    this.getSubtitle,
   });
 
   final String title;
-  final List<TEnum> values;
-  final TEnum initialValue;
-  final bool showSubtitles;
+  final List<T> values;
+  final T initialValue;
+  final String Function(T) getTitle;
+  final String Function(T)? getSubtitle;
 
   @override
-  State<RadioDialog> createState() => _RadioDialogState<TEnum>();
+  State<RadioDialog> createState() => _RadioDialogState<T>();
 }
 
-class _RadioDialogState<TEnum> extends State<RadioDialog> {
-  late TEnum? selectedValue;
+class _RadioDialogState<T> extends State<RadioDialog<T>> {
+  late T? selectedValue;
 
   @override
   void initState() {
@@ -39,12 +41,12 @@ class _RadioDialogState<TEnum> extends State<RadioDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: widget.values
-            .map((enumValue) => RadioListTile<TEnum>(
+            .map((enumValue) => RadioListTile<T>(
                   value: enumValue,
                   groupValue: selectedValue,
-                  title: Text(Translator.getTranslation(context, enumValue)),
-                  subtitle: widget.showSubtitles
-                      ? Text(Translator.getSubtitle(context, enumValue))
+                  title: Text(widget.getTitle(enumValue)),
+                  subtitle: widget.getSubtitle != null
+                      ? Text(widget.getSubtitle!(enumValue))
                       : null,
                   onChanged: (v) => setState(() => selectedValue = v),
                 ))

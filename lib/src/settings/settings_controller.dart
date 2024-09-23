@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../extensions/enumerable.dart';
 import '../models/enums/enums.dart';
 import '../tools/tools.dart';
 import 'settings_service.dart';
@@ -15,34 +14,41 @@ class SettingsController with ChangeNotifier {
 
   final SettingsService _settingsService;
 
-  late ThemeMode _themeMode = ThemeMode.system;
-  late MeasurementUnit _measurementUnit = MeasurementUnit.metric;
-  late Gender _gender = Gender.values.pickRandom();
-  late DateTime _dateOfBirth = DateTime(2000, 1, 1);
-  late double _height = 0;
-  late double _weight = 0;
+  ThemeMode _themeMode = ThemeMode.system;
+  String? _locale;
+  MeasurementUnit? _measurementUnit;
+  Gender? _gender;
+  DateTime? _dateOfBirth;
+  double? _height;
+  double? _weight;
 
   ThemeMode get themeMode => _themeMode;
-  MeasurementUnit get measurementUnit => _measurementUnit;
-  Gender get gender => _gender;
-  DateTime get dateOfBirth => _dateOfBirth;
+  Locale? get locale =>
+      _locale != null ? Locale.fromSubtags(languageCode: _locale!) : null;
+  MeasurementUnit? get measurementUnit => _measurementUnit;
+  Gender? get gender => _gender;
+  DateTime? get dateOfBirth => _dateOfBirth;
 
-  double get height => _height;
-  String get heightString {
+  double? get height => _height;
+  String? get heightString {
+    if (height == null) return null;
+
     if (measurementUnit == MeasurementUnit.metric) {
-      return "${height.round()} cm";
+      return "${height!.round()} cm";
     } else {
-      var imperial = UnitConverter.heightToImperial(height);
+      var imperial = UnitConverter.heightToImperial(height!);
       return "${imperial.feet.round()}' ${imperial.inches.round()}\"";
     }
   }
 
-  double get weight => _weight;
-  String get weightString {
+  double? get weight => _weight;
+  String? get weightString {
+    if (weight == null) return null;
+
     if (measurementUnit == MeasurementUnit.metric) {
-      return "${weight.toStringAsFixed(1)} kg";
+      return "${weight!.toStringAsFixed(1)} kg";
     } else {
-      var imperial = UnitConverter.weightToImperial(weight);
+      var imperial = UnitConverter.weightToImperial(weight!);
       return "${imperial.toStringAsFixed(1)} lb";
     }
   }
@@ -50,6 +56,7 @@ class SettingsController with ChangeNotifier {
   /// Load the user's settings from the SettingsService
   Future<void> loadSettings() async {
     _themeMode = await _settingsService.getThemeMode();
+    _locale = await _settingsService.getLocale();
     _measurementUnit = await _settingsService.getMeasurementUnit();
     _gender = await _settingsService.getGender();
     _dateOfBirth = await _settingsService.getDateOfBirth();
@@ -67,6 +74,15 @@ class SettingsController with ChangeNotifier {
     _themeMode = value;
     notifyListeners();
     await _settingsService.updateThemeMode(value);
+  }
+
+  /// Update and persist the locale
+  Future<void> updateLocale(String? value) async {
+    if (value == null || value == _locale) return;
+
+    _locale = value;
+    notifyListeners();
+    await _settingsService.updateLocale(value);
   }
 
   /// Update and persist the MeasurementUnit

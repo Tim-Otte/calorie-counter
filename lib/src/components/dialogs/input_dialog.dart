@@ -27,7 +27,7 @@ class TextInputDialog<T> extends StatefulWidget {
   State<StatefulWidget> createState() => _TextInputDialogState<T>();
 }
 
-class _TextInputDialogState<T> extends State<TextInputDialog> {
+class _TextInputDialogState<T> extends State<TextInputDialog<T>> {
   late T? currentValue;
   late bool isValidInput = false;
   final _formKey = GlobalKey<FormState>();

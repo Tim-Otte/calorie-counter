@@ -11,7 +11,7 @@ class MaterialBasicSettingsTile extends MaterialSettingsTile {
     super.description,
     Widget? suffix,
     super.value,
-    required Function(BuildContext) super.onTap,
+    super.onTap,
     super.enabled = true,
   }) : super(
           tileType: SettingsTileType.switchTile,
