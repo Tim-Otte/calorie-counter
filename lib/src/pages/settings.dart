@@ -48,7 +48,7 @@ class SettingsPage extends StatelessWidget {
             controller.locale != null
                 ? LocaleNames.of(context)!
                     .nameOf(controller.locale!.languageCode)!
-                : localizations.notSet,
+                : localizations.systemDefault,
           ),
           onTap: (context) async {
             var result = await showDialog<String?>(
