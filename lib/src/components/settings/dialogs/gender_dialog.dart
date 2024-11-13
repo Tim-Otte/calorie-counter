@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../models/enums/gender.dart';
-import '../../dialogs/dialogs.dart';
+import '../../../data/enums/all.dart' show Gender;
+import '../../dialogs/all.dart';
 
 class GenderDialog extends StatelessWidget {
   const GenderDialog({super.key, required this.currentValue});

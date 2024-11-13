@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 
-import 'settings/settings_controller.dart';
+import 'controllers/settings_controller.dart';
 import 'layout.dart';
 import 'theme.dart';
 

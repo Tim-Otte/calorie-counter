@@ -30,7 +30,6 @@ class TextInputDialog<T> extends StatefulWidget {
 class _TextInputDialogState<T> extends State<TextInputDialog<T>> {
   late T? currentValue;
   late bool isValidInput = false;
-  final _formKey = GlobalKey<FormState>();
 
   bool validateInput(String? textInput) {
     return textInput != null &&
@@ -54,7 +53,6 @@ class _TextInputDialogState<T> extends State<TextInputDialog<T>> {
     return AlertDialog(
       title: Text(widget.title),
       content: Form(
-        key: _formKey,
         child: TextFormField(
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           inputFormatters: [

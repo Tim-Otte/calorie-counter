@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:provider/provider.dart';
 
-import 'pages/pages.dart';
-import 'settings/settings_controller.dart';
+import 'data/database.dart';
+import 'pages/all.dart';
+import 'controllers/settings_controller.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key, required this.settingsController});
@@ -20,14 +24,20 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    final database = Provider.of<AppDatabase>(context);
+
+    // Database updates
+    database.createDefaultServingSizes(localizations);
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 10),
         child: <Widget>[
           const TodayPage(),
           const MonthlyOverviewPage(),
-          SettingsPage(controller: super.widget.settingsController),
+          SettingsPage(controller: widget.settingsController),
         ].elementAt(currentPage),
       ),
       floatingActionButton: currentPage == 0
@@ -37,18 +47,28 @@ class _MainLayoutState extends State<MainLayout> {
                 Container(
                   margin: const EdgeInsets.only(bottom: 10),
                   child: FloatingActionButton(
-                    onPressed: () {},
+                    heroTag: 'add_consumable_manually',
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (colorScheme) => const AddProductPage()),
+                    ),
                     mini: true,
-                    backgroundColor: const Color.fromARGB(172, 207, 207, 207),
-                    child: const Icon(
+                    backgroundColor: colorScheme.tertiary,
+                    child: Icon(
                       Symbols.add,
-                      color: Color(0xff333333),
+                      color: colorScheme.onTertiary,
                       weight: 800,
                     ),
                   ),
                 ),
                 FloatingActionButton(
-                  onPressed: () {},
+                  heroTag: 'scan_consumable',
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (colorScheme) => const ScanBarcodePage()),
+                  ),
                   child: const Icon(Symbols.barcode_scanner),
                 )
               ],
@@ -60,24 +80,24 @@ class _MainLayoutState extends State<MainLayout> {
         indicatorColor: colorScheme.primary.withOpacity(0.69),
         onDestinationSelected: (value) {
           setState(() => currentPage = value);
-          HapticFeedback.selectionClick();
+          unawaited(HapticFeedback.selectionClick());
         },
         selectedIndex: currentPage,
         destinations: <Widget>[
           NavigationDestination(
             icon: const Icon(Symbols.today),
             selectedIcon: const Icon(Symbols.today, fill: 1),
-            label: AppLocalizations.of(context)!.todayPageTitle,
+            label: localizations.todayPageTitle,
           ),
           NavigationDestination(
             icon: const Icon(Symbols.calendar_month),
             selectedIcon: const Icon(Symbols.calendar_month, fill: 1),
-            label: AppLocalizations.of(context)!.monthlyOverviewPageTitle,
+            label: localizations.monthlyOverviewPageTitle,
           ),
           NavigationDestination(
             icon: const Icon(Symbols.settings),
             selectedIcon: const Icon(Symbols.settings, fill: 1),
-            label: AppLocalizations.of(context)!.settingsPageTitle,
+            label: localizations.settingsPageTitle,
           ),
         ],
       ),

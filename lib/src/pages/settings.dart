@@ -1,25 +1,25 @@
-import 'package:calorie_counter/src/extensions/enumerable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../components/settings/basic_tile.dart';
-import '../components/settings/bottom_sheets/about_personal_data_btm_sheet.dart';
-import '../components/settings/dialogs/dialogs.dart';
-import '../components/settings/section.dart';
-import '../models/enums/enums.dart';
-import '../settings/settings_controller.dart';
-import '../tools/tools.dart';
+import '../components/all.dart';
+import '../controllers/settings_controller.dart';
+import '../extensions/enumerable.dart';
+import '../data/all.dart';
+import '../services/all.dart';
+import '../tools/all.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key, required this.controller});
+  final SettingsController _controller;
 
-  final SettingsController controller;
+  const SettingsPage({super.key, required SettingsController controller})
+      : _controller = controller;
 
   /// Get the settings section for the general settings
-  Widget getGeneralSettingsSection(
+  Widget _getGeneralSettingsSection(
       BuildContext context, AppLocalizations localizations) {
     return MaterialSettingsSection(
       margin: const EdgeInsetsDirectional.all(10),
@@ -29,44 +29,45 @@ class SettingsPage extends StatelessWidget {
           prefix: const Icon(Symbols.palette),
           title: Text(localizations.settingTheme),
           value: Text(
-            Translator.getTranslation(context, controller.themeMode),
+            Translator.getTranslation(context, _controller.themeMode),
           ),
           onTap: (context) async {
             var result = await showDialog<ThemeMode>(
               context: context,
               builder: (context) => ThemeModeDialog(
-                currentValue: controller.themeMode,
+                currentValue: _controller.themeMode,
               ),
             );
-            controller.updateThemeMode(result);
+            _controller.updateThemeMode(result);
           },
         ),
         MaterialBasicSettingsTile(
           prefix: const Icon(Symbols.translate),
           title: Text(localizations.settingLanguage),
           value: Text(
-            controller.locale != null
+            _controller.locale != null
                 ? LocaleNames.of(context)!
-                    .nameOf(controller.locale!.languageCode)!
+                    .nameOf(_controller.locale!.languageCode)!
                 : localizations.systemDefault,
           ),
           onTap: (context) async {
             var result = await showDialog<String?>(
               context: context,
               builder: (context) => LanguageDialog(
-                currentLocale:
-                    controller.locale?.languageCode ?? localizations.localeName,
+                currentLocale: _controller.locale?.languageCode ??
+                    localizations.localeName,
               ),
             );
-            controller.updateLocale(result);
+            _controller.updateLocale(result);
           },
         ),
         MaterialBasicSettingsTile(
           prefix: const Icon(Symbols.straighten),
           title: Text(localizations.settingMeasurementUnit),
           value: Text(
-            controller.measurementUnit != null
-                ? Translator.getTranslation(context, controller.measurementUnit)
+            _controller.measurementUnit != null
+                ? Translator.getTranslation(
+                    context, _controller.measurementUnit)
                 : localizations.notSet,
           ),
           onTap: (context) async {
@@ -74,10 +75,10 @@ class SettingsPage extends StatelessWidget {
               context: context,
               builder: (context) => MeasurementUnitDialog(
                 currentValue:
-                    controller.measurementUnit ?? MeasurementUnit.metric,
+                    _controller.measurementUnit ?? MeasurementUnit.metric,
               ),
             );
-            controller.updateMeasurementUnit(result);
+            _controller.updateMeasurementUnit(result);
           },
         )
       ],
@@ -85,8 +86,10 @@ class SettingsPage extends StatelessWidget {
   }
 
   /// Get the settings section for the personal information
-  Widget getPersonalSettingsSection(
-      BuildContext context, AppLocalizations localizations) {
+  Widget _getPersonalSettingsSection(
+    BuildContext context,
+    AppLocalizations localizations,
+  ) {
     return MaterialSettingsSection(
       margin: const EdgeInsetsDirectional.all(10),
       title: Text(localizations.settingsPersonalInformationSection),
@@ -95,7 +98,9 @@ class SettingsPage extends StatelessWidget {
           prefix: const Icon(Symbols.person_play),
           title: Text(localizations.settingGender),
           value: Text(
-            Translator.getTranslation(context, controller.gender),
+            _controller.gender != null
+                ? Translator.getTranslation(context, _controller.gender)
+                : localizations.notSet,
           ),
           suffix: IconButton(
             onPressed: () => showModalBottomSheet(
@@ -109,24 +114,27 @@ class SettingsPage extends StatelessWidget {
             icon: const Icon(Symbols.info_rounded),
             color: Theme.of(context).colorScheme.primary,
           ),
+          disableSuffixPadding: true,
           onTap: (context) async {
             var result = await showDialog<Gender>(
               context: context,
               builder: (context) => GenderDialog(
-                currentValue: controller.gender ?? Gender.values.pickRandom(),
+                currentValue: _controller.gender ?? Gender.values.pickRandom(),
               ),
             );
-            controller.updateGender(result);
+            _controller.updateGender(result);
           },
         ),
         MaterialBasicSettingsTile(
           prefix: const Icon(Symbols.calendar_month),
           title: Text(localizations.settingDateOfBirth),
           description: Text(
-            controller.dateOfBirth != null
+            _controller.dateOfBirth != null
                 ? localizations.settingDateOfBirthValue(
-                    controller.dateOfBirth!,
-                    (DateTime.now().difference(controller.dateOfBirth!).inDays /
+                    _controller.dateOfBirth!,
+                    (DateTime.now()
+                                .difference(_controller.dateOfBirth!)
+                                .inDays /
                             365.0)
                         .round(),
                   )
@@ -139,41 +147,41 @@ class SettingsPage extends StatelessWidget {
               firstDate:
                   DateTime(DateTime.now().year - 100, DateTime.january, 1),
               lastDate: DateTime.now().subtract(const Duration(days: 365)),
-              initialDate: controller.dateOfBirth,
+              initialDate: _controller.dateOfBirth,
             );
-            controller.updateDateOfBirth(result);
+            _controller.updateDateOfBirth(result);
           },
         ),
         MaterialBasicSettingsTile(
           prefix: const Icon(Symbols.height),
           title: Text(localizations.settingHeight),
-          description: Text(controller.heightString ?? localizations.notSet),
+          description: Text(_controller.heightString ?? localizations.notSet),
           onTap: (context) async {
             var result = await showDialog<double>(
               context: context,
               builder: (context) => HeightInputDialog(
                 measurementUnit:
-                    controller.measurementUnit ?? MeasurementUnit.metric,
-                currentValue: controller.height ?? 0,
+                    _controller.measurementUnit ?? MeasurementUnit.metric,
+                currentValue: _controller.height ?? 0,
               ),
             );
-            controller.updateHeight(result);
+            _controller.updateHeight(result);
           },
         ),
         MaterialBasicSettingsTile(
           prefix: const Icon(Symbols.scale),
           title: Text(localizations.settingWeight),
-          description: Text(controller.weightString ?? localizations.notSet),
+          description: Text(_controller.weightString ?? localizations.notSet),
           onTap: (context) async {
             var result = await showDialog<double>(
               context: context,
               builder: (context) => WeightInputDialog(
                 measurementUnit:
-                    controller.measurementUnit ?? MeasurementUnit.metric,
-                currentValue: controller.weight ?? 0,
+                    _controller.measurementUnit ?? MeasurementUnit.metric,
+                currentValue: _controller.weight ?? 0,
               ),
             );
-            controller.updateWeight(result);
+            _controller.updateWeight(result);
           },
         ),
       ],
@@ -181,7 +189,8 @@ class SettingsPage extends StatelessWidget {
   }
 
   /// Get the settings section for information about the app
-  Widget getAboutSection(BuildContext context, AppLocalizations localizations) {
+  Widget _getAboutSection(
+      BuildContext context, AppLocalizations localizations) {
     return FutureBuilder(
       future: PackageInfo.fromPlatform(),
       builder: (context, packageInfoSnapshot) => MaterialSettingsSection(
@@ -189,12 +198,28 @@ class SettingsPage extends StatelessWidget {
         margin: const EdgeInsetsDirectional.all(10),
         tiles: [
           MaterialBasicSettingsTile(
-            prefix: const Icon(Symbols.tag),
+            prefix: const Icon(Symbols.tag_rounded),
             title: Text(localizations.settingAboutVersion),
             value: packageInfoSnapshot.hasData
                 ? Text(packageInfoSnapshot.data!.version)
                 : null,
             enabled: false,
+          ),
+          MaterialBasicSettingsTile(
+            prefix: Icon(
+              Symbols.nutrition_rounded,
+              color: FoodFactService.brandColor,
+            ),
+            suffix: Icon(
+              Symbols.open_in_new_rounded,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            title: Text(localizations.settingAboutOpenFoodFacts),
+            description: Text(localizations.settingAboutOpenFoodFactsSubtitle),
+            onTap: (context) async => await launchUrl(
+              FoodFactService.brandUri,
+              mode: LaunchMode.inAppBrowserView,
+            ),
           ),
           MaterialBasicSettingsTile(
             prefix: const Icon(
@@ -230,9 +255,9 @@ class SettingsPage extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              getGeneralSettingsSection(context, localizations),
-              getPersonalSettingsSection(context, localizations),
-              getAboutSection(context, localizations),
+              _getGeneralSettingsSection(context, localizations),
+              _getPersonalSettingsSection(context, localizations),
+              _getAboutSection(context, localizations),
             ],
           ),
         ),

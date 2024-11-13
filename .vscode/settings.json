@@ -1,3 +1,4 @@
 {
-    "dart.flutterGenerateLocalizationsOnSave": "manualIfDirty"
+    "dart.flutterGenerateLocalizationsOnSave": "manualIfDirty",
+    "arb-editor.suppressedWarnings": "all"
 }

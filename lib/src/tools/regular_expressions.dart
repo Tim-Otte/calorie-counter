@@ -19,6 +19,11 @@ class RegularExpressions {
           : "^([1-9])'\\s?(?:((?:0?[0-9])|(?:1[0-1]))\")?\$" // Allowing inputs between 1 ft and 9 ft 11 in
       );
 
+  /// A [RegExp] that defines which characters are allowed in the height input
   static RegExp getHeightAllowedCharacters(bool isMetric) =>
       RegExp(isMetric ? "[0-9]" : "[0-9'\"\\s]");
+
+  /// A [RegExp] that defines which characters are allowed in a decimal input
+  static RegExp decimalAllowedCharacters =
+      RegExp("[0-9${allowComma ? ',.' : '.'}]");
 }

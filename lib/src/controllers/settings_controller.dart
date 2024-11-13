@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
-import '../models/enums/enums.dart';
-import '../tools/tools.dart';
-import 'settings_service.dart';
+import '../data/enums/all.dart';
+import '../tools/all.dart';
+import '../services/all.dart';
 
 /// A class that many Widgets can interact with to read user settings, update
 /// user settings, or listen to user settings changes.
@@ -10,9 +12,10 @@ import 'settings_service.dart';
 /// Controllers glue Data Services to Flutter Widgets. The SettingsController
 /// uses the SettingsService to store and retrieve user settings.
 class SettingsController with ChangeNotifier {
-  SettingsController(this._settingsService);
+  SettingsController(this._settingsService, this._foodfactService);
 
   final SettingsService _settingsService;
+  final FoodFactService _foodfactService;
 
   ThemeMode _themeMode = ThemeMode.system;
   String? _locale;
@@ -33,7 +36,7 @@ class SettingsController with ChangeNotifier {
   String? get heightString {
     if (height == null) return null;
 
-    if (measurementUnit == MeasurementUnit.metric) {
+    if (measurementUnit == null || measurementUnit == MeasurementUnit.metric) {
       return "${height!.round()} cm";
     } else {
       var imperial = UnitConverter.heightToImperial(height!);
@@ -45,7 +48,7 @@ class SettingsController with ChangeNotifier {
   String? get weightString {
     if (weight == null) return null;
 
-    if (measurementUnit == MeasurementUnit.metric) {
+    if (measurementUnit == null || measurementUnit == MeasurementUnit.metric) {
       return "${weight!.toStringAsFixed(1)} kg";
     } else {
       var imperial = UnitConverter.weightToImperial(weight!);
@@ -65,6 +68,9 @@ class SettingsController with ChangeNotifier {
 
     // Important! Inform listeners a change has occurred.
     notifyListeners();
+
+    _foodfactService.setLanguage(
+        locale ?? Locale.fromSubtags(languageCode: Platform.localeName));
   }
 
   /// Update and persist the ThemeMode
@@ -83,6 +89,7 @@ class SettingsController with ChangeNotifier {
     _locale = value;
     notifyListeners();
     await _settingsService.updateLocale(value);
+    _foodfactService.setLanguage(Locale.fromSubtags(languageCode: value));
   }
 
   /// Update and persist the MeasurementUnit

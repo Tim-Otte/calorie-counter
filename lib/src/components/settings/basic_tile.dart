@@ -10,16 +10,19 @@ class MaterialBasicSettingsTile extends MaterialSettingsTile {
     required Widget super.title,
     super.description,
     Widget? suffix,
+    bool? disableSuffixPadding,
     super.value,
     super.onTap,
     super.enabled = true,
   }) : super(
           tileType: SettingsTileType.switchTile,
           suffix: suffix != null
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: suffix,
-                )
+              ? (disableSuffixPadding ?? false)
+                  ? suffix
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: suffix,
+                    )
               : null,
         );
 }

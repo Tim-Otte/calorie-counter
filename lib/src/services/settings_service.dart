@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/enums/enums.dart';
+import '../data/enums/all.dart';
 
 /// A service that stores and retrieves user settings.
 class SettingsService {

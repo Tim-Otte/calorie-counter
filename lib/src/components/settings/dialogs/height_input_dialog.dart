@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../models/enums/measurement_unit.dart';
-import '../../../tools/regular_expressions.dart';
-import '../../../tools/unit_converter.dart';
-import '../../dialogs/input_dialog.dart';
+import '../../../data/enums/all.dart' show MeasurementUnit;
+import '../../../tools/all.dart';
+import '../../dialogs/all.dart' show TextInputDialog;
 
 class HeightInputDialog extends StatelessWidget {
   const HeightInputDialog({

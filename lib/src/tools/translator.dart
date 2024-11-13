@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../models/enums/enums.dart';
+import '../data/enums/all.dart';
 
 class Translator {
   static String getTranslation<TEnum>(BuildContext context, TEnum enumValue) {
@@ -35,7 +35,19 @@ class Translator {
           return AppLocalizations.of(context)!.genderMale;
         default:
           throw UnsupportedError(
-              'There is no translation for the given theme mode');
+              'There is no translation for the given gender');
+      }
+    } else if (enumValue is ServingSizeFilter) {
+      switch (enumValue) {
+        case ServingSizeFilter.all:
+          return AppLocalizations.of(context)!.servingSizeFilterAll;
+        case ServingSizeFilter.liquid:
+          return AppLocalizations.of(context)!.servingSizeFilterLiquid;
+        case ServingSizeFilter.solid:
+          return AppLocalizations.of(context)!.servingSizeFilterSolid;
+        default:
+          throw UnsupportedError(
+              'There is no translation for the given serving size filter');
       }
     } else {
       throw UnsupportedError('Unsupported enum type');

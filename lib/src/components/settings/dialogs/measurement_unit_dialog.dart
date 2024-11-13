@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../models/enums/measurement_unit.dart';
-import '../../dialogs/dialogs.dart';
+import '../../../data/enums/all.dart' show MeasurementUnit;
+import '../../dialogs/all.dart' show EnumRadioDialog;
 
 class MeasurementUnitDialog extends StatelessWidget {
   const MeasurementUnitDialog({super.key, required this.currentValue});
