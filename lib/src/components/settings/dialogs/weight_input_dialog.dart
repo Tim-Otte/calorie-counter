@@ -24,7 +24,7 @@ class WeightInputDialog extends StatelessWidget {
       if (isMetric) {
         return value;
       } else {
-        return UnitConverter.weightToMetric(value);
+        return UnitConverter.poundsToKilogrammes(value);
       }
     }
 
@@ -40,7 +40,7 @@ class WeightInputDialog extends StatelessWidget {
     if (isMetric) {
       initialValue = currentValue.toStringAsFixed(1);
     } else {
-      var imperial = UnitConverter.weightToImperial(currentValue);
+      var imperial = UnitConverter.kilogrammesToPounds(currentValue);
       initialValue = imperial.toStringAsFixed(1);
     }
 

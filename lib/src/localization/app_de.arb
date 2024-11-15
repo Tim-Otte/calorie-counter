@@ -31,9 +31,10 @@
   "servingSizeName": "Name",
   "servingSizeShort": "Einheit",
   "servingSizeAmount": "Menge",
+  
+  "searchProductPageTitle": "Produkt suchen",
 
   "addProductPageTitle": "Produkt hinzufügen",
-  "addProductPageTitle_searchMode": "Produkt suchen",
   "switchToEditModeTooltip": "Produktdaten manuell bearbeiten",
   "switchToSearchModeTooltip": "Produkt suchen",
   "toastProductDataSuccessfullyTransferred": "Daten erfolgreich übernommen...",
@@ -41,12 +42,23 @@
   "productCode": "Artikelnummer / EAN",
   "productName": "Bezeichnung",
   "brand": "Marke",
-  "isLiquid": "Ist eine Flüssigkeit?",
+  "isLiquid": "Ist dies eine Flüssigkeit?",
+  "isLiquid_true": "Flüssig (z.B. Wasser, Saft)",
+  "isLiquid_false": "Fest (z.B. Brot, Nudeln)",
   "nutritionalInformationPerServingTitle": "Nährwertangaben (pro 100 g)",
   "calories": "Kalorien",
   "carbs": "Kohlenhydrate",
   "fats": "Fette",
   "proteins": "Proteine",
+  "equalsNOz": "entspricht {ounces} oz",
+  "@equalsNOz": {
+    "placeholders": {
+      "ounces": {
+        "type": "double",
+        "format": "decimalPatternDigits"
+      }
+    }
+  },
   "customServingSizesTitle": "Individuelle Portionsgrößen",
   "addCustomServingSizeTooltip": "Individuelle Portionsgröße hinzufügen",
   "addCustomServingSizeTitle": "Portionsgröße hinzufügen",

@@ -9,14 +9,18 @@ import '../../data/all.dart';
 import '../../services/all.dart';
 
 class ProductSearch extends StatelessWidget {
-  final List<ServingSizeData> servingSizes;
+  final List<ServingSizeData> baseServingSizes;
+  final Widget? trailing;
   final Function(
-      ProductTemplate product, List<ServingSizeTemplate> servingSizes) onSelect;
+    ProductTemplate product,
+    List<ServingSizeTemplate> servingSizes,
+  ) onSelect;
 
   const ProductSearch({
     super.key,
-    required this.servingSizes,
+    required this.baseServingSizes,
     required this.onSelect,
+    this.trailing,
   });
 
   @override
@@ -28,14 +32,15 @@ class ProductSearch extends StatelessWidget {
     return SearchableListView(
       searchFunction: (search) => foodFactService.search(search),
       searchMode: SearchMode.onPause,
+      trailing: trailing,
       itemBuilder: (context, item) => ListTile(
         title: Text(item.getBestProductName(foodFactService.language)),
         subtitle: Text(item.getFirstBrand() ?? ''),
         onTap: () => onSelect(
-          foodFactService.getProductDataFromProduct(item, servingSizes),
+          foodFactService.getProductDataFromProduct(item, baseServingSizes),
           foodFactService.getServingSizesFromProduct(
             item,
-            servingSizes,
+            baseServingSizes,
             localizations.serving,
             localizations.container,
           ),

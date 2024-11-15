@@ -8,6 +8,7 @@ class FormField extends StatelessWidget {
   final IconData? icon;
   final String? initialValue;
   final String? suffixText;
+  final String? hintText;
   final bool? onlyNumbers;
   final bool? enableNextButton;
   final Function(String value)? onChanged;
@@ -18,6 +19,7 @@ class FormField extends StatelessWidget {
     this.icon,
     this.initialValue,
     this.suffixText,
+    this.hintText,
     this.onlyNumbers,
     this.enableNextButton,
     this.onChanged,
@@ -25,8 +27,35 @@ class FormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     bool allowOnlyNumbers = onlyNumbers ?? false;
 
+    return hintText != null
+        ? Stack(
+            clipBehavior: Clip.none,
+            children: [
+              _getTextField(context, allowOnlyNumbers),
+              Positioned(
+                right: 8,
+                bottom: -6,
+                child: Container(
+                  color: theme.scaffoldBackgroundColor,
+                  child: Text(
+                    " $hintText ",
+                    style: theme.textTheme.bodySmall!.copyWith(
+                      color:
+                          theme.textTheme.bodySmall!.color!.withOpacity(0.75),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )
+        : _getTextField(context, allowOnlyNumbers);
+  }
+
+  TextFormField _getTextField(BuildContext context, bool allowOnlyNumbers) {
     return TextFormField(
       decoration: InputDecoration(
         label: label,

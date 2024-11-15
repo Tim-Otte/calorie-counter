@@ -6,7 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-import 'data/database.dart';
+import 'data/all.dart' show AppDatabase;
 import 'pages/all.dart';
 import 'controllers/settings_controller.dart';
 
@@ -51,7 +51,7 @@ class _MainLayoutState extends State<MainLayout> {
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (colorScheme) => const AddProductPage()),
+                          builder: (colorScheme) => const SearchProductPage()),
                     ),
                     mini: true,
                     backgroundColor: colorScheme.tertiary,

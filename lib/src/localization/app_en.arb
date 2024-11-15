@@ -31,9 +31,10 @@
   "servingSizeName": "Name",
   "servingSizeShort": "Serving",
   "servingSizeAmount": "Amount",
+  
+  "searchProductPageTitle": "Find product",
 
   "addProductPageTitle": "Add product",
-  "addProductPageTitle_searchMode": "Find product",
   "switchToEditModeTooltip": "Manually edit product",
   "switchToSearchModeTooltip": "Search for product",
   "toastProductDataSuccessfullyTransferred": "Data successfully transferred...",
@@ -41,12 +42,23 @@
   "productCode": "Product code / EAN",
   "productName": "Product name",
   "brand": "Brand",
-  "isLiquid": "Is a liquid",
+  "isLiquid": "Is this a liquid?",
+  "isLiquid_true": "Liquid (e.g. water, juice)",
+  "isLiquid_false": "Fest (e.g. bread, pasta)",
   "nutritionalInformationPerServingTitle": "Nutritional information (per 100 g)",
   "calories": "Calories",
   "carbs": "Carbs",
   "fats": "Fats",
   "proteins": "Proteins",
+  "equalsNOz": "equal to {ounces} oz",
+  "@equalsNOz": {
+    "placeholders": {
+      "ounces": {
+        "type": "double",
+        "format": "decimalPatternDigits"
+      }
+    }
+  },
   "customServingSizesTitle": "Custom serving sizes",
   "addCustomServingSizeTooltip": "Add custom serving size",
   "addCustomServingSizeTitle": "Add serving size",

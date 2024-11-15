@@ -51,7 +51,7 @@ class SettingsController with ChangeNotifier {
     if (measurementUnit == null || measurementUnit == MeasurementUnit.metric) {
       return "${weight!.toStringAsFixed(1)} kg";
     } else {
-      var imperial = UnitConverter.weightToImperial(weight!);
+      var imperial = UnitConverter.kilogrammesToPounds(weight!);
       return "${imperial.toStringAsFixed(1)} lb";
     }
   }

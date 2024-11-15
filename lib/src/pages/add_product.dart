@@ -4,11 +4,18 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 import '../components/all.dart' as c;
-import '../controllers/settings_controller.dart';
 import '../data/all.dart';
+import 'all.dart' show SearchProductPage;
 
 class AddProductPage extends StatefulWidget {
-  const AddProductPage({super.key});
+  final ProductTemplate? product;
+  final List<ServingSizeTemplate>? servingSizes;
+
+  const AddProductPage({
+    super.key,
+    this.product,
+    this.servingSizes,
+  });
 
   @override
   State<AddProductPage> createState() => _AddProductPageState();
@@ -20,45 +27,50 @@ class _AddProductPageState extends State<AddProductPage> {
   var _servingSizes = <ServingSizeTemplate>[];
   var _product = ProductTemplate();
 
-  bool _isInSearchMode = true;
-  bool _isValid = false;
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.product != null) {
+      _product = widget.product!;
+    }
+
+    if (widget.servingSizes != null) {
+      _servingSizes = widget.servingSizes!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final database = Provider.of<AppDatabase>(context);
-    final settingsController = Provider.of<SettingsController>(context);
 
     if (_baseServingSizes.isEmpty) {
       database
-          .filteredServingSizes(
-              measurementUnit:
-                  settingsController.measurementUnit ?? MeasurementUnit.metric)
+          .select(database.servingSize)
+          .get()
           .then((value) => setState(() => _baseServingSizes = value));
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isInSearchMode
-            ? localizations.addProductPageTitle_searchMode
-            : localizations.addProductPageTitle),
+        title: Text(localizations.addProductPageTitle),
         actions: [
           IconButton(
-            onPressed: () => setState(() => _isInSearchMode = !_isInSearchMode),
-            icon: Icon(_isInSearchMode
-                ? Symbols.edit_note_rounded
-                : Symbols.manage_search_rounded),
-            tooltip: _isInSearchMode
-                ? localizations.switchToEditModeTooltip
-                : localizations.switchToSearchModeTooltip,
+            onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const SearchProductPage())),
+            icon: Icon(Symbols.manage_search_rounded),
+            tooltip: localizations.switchToSearchModeTooltip,
           ),
           const SizedBox(width: 10)
         ],
       ),
       bottomNavigationBar: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        height: _isInSearchMode ? 0 : 80,
+        height: 80,
         child: BottomAppBar(
           elevation: 1,
           child: Row(
@@ -73,45 +85,28 @@ class _AddProductPageState extends State<AddProductPage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
-      floatingActionButton: _isInSearchMode
-          ? null
-          : FloatingActionButton.extended(
-              onPressed: _isValid
-                  ? () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          behavior: SnackBarBehavior.floating,
-                          content: Text(_isValid ? 'Valid' : 'Not valid'),
-                        ),
-                      );
-                    }
-                  : null,
-              icon: Icon(Symbols.save_rounded),
-              label: Text(localizations.save),
-              elevation: 0,
-              backgroundColor: theme.colorScheme.secondaryContainer
-                  .withOpacity(_isValid ? 1 : 0.6),
-              foregroundColor: theme.colorScheme.onSecondaryContainer
-                  .withOpacity(_isValid ? 1 : 0.6),
-            ),
-      body: _isInSearchMode
-          ? c.ProductSearch(
-              servingSizes: _baseServingSizes,
-              onSelect: (product, servingSizes) {
-                setState(() {
-                  _product = product;
-                  _servingSizes = servingSizes;
-                  _isValid = _product.isNotEmpty;
-                  _isInSearchMode = false;
-                });
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _product.isNotEmpty && _servingSizes.isNotEmpty
+            ? () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     behavior: SnackBarBehavior.floating,
-                    content: Text(
-                        localizations.toastProductDataSuccessfullyTransferred),
+                    content: Text('Valid'),
                   ),
                 );
-              },
+              }
+            : null,
+        icon: Icon(Symbols.save_rounded),
+        label: Text(localizations.save),
+        elevation: 0,
+        backgroundColor: theme.colorScheme.secondaryContainer.withOpacity(
+            _product.isNotEmpty && _servingSizes.isNotEmpty ? 1 : 0.6),
+        foregroundColor: theme.colorScheme.onSecondaryContainer.withOpacity(
+            _product.isNotEmpty && _servingSizes.isNotEmpty ? 1 : 0.6),
+      ),
+      body: _baseServingSizes.isEmpty
+          ? Center(
+              child: CircularProgressIndicator(),
             )
           : c.ProductForm(
               product: _product,
@@ -121,7 +116,6 @@ class _AddProductPageState extends State<AddProductPage> {
               onChange: (product, servingSizes) => setState(() {
                 _product = product;
                 _servingSizes = servingSizes;
-                _isValid = _product.isNotEmpty && _servingSizes.isNotEmpty;
               }),
             ),
     );

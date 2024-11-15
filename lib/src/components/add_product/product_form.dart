@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:provider/provider.dart';
 
+import '../../controllers/settings_controller.dart';
 import '../../data/all.dart';
+import '../../tools/all.dart';
 import '../all.dart' as c;
 
 class ProductForm extends StatefulWidget {
@@ -43,6 +46,10 @@ class _ProductFormState extends State<ProductForm> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final settingsController = Provider.of<SettingsController>(context);
+
+    bool isImperial =
+        settingsController.measurementUnit == MeasurementUnit.imperial;
 
     return SingleChildScrollView(
       controller: widget.scrollController,
@@ -103,6 +110,7 @@ class _ProductFormState extends State<ProductForm> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(right: 20),
@@ -111,9 +119,22 @@ class _ProductFormState extends State<ProductForm> {
                             color: theme.colorScheme.primary,
                           ),
                         ),
-                        Text(
-                          localizations.isLiquid,
-                          style: theme.textTheme.bodyLarge,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              localizations.isLiquid,
+                              style: theme.textTheme.bodyLarge,
+                            ),
+                            Text(
+                              _product.isLiquid
+                                  ? localizations.isLiquid_true
+                                  : localizations.isLiquid_false,
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                  color: theme.textTheme.bodyMedium!.color!
+                                      .withOpacity(0.75)),
+                            )
+                          ],
                         ),
                       ],
                     ),
@@ -154,6 +175,10 @@ class _ProductFormState extends State<ProductForm> {
                   label: Text(localizations.carbs),
                   icon: Symbols.nutrition_rounded,
                   suffixText: "g",
+                  hintText: isImperial && _product.carbsPer100 != null
+                      ? localizations.equalsNOz(
+                          UnitConverter.gramsToOunzes(_product.carbsPer100!))
+                      : null,
                   onlyNumbers: true,
                   initialValue: _product.carbsPer100?.toString() ?? '',
                   enableNextButton: true,
@@ -166,6 +191,10 @@ class _ProductFormState extends State<ProductForm> {
                   label: Text(localizations.fats),
                   icon: Symbols.water_drop_rounded,
                   suffixText: "g",
+                  hintText: isImperial && _product.fatsPer100 != null
+                      ? localizations.equalsNOz(
+                          UnitConverter.gramsToOunzes(_product.fatsPer100!))
+                      : null,
                   onlyNumbers: true,
                   initialValue: _product.fatsPer100?.toString() ?? '',
                   enableNextButton: true,
@@ -178,6 +207,10 @@ class _ProductFormState extends State<ProductForm> {
                   label: Text(localizations.proteins),
                   icon: Symbols.exercise_rounded,
                   suffixText: "g",
+                  hintText: isImperial && _product.proteinsPer100 != null
+                      ? localizations.equalsNOz(
+                          UnitConverter.gramsToOunzes(_product.proteinsPer100!))
+                      : null,
                   onlyNumbers: true,
                   initialValue: _product.proteinsPer100?.toString() ?? '',
                   onChanged: (value) => setState(() {
