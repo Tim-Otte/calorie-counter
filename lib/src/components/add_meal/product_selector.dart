@@ -5,23 +5,23 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../data/database.dart';
 import '../../pages/all.dart';
 
-class ServingSizeSelector extends StatefulWidget {
-  final ServingSizeData? initialValue;
-  final Function(ServingSizeData? value)? onChanged;
+class ProductSelector extends StatefulWidget {
+  final ProductData? initialValue;
+  final Function(ProductData? value)? onChanged;
 
-  const ServingSizeSelector({super.key, this.initialValue, this.onChanged});
+  const ProductSelector({super.key, this.initialValue, this.onChanged});
 
   @override
-  State<ServingSizeSelector> createState() => _ServingSizeSelectorState();
+  State<ProductSelector> createState() => _ProductSelectorState();
 }
 
-class _ServingSizeSelectorState extends State<ServingSizeSelector> {
-  ServingSizeData? _servingSize;
+class _ProductSelectorState extends State<ProductSelector> {
+  ProductData? _product;
 
   @override
   void initState() {
     super.initState();
-    _servingSize = widget.initialValue;
+    _product = widget.initialValue;
   }
 
   @override
@@ -33,15 +33,17 @@ class _ServingSizeSelectorState extends State<ServingSizeSelector> {
       onTap: widget.onChanged == null
           ? null
           : () async {
-              final result = await Navigator.push<ServingSizeData>(
+              final result = await Navigator.push<ProductData>(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => const SelectServingSizePage(),
+                  builder: (context) => SearchProductPage(
+                    onSelect: (product) => Navigator.pop(context, product),
+                  ),
                 ),
               );
-              setState(() => _servingSize = result);
+              setState(() => _product = result);
               if (widget.onChanged != null) {
-                widget.onChanged!(_servingSize);
+                widget.onChanged!(_product);
               }
             },
       highlightColor: theme.highlightColor,
@@ -64,11 +66,13 @@ class _ServingSizeSelectorState extends State<ServingSizeSelector> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${localizations.servingSize}:",
+                      "${localizations.product}:",
                       style: theme.textTheme.titleMedium,
                     ),
                     Text(
-                      _servingSize?.name ?? localizations.notSet,
+                      _product != null
+                          ? "${_product!.name} (${_product!.brand})"
+                          : localizations.notSet,
                       style: theme.textTheme.bodyMedium,
                     )
                   ],

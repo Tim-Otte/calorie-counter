@@ -1,4 +1,9 @@
 {
     "dart.flutterGenerateLocalizationsOnSave": "manualIfDirty",
-    "arb-editor.suppressedWarnings": "all"
+    "arb-editor.suppressedWarnings": "all",
+    "dart.analysisServerFolding": false,
+    "dart.analyzeAngularTemplates": false,
+    "dart.useLegacyAnalyzerProtocol": false,
+    "dart.onlyAnalyzeProjectsWithOpenFiles": true,
+    "dart.includeDependenciesInWorkspaceSymbols": false
 }

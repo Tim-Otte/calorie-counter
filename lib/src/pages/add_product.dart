@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../components/all.dart' as c;
 import '../data/all.dart';
-import 'all.dart' show SearchProductPage;
+import '../extensions/scaffold_messenger_state.dart';
 
 class AddProductPage extends StatefulWidget {
   final ProductTemplate? product;
@@ -56,17 +56,6 @@ class _AddProductPageState extends State<AddProductPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations.addProductPageTitle),
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SearchProductPage())),
-            icon: Icon(Symbols.manage_search_rounded),
-            tooltip: localizations.switchToSearchModeTooltip,
-          ),
-          const SizedBox(width: 10)
-        ],
       ),
       bottomNavigationBar: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -87,13 +76,33 @@ class _AddProductPageState extends State<AddProductPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _product.isNotEmpty && _servingSizes.isNotEmpty
-            ? () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    behavior: SnackBarBehavior.floating,
-                    content: Text('Valid'),
-                  ),
+            ? () async {
+                var servingSizes = _servingSizes.map(
+                  (x) => x.getForInsert(
+                      _product.productCode,
+                      _baseServingSizes
+                          .where((y) => y.id == x.baseServingSize)
+                          .first),
                 );
+
+                ProductData? product;
+
+                try {
+                  await database.insertProductWithServingSizes(
+                    _product.getForInsert(),
+                    servingSizes.toList(),
+                  );
+                  product = await database.getProduct(_product.productCode);
+                } catch (ex) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context)
+                        .showError(localizations.errorWhileSavingProductData);
+                  }
+                }
+
+                if (context.mounted) {
+                  Navigator.pop(context, product);
+                }
               }
             : null,
         icon: Icon(Symbols.save_rounded),
@@ -142,6 +151,7 @@ class _AddProductPageState extends State<AddProductPage> {
           baseServingSizes: _baseServingSizes,
           initialValue: ServingSizeTemplate.fromValues(
             name: '',
+            short: '',
             amount: 0,
             baseServingSize: _baseServingSizes
                 .where((x) => x.isLiquid == _product.isLiquid)

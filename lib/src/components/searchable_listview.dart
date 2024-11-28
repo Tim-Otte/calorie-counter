@@ -10,18 +10,24 @@ class SearchableListView<T> extends StatefulWidget {
   final Future<List<T>> Function(String) searchFunction;
   final Widget? Function(BuildContext, T) itemBuilder;
   final Widget Function(
-          BuildContext context, Object? error, void Function() searchFunction)
-      errorBuilder;
+    BuildContext context,
+    Object? error,
+    void Function() searchFunction,
+  ) errorBuilder;
+  final List<T>? initialData;
   final SearchMode? searchMode;
   final Widget? trailing;
+  final FocusNode? focusNode;
 
   const SearchableListView({
     super.key,
     required this.searchFunction,
     required this.itemBuilder,
     required this.errorBuilder,
+    this.initialData,
     this.searchMode,
     this.trailing,
+    this.focusNode,
   });
 
   @override
@@ -50,7 +56,6 @@ class _SearchableListViewState<T> extends State<SearchableListView<T>> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
     return Column(
       children: [
@@ -62,6 +67,7 @@ class _SearchableListViewState<T> extends State<SearchableListView<T>> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: TextFormField(
+                    focusNode: widget.focusNode,
                     controller: _controller,
                     autofocus: true,
                     decoration: InputDecoration(
@@ -78,6 +84,7 @@ class _SearchableListViewState<T> extends State<SearchableListView<T>> {
           ),
         ),
         FutureBuilderWithCircularProgress(
+          initialData: widget.initialData,
           future: _searchText == null
               ? Future.value([])
               : widget.searchFunction(_searchText!),
@@ -89,31 +96,13 @@ class _SearchableListViewState<T> extends State<SearchableListView<T>> {
                       itemBuilder: (context, index) =>
                           widget.itemBuilder(context, data[index]),
                     )
-                  : Padding(
-                      padding: const EdgeInsets.all(50),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            child: Icon(
-                              _searchText?.isEmpty ?? true
-                                  ? Symbols.manage_search_rounded
-                                  : Symbols.search_off_rounded,
-                              size: 75,
-                              color: theme.iconTheme.color!.withOpacity(0.4),
-                            ),
-                          ),
-                          Text(
-                            _searchText?.isEmpty ?? true
-                                ? localizations.searchEmpty
-                                : localizations.searchNoResult,
-                            style: theme.textTheme.bodyLarge,
-                            textAlign: TextAlign.center,
-                          )
-                        ],
-                      ),
+                  : IconWithText(
+                      icon: _searchText?.isEmpty ?? true
+                          ? Symbols.manage_search_rounded
+                          : Symbols.search_off_rounded,
+                      text: _searchText?.isEmpty ?? true
+                          ? localizations.searchEmpty
+                          : localizations.searchNoResult,
                     ),
             );
           },

@@ -7,3 +7,4 @@ export 'form_field.dart';
 export 'future_builder_with_circular_progress.dart';
 export 'icon_with_text_and_button.dart';
 export 'searchable_listview.dart';
+export 'segmented_bar_chart.dart';

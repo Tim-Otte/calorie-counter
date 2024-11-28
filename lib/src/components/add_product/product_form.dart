@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../controllers/settings_controller.dart';
 import '../../data/all.dart';
+import '../../extensions/scaffold_messenger_state.dart';
 import '../../tools/all.dart';
 import '../all.dart' as c;
 
@@ -302,20 +303,8 @@ class _ProductFormState extends State<ProductForm> {
         .any((x) => x.isLiquid != newValue);
 
     if (incompatibleUnitExists) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          behavior: SnackBarBehavior.floating,
-          content: Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(right: 20),
-                child: Icon(Symbols.warning_rounded,
-                    color: theme.colorScheme.onError),
-              ),
-              Flexible(
-                child: Text(localizations.toastPleaseUpdateCustomServingSizes),
-              ),
-            ],
-          )));
+      ScaffoldMessenger.of(context)
+          .showError(localizations.toastPleaseUpdateCustomServingSizes);
     }
   }
 

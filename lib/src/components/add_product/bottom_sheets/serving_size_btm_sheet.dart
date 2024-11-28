@@ -83,7 +83,7 @@ class _ServingSizeBtmSheetState extends State<ServingSizeBtmSheet> {
                   dropdownMenuEntries: widget.baseServingSizes
                       .map((el) => DropdownMenuEntry(
                             value: el.id,
-                            label: el.short,
+                            label: el.short ?? el.name,
                           ))
                       .toList(),
                   label: Text(localizations.servingSize),

@@ -58,7 +58,7 @@ class _SelectServingSizePageState extends State<SelectServingSizePage> {
         onPressed: () {},
       ),
       body: SearchableListView(
-        searchFunction: (searchText) => database.filteredServingSizes(
+        searchFunction: (searchText) => database.filteredBaseServingSizes(
           measurementUnit:
               settingsController.measurementUnit ?? MeasurementUnit.metric,
           filter: _filter,
@@ -73,26 +73,26 @@ class _SelectServingSizePageState extends State<SelectServingSizePage> {
                       ? Symbols.water_drop_rounded
                       : Symbols.restaurant_rounded,
                 ),
-          trailing: Text(
-            item.short,
-            style: theme.textTheme.labelLarge!
-                .copyWith(color: theme.colorScheme.secondary),
-          ),
+          trailing: item.short != null
+              ? Text(
+                  item.short!,
+                  style: theme.textTheme.labelLarge!
+                      .copyWith(color: theme.colorScheme.secondary),
+                )
+              : null,
           onTap: () => Navigator.pop(context, item),
         ),
         errorBuilder: (context, error, searchFunction) => Expanded(
-          child: Column(
-            children: IconWithTextAndButton.get(
+          child: IconWithText.andButton(
+            context,
+            icon: Symbols.error_rounded,
+            text: localizations.errorWhileFetchingServingSizes,
+            buttonIcon: Symbols.repeat_rounded,
+            buttonText: localizations.tryAgain,
+            onButtonPressed: () => Navigator.pushReplacement(
               context,
-              icon: Symbols.error_rounded,
-              text: localizations.errorWhileFetchingServingSizes,
-              buttonIcon: Symbols.repeat_rounded,
-              buttonText: localizations.tryAgain,
-              onButtonPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SelectServingSizePage()),
-              ),
+              MaterialPageRoute(
+                  builder: (context) => const SelectServingSizePage()),
             ),
           ),
         ),

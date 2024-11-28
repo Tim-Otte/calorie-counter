@@ -3,359 +3,6 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $ServingSizeTable extends ServingSize
-    with TableInfo<$ServingSizeTable, ServingSizeData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $ServingSizeTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
-  static const VerificationMeta _shortMeta = const VerificationMeta('short');
-  @override
-  late final GeneratedColumn<String> short = GeneratedColumn<String>(
-      'short', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
-  static const VerificationMeta _measuringUnitMeta =
-      const VerificationMeta('measuringUnit');
-  @override
-  late final GeneratedColumnWithTypeConverter<MeasurementUnit, int>
-      measuringUnit = GeneratedColumn<int>('measuring_unit', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<MeasurementUnit>(
-              $ServingSizeTable.$convertermeasuringUnit);
-  static const VerificationMeta _valueInBaseUnitMeta =
-      const VerificationMeta('valueInBaseUnit');
-  @override
-  late final GeneratedColumn<double> valueInBaseUnit = GeneratedColumn<double>(
-      'value_in_base_unit', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _isLiquidMeta =
-      const VerificationMeta('isLiquid');
-  @override
-  late final GeneratedColumn<bool> isLiquid = GeneratedColumn<bool>(
-      'is_liquid', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_liquid" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, short, measuringUnit, valueInBaseUnit, isLiquid];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'serving_size';
-  @override
-  VerificationContext validateIntegrity(Insertable<ServingSizeData> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('short')) {
-      context.handle(
-          _shortMeta, short.isAcceptableOrUnknown(data['short']!, _shortMeta));
-    } else if (isInserting) {
-      context.missing(_shortMeta);
-    }
-    context.handle(_measuringUnitMeta, const VerificationResult.success());
-    if (data.containsKey('value_in_base_unit')) {
-      context.handle(
-          _valueInBaseUnitMeta,
-          valueInBaseUnit.isAcceptableOrUnknown(
-              data['value_in_base_unit']!, _valueInBaseUnitMeta));
-    } else if (isInserting) {
-      context.missing(_valueInBaseUnitMeta);
-    }
-    if (data.containsKey('is_liquid')) {
-      context.handle(_isLiquidMeta,
-          isLiquid.isAcceptableOrUnknown(data['is_liquid']!, _isLiquidMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  ServingSizeData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return ServingSizeData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      short: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}short'])!,
-      measuringUnit: $ServingSizeTable.$convertermeasuringUnit.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.int, data['${effectivePrefix}measuring_unit'])!),
-      valueInBaseUnit: attachedDatabase.typeMapping.read(
-          DriftSqlType.double, data['${effectivePrefix}value_in_base_unit'])!,
-      isLiquid: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_liquid'])!,
-    );
-  }
-
-  @override
-  $ServingSizeTable createAlias(String alias) {
-    return $ServingSizeTable(attachedDatabase, alias);
-  }
-
-  static JsonTypeConverter2<MeasurementUnit, int, int> $convertermeasuringUnit =
-      const EnumIndexConverter<MeasurementUnit>(MeasurementUnit.values);
-}
-
-class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
-  final int id;
-  final String name;
-  final String short;
-  final MeasurementUnit measuringUnit;
-  final double valueInBaseUnit;
-  final bool isLiquid;
-  const ServingSizeData(
-      {required this.id,
-      required this.name,
-      required this.short,
-      required this.measuringUnit,
-      required this.valueInBaseUnit,
-      required this.isLiquid});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['name'] = Variable<String>(name);
-    map['short'] = Variable<String>(short);
-    {
-      map['measuring_unit'] = Variable<int>(
-          $ServingSizeTable.$convertermeasuringUnit.toSql(measuringUnit));
-    }
-    map['value_in_base_unit'] = Variable<double>(valueInBaseUnit);
-    map['is_liquid'] = Variable<bool>(isLiquid);
-    return map;
-  }
-
-  ServingSizeCompanion toCompanion(bool nullToAbsent) {
-    return ServingSizeCompanion(
-      id: Value(id),
-      name: Value(name),
-      short: Value(short),
-      measuringUnit: Value(measuringUnit),
-      valueInBaseUnit: Value(valueInBaseUnit),
-      isLiquid: Value(isLiquid),
-    );
-  }
-
-  factory ServingSizeData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return ServingSizeData(
-      id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      short: serializer.fromJson<String>(json['short']),
-      measuringUnit: $ServingSizeTable.$convertermeasuringUnit
-          .fromJson(serializer.fromJson<int>(json['measuringUnit'])),
-      valueInBaseUnit: serializer.fromJson<double>(json['valueInBaseUnit']),
-      isLiquid: serializer.fromJson<bool>(json['isLiquid']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
-      'short': serializer.toJson<String>(short),
-      'measuringUnit': serializer.toJson<int>(
-          $ServingSizeTable.$convertermeasuringUnit.toJson(measuringUnit)),
-      'valueInBaseUnit': serializer.toJson<double>(valueInBaseUnit),
-      'isLiquid': serializer.toJson<bool>(isLiquid),
-    };
-  }
-
-  ServingSizeData copyWith(
-          {int? id,
-          String? name,
-          String? short,
-          MeasurementUnit? measuringUnit,
-          double? valueInBaseUnit,
-          bool? isLiquid}) =>
-      ServingSizeData(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        short: short ?? this.short,
-        measuringUnit: measuringUnit ?? this.measuringUnit,
-        valueInBaseUnit: valueInBaseUnit ?? this.valueInBaseUnit,
-        isLiquid: isLiquid ?? this.isLiquid,
-      );
-  ServingSizeData copyWithCompanion(ServingSizeCompanion data) {
-    return ServingSizeData(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      short: data.short.present ? data.short.value : this.short,
-      measuringUnit: data.measuringUnit.present
-          ? data.measuringUnit.value
-          : this.measuringUnit,
-      valueInBaseUnit: data.valueInBaseUnit.present
-          ? data.valueInBaseUnit.value
-          : this.valueInBaseUnit,
-      isLiquid: data.isLiquid.present ? data.isLiquid.value : this.isLiquid,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('ServingSizeData(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('short: $short, ')
-          ..write('measuringUnit: $measuringUnit, ')
-          ..write('valueInBaseUnit: $valueInBaseUnit, ')
-          ..write('isLiquid: $isLiquid')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(id, name, short, measuringUnit, valueInBaseUnit, isLiquid);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is ServingSizeData &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.short == this.short &&
-          other.measuringUnit == this.measuringUnit &&
-          other.valueInBaseUnit == this.valueInBaseUnit &&
-          other.isLiquid == this.isLiquid);
-}
-
-class ServingSizeCompanion extends UpdateCompanion<ServingSizeData> {
-  final Value<int> id;
-  final Value<String> name;
-  final Value<String> short;
-  final Value<MeasurementUnit> measuringUnit;
-  final Value<double> valueInBaseUnit;
-  final Value<bool> isLiquid;
-  const ServingSizeCompanion({
-    this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.short = const Value.absent(),
-    this.measuringUnit = const Value.absent(),
-    this.valueInBaseUnit = const Value.absent(),
-    this.isLiquid = const Value.absent(),
-  });
-  ServingSizeCompanion.insert({
-    this.id = const Value.absent(),
-    required String name,
-    required String short,
-    required MeasurementUnit measuringUnit,
-    required double valueInBaseUnit,
-    this.isLiquid = const Value.absent(),
-  })  : name = Value(name),
-        short = Value(short),
-        measuringUnit = Value(measuringUnit),
-        valueInBaseUnit = Value(valueInBaseUnit);
-  static Insertable<ServingSizeData> custom({
-    Expression<int>? id,
-    Expression<String>? name,
-    Expression<String>? short,
-    Expression<int>? measuringUnit,
-    Expression<double>? valueInBaseUnit,
-    Expression<bool>? isLiquid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (short != null) 'short': short,
-      if (measuringUnit != null) 'measuring_unit': measuringUnit,
-      if (valueInBaseUnit != null) 'value_in_base_unit': valueInBaseUnit,
-      if (isLiquid != null) 'is_liquid': isLiquid,
-    });
-  }
-
-  ServingSizeCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? name,
-      Value<String>? short,
-      Value<MeasurementUnit>? measuringUnit,
-      Value<double>? valueInBaseUnit,
-      Value<bool>? isLiquid}) {
-    return ServingSizeCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      short: short ?? this.short,
-      measuringUnit: measuringUnit ?? this.measuringUnit,
-      valueInBaseUnit: valueInBaseUnit ?? this.valueInBaseUnit,
-      isLiquid: isLiquid ?? this.isLiquid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (short.present) {
-      map['short'] = Variable<String>(short.value);
-    }
-    if (measuringUnit.present) {
-      map['measuring_unit'] = Variable<int>(
-          $ServingSizeTable.$convertermeasuringUnit.toSql(measuringUnit.value));
-    }
-    if (valueInBaseUnit.present) {
-      map['value_in_base_unit'] = Variable<double>(valueInBaseUnit.value);
-    }
-    if (isLiquid.present) {
-      map['is_liquid'] = Variable<bool>(isLiquid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('ServingSizeCompanion(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('short: $short, ')
-          ..write('measuringUnit: $measuringUnit, ')
-          ..write('valueInBaseUnit: $valueInBaseUnit, ')
-          ..write('isLiquid: $isLiquid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $ProductTable extends Product with TableInfo<$ProductTable, ProductData> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -377,15 +24,6 @@ class $ProductTable extends Product with TableInfo<$ProductTable, ProductData> {
   late final GeneratedColumn<String> brand = GeneratedColumn<String>(
       'brand', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _servingSizeMeta =
-      const VerificationMeta('servingSize');
-  @override
-  late final GeneratedColumn<int> servingSize = GeneratedColumn<int>(
-      'serving_size', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES serving_size (id)'));
   static const VerificationMeta _caloriesPer100UnitsMeta =
       const VerificationMeta('caloriesPer100Units');
   @override
@@ -415,7 +53,6 @@ class $ProductTable extends Product with TableInfo<$ProductTable, ProductData> {
         productCode,
         name,
         brand,
-        servingSize,
         caloriesPer100Units,
         carbsPer100Units,
         fatPer100Units,
@@ -450,14 +87,6 @@ class $ProductTable extends Product with TableInfo<$ProductTable, ProductData> {
           _brandMeta, brand.isAcceptableOrUnknown(data['brand']!, _brandMeta));
     } else if (isInserting) {
       context.missing(_brandMeta);
-    }
-    if (data.containsKey('serving_size')) {
-      context.handle(
-          _servingSizeMeta,
-          servingSize.isAcceptableOrUnknown(
-              data['serving_size']!, _servingSizeMeta));
-    } else if (isInserting) {
-      context.missing(_servingSizeMeta);
     }
     if (data.containsKey('calories_per100_units')) {
       context.handle(
@@ -506,8 +135,6 @@ class $ProductTable extends Product with TableInfo<$ProductTable, ProductData> {
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       brand: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}brand'])!,
-      servingSize: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}serving_size'])!,
       caloriesPer100Units: attachedDatabase.typeMapping.read(
           DriftSqlType.double,
           data['${effectivePrefix}calories_per100_units'])!,
@@ -531,7 +158,6 @@ class ProductData extends DataClass implements Insertable<ProductData> {
   final String productCode;
   final String name;
   final String brand;
-  final int servingSize;
   final double caloriesPer100Units;
   final double carbsPer100Units;
   final double fatPer100Units;
@@ -540,7 +166,6 @@ class ProductData extends DataClass implements Insertable<ProductData> {
       {required this.productCode,
       required this.name,
       required this.brand,
-      required this.servingSize,
       required this.caloriesPer100Units,
       required this.carbsPer100Units,
       required this.fatPer100Units,
@@ -551,7 +176,6 @@ class ProductData extends DataClass implements Insertable<ProductData> {
     map['product_code'] = Variable<String>(productCode);
     map['name'] = Variable<String>(name);
     map['brand'] = Variable<String>(brand);
-    map['serving_size'] = Variable<int>(servingSize);
     map['calories_per100_units'] = Variable<double>(caloriesPer100Units);
     map['carbs_per100_units'] = Variable<double>(carbsPer100Units);
     map['fat_per100_units'] = Variable<double>(fatPer100Units);
@@ -564,7 +188,6 @@ class ProductData extends DataClass implements Insertable<ProductData> {
       productCode: Value(productCode),
       name: Value(name),
       brand: Value(brand),
-      servingSize: Value(servingSize),
       caloriesPer100Units: Value(caloriesPer100Units),
       carbsPer100Units: Value(carbsPer100Units),
       fatPer100Units: Value(fatPer100Units),
@@ -579,7 +202,6 @@ class ProductData extends DataClass implements Insertable<ProductData> {
       productCode: serializer.fromJson<String>(json['productCode']),
       name: serializer.fromJson<String>(json['name']),
       brand: serializer.fromJson<String>(json['brand']),
-      servingSize: serializer.fromJson<int>(json['servingSize']),
       caloriesPer100Units:
           serializer.fromJson<double>(json['caloriesPer100Units']),
       carbsPer100Units: serializer.fromJson<double>(json['carbsPer100Units']),
@@ -595,7 +217,6 @@ class ProductData extends DataClass implements Insertable<ProductData> {
       'productCode': serializer.toJson<String>(productCode),
       'name': serializer.toJson<String>(name),
       'brand': serializer.toJson<String>(brand),
-      'servingSize': serializer.toJson<int>(servingSize),
       'caloriesPer100Units': serializer.toJson<double>(caloriesPer100Units),
       'carbsPer100Units': serializer.toJson<double>(carbsPer100Units),
       'fatPer100Units': serializer.toJson<double>(fatPer100Units),
@@ -607,7 +228,6 @@ class ProductData extends DataClass implements Insertable<ProductData> {
           {String? productCode,
           String? name,
           String? brand,
-          int? servingSize,
           double? caloriesPer100Units,
           double? carbsPer100Units,
           double? fatPer100Units,
@@ -616,7 +236,6 @@ class ProductData extends DataClass implements Insertable<ProductData> {
         productCode: productCode ?? this.productCode,
         name: name ?? this.name,
         brand: brand ?? this.brand,
-        servingSize: servingSize ?? this.servingSize,
         caloriesPer100Units: caloriesPer100Units ?? this.caloriesPer100Units,
         carbsPer100Units: carbsPer100Units ?? this.carbsPer100Units,
         fatPer100Units: fatPer100Units ?? this.fatPer100Units,
@@ -628,8 +247,6 @@ class ProductData extends DataClass implements Insertable<ProductData> {
           data.productCode.present ? data.productCode.value : this.productCode,
       name: data.name.present ? data.name.value : this.name,
       brand: data.brand.present ? data.brand.value : this.brand,
-      servingSize:
-          data.servingSize.present ? data.servingSize.value : this.servingSize,
       caloriesPer100Units: data.caloriesPer100Units.present
           ? data.caloriesPer100Units.value
           : this.caloriesPer100Units,
@@ -651,7 +268,6 @@ class ProductData extends DataClass implements Insertable<ProductData> {
           ..write('productCode: $productCode, ')
           ..write('name: $name, ')
           ..write('brand: $brand, ')
-          ..write('servingSize: $servingSize, ')
           ..write('caloriesPer100Units: $caloriesPer100Units, ')
           ..write('carbsPer100Units: $carbsPer100Units, ')
           ..write('fatPer100Units: $fatPer100Units, ')
@@ -661,15 +277,8 @@ class ProductData extends DataClass implements Insertable<ProductData> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      productCode,
-      name,
-      brand,
-      servingSize,
-      caloriesPer100Units,
-      carbsPer100Units,
-      fatPer100Units,
-      proteinsPer100Units);
+  int get hashCode => Object.hash(productCode, name, brand, caloriesPer100Units,
+      carbsPer100Units, fatPer100Units, proteinsPer100Units);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -677,7 +286,6 @@ class ProductData extends DataClass implements Insertable<ProductData> {
           other.productCode == this.productCode &&
           other.name == this.name &&
           other.brand == this.brand &&
-          other.servingSize == this.servingSize &&
           other.caloriesPer100Units == this.caloriesPer100Units &&
           other.carbsPer100Units == this.carbsPer100Units &&
           other.fatPer100Units == this.fatPer100Units &&
@@ -688,7 +296,6 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
   final Value<String> productCode;
   final Value<String> name;
   final Value<String> brand;
-  final Value<int> servingSize;
   final Value<double> caloriesPer100Units;
   final Value<double> carbsPer100Units;
   final Value<double> fatPer100Units;
@@ -698,7 +305,6 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
     this.productCode = const Value.absent(),
     this.name = const Value.absent(),
     this.brand = const Value.absent(),
-    this.servingSize = const Value.absent(),
     this.caloriesPer100Units = const Value.absent(),
     this.carbsPer100Units = const Value.absent(),
     this.fatPer100Units = const Value.absent(),
@@ -709,7 +315,6 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
     required String productCode,
     required String name,
     required String brand,
-    required int servingSize,
     required double caloriesPer100Units,
     required double carbsPer100Units,
     required double fatPer100Units,
@@ -718,7 +323,6 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
   })  : productCode = Value(productCode),
         name = Value(name),
         brand = Value(brand),
-        servingSize = Value(servingSize),
         caloriesPer100Units = Value(caloriesPer100Units),
         carbsPer100Units = Value(carbsPer100Units),
         fatPer100Units = Value(fatPer100Units),
@@ -727,7 +331,6 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
     Expression<String>? productCode,
     Expression<String>? name,
     Expression<String>? brand,
-    Expression<int>? servingSize,
     Expression<double>? caloriesPer100Units,
     Expression<double>? carbsPer100Units,
     Expression<double>? fatPer100Units,
@@ -738,7 +341,6 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
       if (productCode != null) 'product_code': productCode,
       if (name != null) 'name': name,
       if (brand != null) 'brand': brand,
-      if (servingSize != null) 'serving_size': servingSize,
       if (caloriesPer100Units != null)
         'calories_per100_units': caloriesPer100Units,
       if (carbsPer100Units != null) 'carbs_per100_units': carbsPer100Units,
@@ -753,7 +355,6 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
       {Value<String>? productCode,
       Value<String>? name,
       Value<String>? brand,
-      Value<int>? servingSize,
       Value<double>? caloriesPer100Units,
       Value<double>? carbsPer100Units,
       Value<double>? fatPer100Units,
@@ -763,7 +364,6 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
       productCode: productCode ?? this.productCode,
       name: name ?? this.name,
       brand: brand ?? this.brand,
-      servingSize: servingSize ?? this.servingSize,
       caloriesPer100Units: caloriesPer100Units ?? this.caloriesPer100Units,
       carbsPer100Units: carbsPer100Units ?? this.carbsPer100Units,
       fatPer100Units: fatPer100Units ?? this.fatPer100Units,
@@ -783,9 +383,6 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
     }
     if (brand.present) {
       map['brand'] = Variable<String>(brand.value);
-    }
-    if (servingSize.present) {
-      map['serving_size'] = Variable<int>(servingSize.value);
     }
     if (caloriesPer100Units.present) {
       map['calories_per100_units'] =
@@ -813,7 +410,6 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
           ..write('productCode: $productCode, ')
           ..write('name: $name, ')
           ..write('brand: $brand, ')
-          ..write('servingSize: $servingSize, ')
           ..write('caloriesPer100Units: $caloriesPer100Units, ')
           ..write('carbsPer100Units: $carbsPer100Units, ')
           ..write('fatPer100Units: $fatPer100Units, ')
@@ -824,292 +420,483 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
   }
 }
 
+class $ServingSizeTable extends ServingSize
+    with TableInfo<$ServingSizeTable, ServingSizeData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ServingSizeTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _shortMeta = const VerificationMeta('short');
+  @override
+  late final GeneratedColumn<String> short = GeneratedColumn<String>(
+      'short', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _isLiquidMeta =
+      const VerificationMeta('isLiquid');
+  @override
+  late final GeneratedColumn<bool> isLiquid = GeneratedColumn<bool>(
+      'is_liquid', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_liquid" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _measuringUnitMeta =
+      const VerificationMeta('measuringUnit');
+  @override
+  late final GeneratedColumnWithTypeConverter<MeasurementUnit, int>
+      measuringUnit = GeneratedColumn<int>('measuring_unit', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<MeasurementUnit>(
+              $ServingSizeTable.$convertermeasuringUnit);
+  static const VerificationMeta _valueInBaseServingSizeMeta =
+      const VerificationMeta('valueInBaseServingSize');
+  @override
+  late final GeneratedColumn<double> valueInBaseServingSize =
+      GeneratedColumn<double>('value_in_base_serving_size', aliasedName, false,
+          type: DriftSqlType.double, requiredDuringInsert: true);
+  static const VerificationMeta _baseServingSizeIdMeta =
+      const VerificationMeta('baseServingSizeId');
+  @override
+  late final GeneratedColumn<int> baseServingSizeId = GeneratedColumn<int>(
+      'base_serving_size_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES serving_size (id)'));
+  static const VerificationMeta _forProductMeta =
+      const VerificationMeta('forProduct');
+  @override
+  late final GeneratedColumn<String> forProduct = GeneratedColumn<String>(
+      'for_product', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES product (product_code)'));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        short,
+        isLiquid,
+        measuringUnit,
+        valueInBaseServingSize,
+        baseServingSizeId,
+        forProduct
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'serving_size';
+  @override
+  VerificationContext validateIntegrity(Insertable<ServingSizeData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('short')) {
+      context.handle(
+          _shortMeta, short.isAcceptableOrUnknown(data['short']!, _shortMeta));
+    }
+    if (data.containsKey('is_liquid')) {
+      context.handle(_isLiquidMeta,
+          isLiquid.isAcceptableOrUnknown(data['is_liquid']!, _isLiquidMeta));
+    }
+    context.handle(_measuringUnitMeta, const VerificationResult.success());
+    if (data.containsKey('value_in_base_serving_size')) {
+      context.handle(
+          _valueInBaseServingSizeMeta,
+          valueInBaseServingSize.isAcceptableOrUnknown(
+              data['value_in_base_serving_size']!,
+              _valueInBaseServingSizeMeta));
+    } else if (isInserting) {
+      context.missing(_valueInBaseServingSizeMeta);
+    }
+    if (data.containsKey('base_serving_size_id')) {
+      context.handle(
+          _baseServingSizeIdMeta,
+          baseServingSizeId.isAcceptableOrUnknown(
+              data['base_serving_size_id']!, _baseServingSizeIdMeta));
+    }
+    if (data.containsKey('for_product')) {
+      context.handle(
+          _forProductMeta,
+          forProduct.isAcceptableOrUnknown(
+              data['for_product']!, _forProductMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+        {name, short, forProduct},
+      ];
+  @override
+  ServingSizeData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ServingSizeData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      short: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}short']),
+      isLiquid: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_liquid'])!,
+      measuringUnit: $ServingSizeTable.$convertermeasuringUnit.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.int, data['${effectivePrefix}measuring_unit'])!),
+      valueInBaseServingSize: attachedDatabase.typeMapping.read(
+          DriftSqlType.double,
+          data['${effectivePrefix}value_in_base_serving_size'])!,
+      baseServingSizeId: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}base_serving_size_id']),
+      forProduct: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}for_product']),
+    );
+  }
+
+  @override
+  $ServingSizeTable createAlias(String alias) {
+    return $ServingSizeTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<MeasurementUnit, int, int> $convertermeasuringUnit =
+      const EnumIndexConverter<MeasurementUnit>(MeasurementUnit.values);
+}
+
+class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
+  final int id;
+  final String name;
+  final String? short;
+  final bool isLiquid;
+  final MeasurementUnit measuringUnit;
+  final double valueInBaseServingSize;
+  final int? baseServingSizeId;
+  final String? forProduct;
+  const ServingSizeData(
+      {required this.id,
+      required this.name,
+      this.short,
+      required this.isLiquid,
+      required this.measuringUnit,
+      required this.valueInBaseServingSize,
+      this.baseServingSizeId,
+      this.forProduct});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || short != null) {
+      map['short'] = Variable<String>(short);
+    }
+    map['is_liquid'] = Variable<bool>(isLiquid);
+    {
+      map['measuring_unit'] = Variable<int>(
+          $ServingSizeTable.$convertermeasuringUnit.toSql(measuringUnit));
+    }
+    map['value_in_base_serving_size'] =
+        Variable<double>(valueInBaseServingSize);
+    if (!nullToAbsent || baseServingSizeId != null) {
+      map['base_serving_size_id'] = Variable<int>(baseServingSizeId);
+    }
+    if (!nullToAbsent || forProduct != null) {
+      map['for_product'] = Variable<String>(forProduct);
+    }
+    return map;
+  }
+
+  ServingSizeCompanion toCompanion(bool nullToAbsent) {
+    return ServingSizeCompanion(
+      id: Value(id),
+      name: Value(name),
+      short:
+          short == null && nullToAbsent ? const Value.absent() : Value(short),
+      isLiquid: Value(isLiquid),
+      measuringUnit: Value(measuringUnit),
+      valueInBaseServingSize: Value(valueInBaseServingSize),
+      baseServingSizeId: baseServingSizeId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(baseServingSizeId),
+      forProduct: forProduct == null && nullToAbsent
+          ? const Value.absent()
+          : Value(forProduct),
+    );
+  }
+
+  factory ServingSizeData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ServingSizeData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      short: serializer.fromJson<String?>(json['short']),
+      isLiquid: serializer.fromJson<bool>(json['isLiquid']),
+      measuringUnit: $ServingSizeTable.$convertermeasuringUnit
+          .fromJson(serializer.fromJson<int>(json['measuringUnit'])),
+      valueInBaseServingSize:
+          serializer.fromJson<double>(json['valueInBaseServingSize']),
+      baseServingSizeId: serializer.fromJson<int?>(json['baseServingSizeId']),
+      forProduct: serializer.fromJson<String?>(json['forProduct']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'short': serializer.toJson<String?>(short),
+      'isLiquid': serializer.toJson<bool>(isLiquid),
+      'measuringUnit': serializer.toJson<int>(
+          $ServingSizeTable.$convertermeasuringUnit.toJson(measuringUnit)),
+      'valueInBaseServingSize':
+          serializer.toJson<double>(valueInBaseServingSize),
+      'baseServingSizeId': serializer.toJson<int?>(baseServingSizeId),
+      'forProduct': serializer.toJson<String?>(forProduct),
+    };
+  }
+
+  ServingSizeData copyWith(
+          {int? id,
+          String? name,
+          Value<String?> short = const Value.absent(),
+          bool? isLiquid,
+          MeasurementUnit? measuringUnit,
+          double? valueInBaseServingSize,
+          Value<int?> baseServingSizeId = const Value.absent(),
+          Value<String?> forProduct = const Value.absent()}) =>
+      ServingSizeData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        short: short.present ? short.value : this.short,
+        isLiquid: isLiquid ?? this.isLiquid,
+        measuringUnit: measuringUnit ?? this.measuringUnit,
+        valueInBaseServingSize:
+            valueInBaseServingSize ?? this.valueInBaseServingSize,
+        baseServingSizeId: baseServingSizeId.present
+            ? baseServingSizeId.value
+            : this.baseServingSizeId,
+        forProduct: forProduct.present ? forProduct.value : this.forProduct,
+      );
+  ServingSizeData copyWithCompanion(ServingSizeCompanion data) {
+    return ServingSizeData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      short: data.short.present ? data.short.value : this.short,
+      isLiquid: data.isLiquid.present ? data.isLiquid.value : this.isLiquid,
+      measuringUnit: data.measuringUnit.present
+          ? data.measuringUnit.value
+          : this.measuringUnit,
+      valueInBaseServingSize: data.valueInBaseServingSize.present
+          ? data.valueInBaseServingSize.value
+          : this.valueInBaseServingSize,
+      baseServingSizeId: data.baseServingSizeId.present
+          ? data.baseServingSizeId.value
+          : this.baseServingSizeId,
+      forProduct:
+          data.forProduct.present ? data.forProduct.value : this.forProduct,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ServingSizeData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('short: $short, ')
+          ..write('isLiquid: $isLiquid, ')
+          ..write('measuringUnit: $measuringUnit, ')
+          ..write('valueInBaseServingSize: $valueInBaseServingSize, ')
+          ..write('baseServingSizeId: $baseServingSizeId, ')
+          ..write('forProduct: $forProduct')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, short, isLiquid, measuringUnit,
+      valueInBaseServingSize, baseServingSizeId, forProduct);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ServingSizeData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.short == this.short &&
+          other.isLiquid == this.isLiquid &&
+          other.measuringUnit == this.measuringUnit &&
+          other.valueInBaseServingSize == this.valueInBaseServingSize &&
+          other.baseServingSizeId == this.baseServingSizeId &&
+          other.forProduct == this.forProduct);
+}
+
+class ServingSizeCompanion extends UpdateCompanion<ServingSizeData> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String?> short;
+  final Value<bool> isLiquid;
+  final Value<MeasurementUnit> measuringUnit;
+  final Value<double> valueInBaseServingSize;
+  final Value<int?> baseServingSizeId;
+  final Value<String?> forProduct;
+  const ServingSizeCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.short = const Value.absent(),
+    this.isLiquid = const Value.absent(),
+    this.measuringUnit = const Value.absent(),
+    this.valueInBaseServingSize = const Value.absent(),
+    this.baseServingSizeId = const Value.absent(),
+    this.forProduct = const Value.absent(),
+  });
+  ServingSizeCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    this.short = const Value.absent(),
+    this.isLiquid = const Value.absent(),
+    required MeasurementUnit measuringUnit,
+    required double valueInBaseServingSize,
+    this.baseServingSizeId = const Value.absent(),
+    this.forProduct = const Value.absent(),
+  })  : name = Value(name),
+        measuringUnit = Value(measuringUnit),
+        valueInBaseServingSize = Value(valueInBaseServingSize);
+  static Insertable<ServingSizeData> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? short,
+    Expression<bool>? isLiquid,
+    Expression<int>? measuringUnit,
+    Expression<double>? valueInBaseServingSize,
+    Expression<int>? baseServingSizeId,
+    Expression<String>? forProduct,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (short != null) 'short': short,
+      if (isLiquid != null) 'is_liquid': isLiquid,
+      if (measuringUnit != null) 'measuring_unit': measuringUnit,
+      if (valueInBaseServingSize != null)
+        'value_in_base_serving_size': valueInBaseServingSize,
+      if (baseServingSizeId != null) 'base_serving_size_id': baseServingSizeId,
+      if (forProduct != null) 'for_product': forProduct,
+    });
+  }
+
+  ServingSizeCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String?>? short,
+      Value<bool>? isLiquid,
+      Value<MeasurementUnit>? measuringUnit,
+      Value<double>? valueInBaseServingSize,
+      Value<int?>? baseServingSizeId,
+      Value<String?>? forProduct}) {
+    return ServingSizeCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      short: short ?? this.short,
+      isLiquid: isLiquid ?? this.isLiquid,
+      measuringUnit: measuringUnit ?? this.measuringUnit,
+      valueInBaseServingSize:
+          valueInBaseServingSize ?? this.valueInBaseServingSize,
+      baseServingSizeId: baseServingSizeId ?? this.baseServingSizeId,
+      forProduct: forProduct ?? this.forProduct,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (short.present) {
+      map['short'] = Variable<String>(short.value);
+    }
+    if (isLiquid.present) {
+      map['is_liquid'] = Variable<bool>(isLiquid.value);
+    }
+    if (measuringUnit.present) {
+      map['measuring_unit'] = Variable<int>(
+          $ServingSizeTable.$convertermeasuringUnit.toSql(measuringUnit.value));
+    }
+    if (valueInBaseServingSize.present) {
+      map['value_in_base_serving_size'] =
+          Variable<double>(valueInBaseServingSize.value);
+    }
+    if (baseServingSizeId.present) {
+      map['base_serving_size_id'] = Variable<int>(baseServingSizeId.value);
+    }
+    if (forProduct.present) {
+      map['for_product'] = Variable<String>(forProduct.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ServingSizeCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('short: $short, ')
+          ..write('isLiquid: $isLiquid, ')
+          ..write('measuringUnit: $measuringUnit, ')
+          ..write('valueInBaseServingSize: $valueInBaseServingSize, ')
+          ..write('baseServingSizeId: $baseServingSizeId, ')
+          ..write('forProduct: $forProduct')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
-  late final $ServingSizeTable servingSize = $ServingSizeTable(this);
   late final $ProductTable product = $ProductTable(this);
+  late final $ServingSizeTable servingSize = $ServingSizeTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [servingSize, product];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [product, servingSize];
 }
 
-typedef $$ServingSizeTableCreateCompanionBuilder = ServingSizeCompanion
-    Function({
-  Value<int> id,
-  required String name,
-  required String short,
-  required MeasurementUnit measuringUnit,
-  required double valueInBaseUnit,
-  Value<bool> isLiquid,
-});
-typedef $$ServingSizeTableUpdateCompanionBuilder = ServingSizeCompanion
-    Function({
-  Value<int> id,
-  Value<String> name,
-  Value<String> short,
-  Value<MeasurementUnit> measuringUnit,
-  Value<double> valueInBaseUnit,
-  Value<bool> isLiquid,
-});
-
-final class $$ServingSizeTableReferences
-    extends BaseReferences<_$AppDatabase, $ServingSizeTable, ServingSizeData> {
-  $$ServingSizeTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static MultiTypedResultKey<$ProductTable, List<ProductData>>
-      _productRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-          db.product,
-          aliasName:
-              $_aliasNameGenerator(db.servingSize.id, db.product.servingSize));
-
-  $$ProductTableProcessedTableManager get productRefs {
-    final manager = $$ProductTableTableManager($_db, $_db.product)
-        .filter((f) => f.servingSize.id($_item.id));
-
-    final cache = $_typedResult.readTableOrNull(_productRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-}
-
-class $$ServingSizeTableFilterComposer
-    extends Composer<_$AppDatabase, $ServingSizeTable> {
-  $$ServingSizeTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get short => $composableBuilder(
-      column: $table.short, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<MeasurementUnit, MeasurementUnit, int>
-      get measuringUnit => $composableBuilder(
-          column: $table.measuringUnit,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnFilters<double> get valueInBaseUnit => $composableBuilder(
-      column: $table.valueInBaseUnit,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get isLiquid => $composableBuilder(
-      column: $table.isLiquid, builder: (column) => ColumnFilters(column));
-
-  Expression<bool> productRefs(
-      Expression<bool> Function($$ProductTableFilterComposer f) f) {
-    final $$ProductTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.product,
-        getReferencedColumn: (t) => t.servingSize,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$ProductTableFilterComposer(
-              $db: $db,
-              $table: $db.product,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-}
-
-class $$ServingSizeTableOrderingComposer
-    extends Composer<_$AppDatabase, $ServingSizeTable> {
-  $$ServingSizeTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get short => $composableBuilder(
-      column: $table.short, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get measuringUnit => $composableBuilder(
-      column: $table.measuringUnit,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<double> get valueInBaseUnit => $composableBuilder(
-      column: $table.valueInBaseUnit,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get isLiquid => $composableBuilder(
-      column: $table.isLiquid, builder: (column) => ColumnOrderings(column));
-}
-
-class $$ServingSizeTableAnnotationComposer
-    extends Composer<_$AppDatabase, $ServingSizeTable> {
-  $$ServingSizeTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get short =>
-      $composableBuilder(column: $table.short, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<MeasurementUnit, int> get measuringUnit =>
-      $composableBuilder(
-          column: $table.measuringUnit, builder: (column) => column);
-
-  GeneratedColumn<double> get valueInBaseUnit => $composableBuilder(
-      column: $table.valueInBaseUnit, builder: (column) => column);
-
-  GeneratedColumn<bool> get isLiquid =>
-      $composableBuilder(column: $table.isLiquid, builder: (column) => column);
-
-  Expression<T> productRefs<T extends Object>(
-      Expression<T> Function($$ProductTableAnnotationComposer a) f) {
-    final $$ProductTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.product,
-        getReferencedColumn: (t) => t.servingSize,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$ProductTableAnnotationComposer(
-              $db: $db,
-              $table: $db.product,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-}
-
-class $$ServingSizeTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $ServingSizeTable,
-    ServingSizeData,
-    $$ServingSizeTableFilterComposer,
-    $$ServingSizeTableOrderingComposer,
-    $$ServingSizeTableAnnotationComposer,
-    $$ServingSizeTableCreateCompanionBuilder,
-    $$ServingSizeTableUpdateCompanionBuilder,
-    (ServingSizeData, $$ServingSizeTableReferences),
-    ServingSizeData,
-    PrefetchHooks Function({bool productRefs})> {
-  $$ServingSizeTableTableManager(_$AppDatabase db, $ServingSizeTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$ServingSizeTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$ServingSizeTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$ServingSizeTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<String> short = const Value.absent(),
-            Value<MeasurementUnit> measuringUnit = const Value.absent(),
-            Value<double> valueInBaseUnit = const Value.absent(),
-            Value<bool> isLiquid = const Value.absent(),
-          }) =>
-              ServingSizeCompanion(
-            id: id,
-            name: name,
-            short: short,
-            measuringUnit: measuringUnit,
-            valueInBaseUnit: valueInBaseUnit,
-            isLiquid: isLiquid,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String name,
-            required String short,
-            required MeasurementUnit measuringUnit,
-            required double valueInBaseUnit,
-            Value<bool> isLiquid = const Value.absent(),
-          }) =>
-              ServingSizeCompanion.insert(
-            id: id,
-            name: name,
-            short: short,
-            measuringUnit: measuringUnit,
-            valueInBaseUnit: valueInBaseUnit,
-            isLiquid: isLiquid,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$ServingSizeTableReferences(db, table, e)
-                  ))
-              .toList(),
-          prefetchHooksCallback: ({productRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (productRefs) db.product],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (productRefs)
-                    await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable:
-                            $$ServingSizeTableReferences._productRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$ServingSizeTableReferences(db, table, p0)
-                                .productRefs,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems
-                                .where((e) => e.servingSize == item.id),
-                        typedResults: items)
-                ];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$ServingSizeTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $ServingSizeTable,
-    ServingSizeData,
-    $$ServingSizeTableFilterComposer,
-    $$ServingSizeTableOrderingComposer,
-    $$ServingSizeTableAnnotationComposer,
-    $$ServingSizeTableCreateCompanionBuilder,
-    $$ServingSizeTableUpdateCompanionBuilder,
-    (ServingSizeData, $$ServingSizeTableReferences),
-    ServingSizeData,
-    PrefetchHooks Function({bool productRefs})>;
 typedef $$ProductTableCreateCompanionBuilder = ProductCompanion Function({
   required String productCode,
   required String name,
   required String brand,
-  required int servingSize,
   required double caloriesPer100Units,
   required double carbsPer100Units,
   required double fatPer100Units,
@@ -1120,7 +907,6 @@ typedef $$ProductTableUpdateCompanionBuilder = ProductCompanion Function({
   Value<String> productCode,
   Value<String> name,
   Value<String> brand,
-  Value<int> servingSize,
   Value<double> caloriesPer100Units,
   Value<double> carbsPer100Units,
   Value<double> fatPer100Units,
@@ -1132,18 +918,19 @@ final class $$ProductTableReferences
     extends BaseReferences<_$AppDatabase, $ProductTable, ProductData> {
   $$ProductTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $ServingSizeTable _servingSizeTable(_$AppDatabase db) =>
-      db.servingSize.createAlias(
-          $_aliasNameGenerator(db.product.servingSize, db.servingSize.id));
+  static MultiTypedResultKey<$ServingSizeTable, List<ServingSizeData>>
+      _servingSizeRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.servingSize,
+              aliasName: $_aliasNameGenerator(
+                  db.product.productCode, db.servingSize.forProduct));
 
-  $$ServingSizeTableProcessedTableManager? get servingSize {
-    if ($_item.servingSize == null) return null;
+  $$ServingSizeTableProcessedTableManager get servingSizeRefs {
     final manager = $$ServingSizeTableTableManager($_db, $_db.servingSize)
-        .filter((f) => f.id($_item.servingSize!));
-    final item = $_typedResult.readTableOrNull(_servingSizeTable($_db));
-    if (item == null) return manager;
+        .filter((f) => f.forProduct.productCode($_item.productCode));
+
+    final cache = $_typedResult.readTableOrNull(_servingSizeRefsTable($_db));
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
+        manager.$state.copyWith(prefetchedData: cache));
   }
 }
 
@@ -1181,12 +968,13 @@ class $$ProductTableFilterComposer
       column: $table.proteinsPer100Units,
       builder: (column) => ColumnFilters(column));
 
-  $$ServingSizeTableFilterComposer get servingSize {
+  Expression<bool> servingSizeRefs(
+      Expression<bool> Function($$ServingSizeTableFilterComposer f) f) {
     final $$ServingSizeTableFilterComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.servingSize,
+        getCurrentColumn: (t) => t.productCode,
         referencedTable: $db.servingSize,
-        getReferencedColumn: (t) => t.id,
+        getReferencedColumn: (t) => t.forProduct,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
@@ -1198,7 +986,7 @@ class $$ProductTableFilterComposer
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
-    return composer;
+    return f(composer);
   }
 }
 
@@ -1235,26 +1023,6 @@ class $$ProductTableOrderingComposer
   ColumnOrderings<double> get proteinsPer100Units => $composableBuilder(
       column: $table.proteinsPer100Units,
       builder: (column) => ColumnOrderings(column));
-
-  $$ServingSizeTableOrderingComposer get servingSize {
-    final $$ServingSizeTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.servingSize,
-        referencedTable: $db.servingSize,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$ServingSizeTableOrderingComposer(
-              $db: $db,
-              $table: $db.servingSize,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
 }
 
 class $$ProductTableAnnotationComposer
@@ -1287,12 +1055,13 @@ class $$ProductTableAnnotationComposer
   GeneratedColumn<double> get proteinsPer100Units => $composableBuilder(
       column: $table.proteinsPer100Units, builder: (column) => column);
 
-  $$ServingSizeTableAnnotationComposer get servingSize {
+  Expression<T> servingSizeRefs<T extends Object>(
+      Expression<T> Function($$ServingSizeTableAnnotationComposer a) f) {
     final $$ServingSizeTableAnnotationComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.servingSize,
+        getCurrentColumn: (t) => t.productCode,
         referencedTable: $db.servingSize,
-        getReferencedColumn: (t) => t.id,
+        getReferencedColumn: (t) => t.forProduct,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
@@ -1304,7 +1073,7 @@ class $$ProductTableAnnotationComposer
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
-    return composer;
+    return f(composer);
   }
 }
 
@@ -1319,7 +1088,7 @@ class $$ProductTableTableManager extends RootTableManager<
     $$ProductTableUpdateCompanionBuilder,
     (ProductData, $$ProductTableReferences),
     ProductData,
-    PrefetchHooks Function({bool servingSize})> {
+    PrefetchHooks Function({bool servingSizeRefs})> {
   $$ProductTableTableManager(_$AppDatabase db, $ProductTable table)
       : super(TableManagerState(
           db: db,
@@ -1334,7 +1103,6 @@ class $$ProductTableTableManager extends RootTableManager<
             Value<String> productCode = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String> brand = const Value.absent(),
-            Value<int> servingSize = const Value.absent(),
             Value<double> caloriesPer100Units = const Value.absent(),
             Value<double> carbsPer100Units = const Value.absent(),
             Value<double> fatPer100Units = const Value.absent(),
@@ -1345,7 +1113,6 @@ class $$ProductTableTableManager extends RootTableManager<
             productCode: productCode,
             name: name,
             brand: brand,
-            servingSize: servingSize,
             caloriesPer100Units: caloriesPer100Units,
             carbsPer100Units: carbsPer100Units,
             fatPer100Units: fatPer100Units,
@@ -1356,7 +1123,6 @@ class $$ProductTableTableManager extends RootTableManager<
             required String productCode,
             required String name,
             required String brand,
-            required int servingSize,
             required double caloriesPer100Units,
             required double carbsPer100Units,
             required double fatPer100Units,
@@ -1367,7 +1133,6 @@ class $$ProductTableTableManager extends RootTableManager<
             productCode: productCode,
             name: name,
             brand: brand,
-            servingSize: servingSize,
             caloriesPer100Units: caloriesPer100Units,
             carbsPer100Units: carbsPer100Units,
             fatPer100Units: fatPer100Units,
@@ -1378,38 +1143,26 @@ class $$ProductTableTableManager extends RootTableManager<
               .map((e) =>
                   (e.readTable(table), $$ProductTableReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: ({servingSize = false}) {
+          prefetchHooksCallback: ({servingSizeRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [],
-              addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
-                if (servingSize) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.servingSize,
-                    referencedTable:
-                        $$ProductTableReferences._servingSizeTable(db),
-                    referencedColumn:
-                        $$ProductTableReferences._servingSizeTable(db).id,
-                  ) as T;
-                }
-
-                return state;
-              },
+              explicitlyWatchedTables: [if (servingSizeRefs) db.servingSize],
+              addJoins: null,
               getPrefetchedDataCallback: (items) async {
-                return [];
+                return [
+                  if (servingSizeRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$ProductTableReferences._servingSizeRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$ProductTableReferences(db, table, p0)
+                                .servingSizeRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.forProduct == item.productCode),
+                        typedResults: items)
+                ];
               },
             );
           },
@@ -1427,13 +1180,410 @@ typedef $$ProductTableProcessedTableManager = ProcessedTableManager<
     $$ProductTableUpdateCompanionBuilder,
     (ProductData, $$ProductTableReferences),
     ProductData,
-    PrefetchHooks Function({bool servingSize})>;
+    PrefetchHooks Function({bool servingSizeRefs})>;
+typedef $$ServingSizeTableCreateCompanionBuilder = ServingSizeCompanion
+    Function({
+  Value<int> id,
+  required String name,
+  Value<String?> short,
+  Value<bool> isLiquid,
+  required MeasurementUnit measuringUnit,
+  required double valueInBaseServingSize,
+  Value<int?> baseServingSizeId,
+  Value<String?> forProduct,
+});
+typedef $$ServingSizeTableUpdateCompanionBuilder = ServingSizeCompanion
+    Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String?> short,
+  Value<bool> isLiquid,
+  Value<MeasurementUnit> measuringUnit,
+  Value<double> valueInBaseServingSize,
+  Value<int?> baseServingSizeId,
+  Value<String?> forProduct,
+});
+
+final class $$ServingSizeTableReferences
+    extends BaseReferences<_$AppDatabase, $ServingSizeTable, ServingSizeData> {
+  $$ServingSizeTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ServingSizeTable _baseServingSizeIdTable(_$AppDatabase db) =>
+      db.servingSize.createAlias($_aliasNameGenerator(
+          db.servingSize.baseServingSizeId, db.servingSize.id));
+
+  $$ServingSizeTableProcessedTableManager? get baseServingSizeId {
+    if ($_item.baseServingSizeId == null) return null;
+    final manager = $$ServingSizeTableTableManager($_db, $_db.servingSize)
+        .filter((f) => f.id($_item.baseServingSizeId!));
+    final item = $_typedResult.readTableOrNull(_baseServingSizeIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $ProductTable _forProductTable(_$AppDatabase db) =>
+      db.product.createAlias($_aliasNameGenerator(
+          db.servingSize.forProduct, db.product.productCode));
+
+  $$ProductTableProcessedTableManager? get forProduct {
+    if ($_item.forProduct == null) return null;
+    final manager = $$ProductTableTableManager($_db, $_db.product)
+        .filter((f) => f.productCode($_item.forProduct!));
+    final item = $_typedResult.readTableOrNull(_forProductTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$ServingSizeTableFilterComposer
+    extends Composer<_$AppDatabase, $ServingSizeTable> {
+  $$ServingSizeTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get short => $composableBuilder(
+      column: $table.short, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isLiquid => $composableBuilder(
+      column: $table.isLiquid, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<MeasurementUnit, MeasurementUnit, int>
+      get measuringUnit => $composableBuilder(
+          column: $table.measuringUnit,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<double> get valueInBaseServingSize => $composableBuilder(
+      column: $table.valueInBaseServingSize,
+      builder: (column) => ColumnFilters(column));
+
+  $$ServingSizeTableFilterComposer get baseServingSizeId {
+    final $$ServingSizeTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.baseServingSizeId,
+        referencedTable: $db.servingSize,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ServingSizeTableFilterComposer(
+              $db: $db,
+              $table: $db.servingSize,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$ProductTableFilterComposer get forProduct {
+    final $$ProductTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.forProduct,
+        referencedTable: $db.product,
+        getReferencedColumn: (t) => t.productCode,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProductTableFilterComposer(
+              $db: $db,
+              $table: $db.product,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ServingSizeTableOrderingComposer
+    extends Composer<_$AppDatabase, $ServingSizeTable> {
+  $$ServingSizeTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get short => $composableBuilder(
+      column: $table.short, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isLiquid => $composableBuilder(
+      column: $table.isLiquid, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get measuringUnit => $composableBuilder(
+      column: $table.measuringUnit,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get valueInBaseServingSize => $composableBuilder(
+      column: $table.valueInBaseServingSize,
+      builder: (column) => ColumnOrderings(column));
+
+  $$ServingSizeTableOrderingComposer get baseServingSizeId {
+    final $$ServingSizeTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.baseServingSizeId,
+        referencedTable: $db.servingSize,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ServingSizeTableOrderingComposer(
+              $db: $db,
+              $table: $db.servingSize,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$ProductTableOrderingComposer get forProduct {
+    final $$ProductTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.forProduct,
+        referencedTable: $db.product,
+        getReferencedColumn: (t) => t.productCode,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProductTableOrderingComposer(
+              $db: $db,
+              $table: $db.product,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ServingSizeTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ServingSizeTable> {
+  $$ServingSizeTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get short =>
+      $composableBuilder(column: $table.short, builder: (column) => column);
+
+  GeneratedColumn<bool> get isLiquid =>
+      $composableBuilder(column: $table.isLiquid, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<MeasurementUnit, int> get measuringUnit =>
+      $composableBuilder(
+          column: $table.measuringUnit, builder: (column) => column);
+
+  GeneratedColumn<double> get valueInBaseServingSize => $composableBuilder(
+      column: $table.valueInBaseServingSize, builder: (column) => column);
+
+  $$ServingSizeTableAnnotationComposer get baseServingSizeId {
+    final $$ServingSizeTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.baseServingSizeId,
+        referencedTable: $db.servingSize,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ServingSizeTableAnnotationComposer(
+              $db: $db,
+              $table: $db.servingSize,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$ProductTableAnnotationComposer get forProduct {
+    final $$ProductTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.forProduct,
+        referencedTable: $db.product,
+        getReferencedColumn: (t) => t.productCode,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ProductTableAnnotationComposer(
+              $db: $db,
+              $table: $db.product,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ServingSizeTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ServingSizeTable,
+    ServingSizeData,
+    $$ServingSizeTableFilterComposer,
+    $$ServingSizeTableOrderingComposer,
+    $$ServingSizeTableAnnotationComposer,
+    $$ServingSizeTableCreateCompanionBuilder,
+    $$ServingSizeTableUpdateCompanionBuilder,
+    (ServingSizeData, $$ServingSizeTableReferences),
+    ServingSizeData,
+    PrefetchHooks Function({bool baseServingSizeId, bool forProduct})> {
+  $$ServingSizeTableTableManager(_$AppDatabase db, $ServingSizeTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ServingSizeTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ServingSizeTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ServingSizeTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String?> short = const Value.absent(),
+            Value<bool> isLiquid = const Value.absent(),
+            Value<MeasurementUnit> measuringUnit = const Value.absent(),
+            Value<double> valueInBaseServingSize = const Value.absent(),
+            Value<int?> baseServingSizeId = const Value.absent(),
+            Value<String?> forProduct = const Value.absent(),
+          }) =>
+              ServingSizeCompanion(
+            id: id,
+            name: name,
+            short: short,
+            isLiquid: isLiquid,
+            measuringUnit: measuringUnit,
+            valueInBaseServingSize: valueInBaseServingSize,
+            baseServingSizeId: baseServingSizeId,
+            forProduct: forProduct,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            Value<String?> short = const Value.absent(),
+            Value<bool> isLiquid = const Value.absent(),
+            required MeasurementUnit measuringUnit,
+            required double valueInBaseServingSize,
+            Value<int?> baseServingSizeId = const Value.absent(),
+            Value<String?> forProduct = const Value.absent(),
+          }) =>
+              ServingSizeCompanion.insert(
+            id: id,
+            name: name,
+            short: short,
+            isLiquid: isLiquid,
+            measuringUnit: measuringUnit,
+            valueInBaseServingSize: valueInBaseServingSize,
+            baseServingSizeId: baseServingSizeId,
+            forProduct: forProduct,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$ServingSizeTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {baseServingSizeId = false, forProduct = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (baseServingSizeId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.baseServingSizeId,
+                    referencedTable: $$ServingSizeTableReferences
+                        ._baseServingSizeIdTable(db),
+                    referencedColumn: $$ServingSizeTableReferences
+                        ._baseServingSizeIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (forProduct) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.forProduct,
+                    referencedTable:
+                        $$ServingSizeTableReferences._forProductTable(db),
+                    referencedColumn: $$ServingSizeTableReferences
+                        ._forProductTable(db)
+                        .productCode,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$ServingSizeTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ServingSizeTable,
+    ServingSizeData,
+    $$ServingSizeTableFilterComposer,
+    $$ServingSizeTableOrderingComposer,
+    $$ServingSizeTableAnnotationComposer,
+    $$ServingSizeTableCreateCompanionBuilder,
+    $$ServingSizeTableUpdateCompanionBuilder,
+    (ServingSizeData, $$ServingSizeTableReferences),
+    ServingSizeData,
+    PrefetchHooks Function({bool baseServingSizeId, bool forProduct})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
-  $$ServingSizeTableTableManager get servingSize =>
-      $$ServingSizeTableTableManager(_db, _db.servingSize);
   $$ProductTableTableManager get product =>
       $$ProductTableTableManager(_db, _db.product);
+  $$ServingSizeTableTableManager get servingSize =>
+      $$ServingSizeTableTableManager(_db, _db.servingSize);
 }

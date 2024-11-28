@@ -1,1 +1,1 @@
-export 'serving_size_selector.dart';
+export 'product_selector.dart';

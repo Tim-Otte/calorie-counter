@@ -27,12 +27,14 @@
   "errorWhileLoadingCamera": "Beim Versuch, die Kamera zu laden, ist ein Problem aufgetreten. Bitte überprüfen Sie Ihre Einstellungen und klicken Sie auf \"Erneut probieren\", um zu versuchen, die Kamera erneut zu laden.",
 
   "addMealPageTitle": "Mahlzeit hinzufügen",
+  "product": "Produkt",
   "servingSize": "Portionsgröße",
   "servingSizeName": "Name",
   "servingSizeShort": "Einheit",
   "servingSizeAmount": "Menge",
   
   "searchProductPageTitle": "Produkt suchen",
+  "favourites": "Favoriten",
 
   "addProductPageTitle": "Produkt hinzufügen",
   "switchToEditModeTooltip": "Produktdaten manuell bearbeiten",
@@ -68,6 +70,7 @@
   "container": "Packung(en)",
   "toastPleaseUpdateCustomServingSizes": "Bitte passen Sie die individuellen Portionsgrößen an...",
   "errorWhileFetchingProducts": "Beim Laden der Produkte ist ein Fehler aufgetreten. Bitte versuchen Sie es in ein paar Minuten erneut.",
+  "errorWhileSavingProductData": "Beim Speichern ist ein Fehler aufgetreten...",
 
   "selectServingSizePageTitle": "Portionsgröße auswählen",
   "errorWhileFetchingServingSizes": "Beim Laden der Portionsgrößen ist ein Fehler aufgetreten.",

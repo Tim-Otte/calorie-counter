@@ -51,7 +51,16 @@ class _MainLayoutState extends State<MainLayout> {
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (colorScheme) => const SearchProductPage()),
+                        builder: (colorScheme) => SearchProductPage(
+                          onSelect: (product) => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  AddMealPage(product: product),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                     mini: true,
                     backgroundColor: colorScheme.tertiary,

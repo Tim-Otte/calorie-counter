@@ -27,12 +27,14 @@
   "errorWhileLoadingCamera": "We encountered an issue while trying to load the camera. Please check your settings and click \"Try again\" to attempt reloading the camera.",
 
   "addMealPageTitle": "Add a meal",
+  "product": "Product",
   "servingSize": "Serving size",
   "servingSizeName": "Name",
   "servingSizeShort": "Serving",
   "servingSizeAmount": "Amount",
   
   "searchProductPageTitle": "Find product",
+  "favourites": "Favourites",
 
   "addProductPageTitle": "Add product",
   "switchToEditModeTooltip": "Manually edit product",
@@ -68,6 +70,7 @@
   "container": "container(s)",
   "toastPleaseUpdateCustomServingSizes": "Please adjust the custom portion sizes...",
   "errorWhileFetchingProducts": "An error occured while fetching the products. Please try again in a few minutes.",
+  "errorWhileSavingProductData": "An error occurred while saving...",
 
   "selectServingSizePageTitle": "Select a serving size",
   "errorWhileFetchingServingSizes": "An error occured while fetching the serving sizes.",

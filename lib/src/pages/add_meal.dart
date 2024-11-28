@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -5,38 +6,46 @@ import 'package:provider/provider.dart';
 
 import '../components/all.dart' as c;
 import '../data/database.dart';
-import '../services/all.dart';
 
 class AddMealPage extends StatefulWidget {
-  const AddMealPage({super.key, this.productCode});
+  const AddMealPage({
+    super.key,
+    this.product,
+  });
 
-  final String? productCode;
+  final ProductData? product;
 
   @override
   State<StatefulWidget> createState() => _AddMealPageState();
 }
 
 class _AddMealPageState extends State<AddMealPage> {
-  ServingSizeData? _servingSize;
-  String? _productCode;
-  double? _amount;
+  var _servingSizes = <ServingSizeData>[];
+  ServingSizeData? _selectedServingSize;
+  ProductData? _product;
+  double? _amount = 1;
 
   @override
   void initState() {
     super.initState();
-    _productCode = widget.productCode;
+    _product = widget.product;
   }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final foodFactService = Provider.of<FoodFactService>(context);
+    final database = Provider.of<AppDatabase>(context);
 
-    if (widget.productCode != null) {
-      foodFactService
-          .getProduct(widget.productCode!)
-          .then((p) => setState(() {}));
+    if (_product != null &&
+        !_servingSizes.any((x) => x.forProduct == _product!.productCode)) {
+      database
+          .getServingSizesForProduct(_product!.productCode)
+          .then((items) => setState(() => _servingSizes = items));
+    }
+
+    if (!_servingSizes.any((x) => x.id == _selectedServingSize?.id)) {
+      setState(() => _selectedServingSize = _servingSizes.firstOrNull);
     }
 
     return Scaffold(
@@ -55,30 +64,50 @@ class _AddMealPageState extends State<AddMealPage> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(20).copyWith(bottom: 10),
-              child: c.FormField(
-                label: Text(localizations.productName),
-                icon: Symbols.barcode_rounded,
-                initialValue: _productCode,
-                onChanged: (value) => setState(() => _productCode = value),
-              ),
-            ),
-            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: c.ServingSizeSelector(
-                initialValue: _servingSize,
-                onChanged: (value) => setState(() => _servingSize = value),
+              child: c.ProductSelector(
+                initialValue: _product,
+                onChanged: (value) => setState(() => _product = value),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: c.FormField(
-                label: Text(localizations.servingSizeAmount),
-                icon: Symbols.numbers_rounded,
-                suffixText: _servingSize?.short,
-                initialValue: _amount?.toString(),
-                onlyNumbers: true,
-                onChanged: (value) => setState(() => _productCode = value),
+              child: Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                spacing: 18,
+                children: [
+                  FractionallySizedBox(
+                    widthFactor: 0.475,
+                    child: c.FormField(
+                      label: Text(localizations.servingSizeAmount),
+                      icon: Symbols.numbers_rounded,
+                      suffixText: _selectedServingSize?.short,
+                      initialValue: _amount?.toString(),
+                      onlyNumbers: true,
+                      onChanged: (value) => setState(() {
+                        _amount = double.tryParse(value);
+                      }),
+                    ),
+                  ),
+                  FractionallySizedBox(
+                    widthFactor: 0.475,
+                    child: DropdownMenu(
+                      label: Text(localizations.servingSizeShort),
+                      dropdownMenuEntries: _servingSizes
+                          .map((x) => DropdownMenuEntry(
+                                value: x.id,
+                                label: x.name,
+                              ))
+                          .toList(),
+                      expandedInsets: EdgeInsets.zero,
+                      initialSelection: _servingSizes.firstOrNull?.id,
+                      onSelected: (id) => setState(() {
+                        _selectedServingSize =
+                            _servingSizes.where((x) => x.id == id).firstOrNull;
+                      }),
+                    ),
+                  ),
+                ],
               ),
             ),
             Padding(
@@ -87,34 +116,181 @@ class _AddMealPageState extends State<AddMealPage> {
                 runSpacing: 20,
                 children: [
                   const Divider(),
-                  Text(
-                    localizations.nutritionalInformationPerServingTitle,
-                    style: theme.textTheme.titleMedium!
-                        .copyWith(color: theme.colorScheme.primary),
+                  _getNutrimentBox(
+                    theme,
+                    Symbols.mode_heat_rounded,
+                    localizations.calories,
+                    _product?.caloriesPer100Units ?? 0,
+                    'kcal',
                   ),
-                  c.FormField(
-                    label: Text(localizations.calories),
-                    icon: Symbols.mode_heat_rounded,
-                    suffixText: "kcal",
-                    onlyNumbers: true,
+                  _getNutrimentBox(
+                    theme,
+                    Symbols.nutrition_rounded,
+                    localizations.carbs,
+                    _product?.carbsPer100Units ?? 0,
+                    'g',
                   ),
-                  c.FormField(
-                    label: Text(localizations.fats),
-                    icon: Symbols.water_drop_rounded,
-                    suffixText: "g",
-                    onlyNumbers: true,
+                  _getNutrimentBox(
+                    theme,
+                    Symbols.water_drop_rounded,
+                    localizations.fats,
+                    _product?.fatPer100Units ?? 0,
+                    'g',
                   ),
-                  c.FormField(
-                    label: Text(localizations.proteins),
-                    icon: Symbols.exercise_rounded,
-                    suffixText: "g",
-                    onlyNumbers: true,
+                  _getNutrimentBox(
+                    theme,
+                    Symbols.exercise_rounded,
+                    localizations.proteins,
+                    _product?.proteinsPer100Units ?? 0,
+                    'g',
+                  ),
+                  Card.filled(
+                    color: theme.colorScheme.surfaceContainer,
+                    child: Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Wrap(
+                        runSpacing: 10,
+                        children: [
+                          Text(
+                            'Anteil Tagesbedarf',
+                            style: theme.textTheme.bodyMedium!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          _getNutrimentBar(
+                            theme,
+                            Symbols.mode_heat_rounded,
+                            const Color(0xFFFFD700),
+                            _product?.caloriesPer100Units ?? 0,
+                            2700,
+                          ),
+                          _getNutrimentBar(
+                            theme,
+                            Symbols.nutrition_rounded,
+                            const Color(0xFF1E90FF),
+                            _product?.caloriesPer100Units ?? 0,
+                            500,
+                          ),
+                          _getNutrimentBar(
+                            theme,
+                            Symbols.water_drop_rounded,
+                            const Color(0xFFFF8C00),
+                            _product?.fatPer100Units ?? 0,
+                            50,
+                          ),
+                          _getNutrimentBar(
+                            theme,
+                            Symbols.exercise_rounded,
+                            const Color(0xFF32CD32),
+                            _product?.proteinsPer100Units ?? 0,
+                            50,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _getNutrimentBar(
+    ThemeData theme,
+    IconData icon,
+    Color color,
+    double value,
+    double max,
+  ) {
+    return Row(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(right: 10),
+          child: Icon(
+            icon,
+            color: color,
+          ),
+        ),
+        Expanded(
+          child: c.SegmentedBarChart(
+            gap: 4,
+            gapColor: theme.colorScheme.surfaceContainer,
+            tooltipBuilder: (value) => "${(value * 100).toInt()} %",
+            data: [
+              c.Segment(
+                fractionalValue: value /
+                    100 *
+                    (_selectedServingSize?.valueInBaseServingSize ?? 0) *
+                    (_amount ?? 0) /
+                    max,
+                color: color,
+              ),
+              c.Segment(
+                fractionalValue: 1 -
+                    (value /
+                        100 *
+                        (_selectedServingSize?.valueInBaseServingSize ?? 0) *
+                        (_amount ?? 0) /
+                        max),
+                color: theme.colorScheme.surfaceDim,
+              )
+            ],
+          ),
+        ),
+        /* Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: Text(
+            "${value.toInt()} / ${max.toInt()}",
+            style: theme.textTheme.bodySmall,
+          ),
+        ), */
+      ],
+    );
+  }
+
+  Widget _getNutrimentBox(
+    ThemeData theme,
+    IconData icon,
+    String label,
+    double value,
+    String servingShort,
+  ) {
+    var valPerServing = value /
+        100 *
+        (_selectedServingSize?.valueInBaseServingSize ?? 0) *
+        (_amount ?? 0);
+
+    return FractionallySizedBox(
+      widthFactor: 0.5,
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 12,
+        children: [
+          Icon(
+            icon,
+            color: theme.colorScheme.primary,
+            size: 28,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: theme.textTheme.bodyLarge!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "${valPerServing.toStringAsFixed(2)} $servingShort",
+                style: theme.textTheme.bodyMedium!.copyWith(
+                  color: theme.textTheme.bodyMedium!.color!.withOpacity(0.75),
+                ),
+              )
+            ],
+          )
+        ],
       ),
     );
   }

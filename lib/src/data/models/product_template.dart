@@ -1,3 +1,5 @@
+import '../all.dart' show ProductCompanion;
+
 class ProductTemplate {
   String productCode = '';
   String name = '';
@@ -16,6 +18,18 @@ class ProductTemplate {
       !(carbsPer100 ?? -1).isNegative &&
       !(fatsPer100 ?? -1).isNegative &&
       !(proteinsPer100 ?? -1).isNegative;
+
+  ProductCompanion getForInsert() {
+    return ProductCompanion.insert(
+      productCode: productCode,
+      name: name,
+      brand: brand,
+      caloriesPer100Units: caloriesPer100 ?? 0,
+      carbsPer100Units: carbsPer100 ?? 0,
+      fatPer100Units: fatsPer100 ?? 0,
+      proteinsPer100Units: proteinsPer100 ?? 0,
+    );
+  }
 
   static ProductTemplate fromValues({
     String? productCode,

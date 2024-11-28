@@ -8,14 +8,30 @@ import '../data/all.dart';
 import 'all.dart' show AddProductPage;
 
 class SearchProductPage extends StatefulWidget {
-  const SearchProductPage({super.key});
+  final Function(ProductData product) onSelect;
+
+  const SearchProductPage({
+    super.key,
+    required this.onSelect,
+  });
 
   @override
   State<SearchProductPage> createState() => _SearchProductPageState();
 }
 
-class _SearchProductPageState extends State<SearchProductPage> {
+class _SearchProductPageState extends State<SearchProductPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final _favoritesFocusNode = FocusNode();
+  final _onlineFocusNode = FocusNode();
   var _baseServingSizes = <ServingSizeData>[];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_onTabControllerChanged);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,37 +48,79 @@ class _SearchProductPageState extends State<SearchProductPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations.searchProductPageTitle),
-      ),
-      body: ProductSearch(
-        baseServingSizes: _baseServingSizes,
-        trailing: IconButton.filled(
-          onPressed: () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const AddProductPage()),
-          ),
-          icon: Icon(Symbols.edit_note_rounded),
-          tooltip: localizations.switchToEditModeTooltip,
-        ),
-        onSelect: (product, servingSizes) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddProductPage(
-                product: product,
-                servingSizes: servingSizes,
+        bottom: TabBar(
+          controller: _tabController,
+          labelPadding: EdgeInsets.zero,
+          tabs: [
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 7.5),
+                    child: Icon(Symbols.favorite_rounded),
+                  ),
+                  Text(localizations.favourites),
+                ],
               ),
             ),
-          );
-
-          /* ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            content:
-                Text(localizations.toastProductDataSuccessfullyTransferred),
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 7.5),
+                    child: Icon(Symbols.search_rounded),
+                  ),
+                  Text(localizations.search),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          ProductSearch(
+            focusNode: _favoritesFocusNode,
+            enableOnlineSearch: false,
+            baseServingSizes: _baseServingSizes,
+            onSelect: widget.onSelect,
           ),
-        ); */
-        },
+          ProductSearch(
+            focusNode: _onlineFocusNode,
+            enableOnlineSearch: true,
+            baseServingSizes: _baseServingSizes,
+            trailing: IconButton.filled(
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const AddProductPage()),
+              ),
+              icon: Icon(Symbols.edit_note_rounded),
+              tooltip: localizations.switchToEditModeTooltip,
+            ),
+            onSelect: widget.onSelect,
+          )
+        ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_onTabControllerChanged);
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _onTabControllerChanged() {
+    if (_tabController.index == 1) {
+      _favoritesFocusNode.unfocus();
+      _onlineFocusNode.requestFocus();
+    } else {
+      _onlineFocusNode.unfocus();
+      _favoritesFocusNode.requestFocus();
+    }
   }
 }

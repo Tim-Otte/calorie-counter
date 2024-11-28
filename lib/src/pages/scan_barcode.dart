@@ -42,8 +42,7 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
     await Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            AddMealPage(productCode: capture.barcodes.first.rawValue!),
+        builder: (context) => AddMealPage(),
       ),
     );
   }
@@ -141,47 +140,41 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
         body: _hasCameraPermissions
             ? MobileScanner(
                 controller: _controller,
-                errorBuilder: (p0, p1, p2) => Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: IconWithTextAndButton.get(
+                errorBuilder: (p0, p1, p2) => IconWithText.andButton(
+                  context,
+                  icon: Symbols.error,
+                  text: localizations.errorWhileLoadingCamera,
+                  buttonIcon: Symbols.loop,
+                  buttonText: localizations.tryAgain,
+                  onButtonPressed: () {
+                    Navigator.pushReplacement(
                       context,
-                      icon: Symbols.error,
-                      text: localizations.errorWhileLoadingCamera,
-                      buttonIcon: Symbols.loop,
-                      buttonText: localizations.tryAgain,
-                      onButtonPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ScanBarcodePage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                      MaterialPageRoute(
+                        builder: (context) => const ScanBarcodePage(),
+                      ),
+                    );
+                  },
                 ),
               )
             : ColumnWithRefreshIndicator(
                 onRefresh: _requestPermissions,
                 mainAxisAlignment: MainAxisAlignment.center,
-                padding: const EdgeInsets.all(40),
-                children: IconWithTextAndButton.get(
-                  context,
-                  icon: Symbols.camera,
-                  text: localizations.missingCameraPermissions,
-                  buttonIcon: Symbols.settings_photo_camera,
-                  buttonText: localizations.requestCameraPermissions,
-                  onButtonPressed: () {
-                    if (_hasNeverCameraPermissions) {
-                      unawaited(openAppSettings());
-                    } else {
-                      unawaited(_requestPermissions());
-                    }
-                  },
-                ),
+                children: [
+                  IconWithText.andButton(
+                    context,
+                    icon: Symbols.camera,
+                    text: localizations.missingCameraPermissions,
+                    buttonIcon: Symbols.settings_photo_camera,
+                    buttonText: localizations.requestCameraPermissions,
+                    onButtonPressed: () {
+                      if (_hasNeverCameraPermissions) {
+                        unawaited(openAppSettings());
+                      } else {
+                        unawaited(_requestPermissions());
+                      }
+                    },
+                  ),
+                ],
               ),
       ),
       onPopInvokedWithResult: (didPop, result) {
