@@ -11,8 +11,10 @@ environment:
 
 dependencies:
   cached_network_image: ^3.4.1
+  device_info_plus: ^11.2.0
   drift: ^2.20.2
   drift_flutter: ^0.2.0
+  dynamic_color: ^1.7.0
   fl_chart: ^0.69.2
   flutter:
     sdk: flutter

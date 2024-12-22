@@ -78,6 +78,8 @@
   "settingsPageTitle": "Einstellungen",
   "settingsGeneralSection": "Allgemein",
   "settingTheme": "Design",
+  "settingMaterialYou": "Material You",
+  "settingMaterialYouSubtitle": "Nur verfügbar auf Android 12+",
   "settingLanguage": "Sprache",
   "settingMeasurementUnit": "Maßeinheiten",
   "settingsPersonalInformationSection": "Persönliche Informationen",

@@ -1,3 +1,5 @@
+import 'package:calorie_counter/src/extensions/android_device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -21,67 +23,79 @@ class SettingsPage extends StatelessWidget {
   /// Get the settings section for the general settings
   Widget _getGeneralSettingsSection(
       BuildContext context, AppLocalizations localizations) {
-    return MaterialSettingsSection(
-      margin: const EdgeInsetsDirectional.all(10),
-      title: Text(localizations.settingsGeneralSection),
-      tiles: [
-        MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.palette),
-          title: Text(localizations.settingTheme),
-          value: Text(
-            Translator.getTranslation(context, _controller.themeMode),
+    return FutureBuilder(
+      future: DeviceInfoPlugin().androidInfo,
+      builder: (context, androidInfoSnapshot) => MaterialSettingsSection(
+        margin: const EdgeInsetsDirectional.all(10),
+        title: Text(localizations.settingsGeneralSection),
+        tiles: [
+          MaterialBasicSettingsTile(
+            prefix: const Icon(Symbols.palette),
+            title: Text(localizations.settingTheme),
+            value: Text(
+              Translator.getTranslation(context, _controller.themeMode),
+            ),
+            onTap: (context) async {
+              var result = await showDialog<ThemeMode>(
+                context: context,
+                builder: (context) => ThemeModeDialog(
+                  currentValue: _controller.themeMode,
+                ),
+              );
+              _controller.updateThemeMode(result);
+            },
           ),
-          onTap: (context) async {
-            var result = await showDialog<ThemeMode>(
-              context: context,
-              builder: (context) => ThemeModeDialog(
-                currentValue: _controller.themeMode,
-              ),
-            );
-            _controller.updateThemeMode(result);
-          },
-        ),
-        MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.translate),
-          title: Text(localizations.settingLanguage),
-          value: Text(
-            _controller.locale != null
-                ? LocaleNames.of(context)!
-                    .nameOf(_controller.locale!.languageCode)!
-                : localizations.systemDefault,
+          MaterialSwitchSettingsTile(
+            prefix: const Icon(Symbols.format_paint_rounded),
+            title: Text(localizations.settingMaterialYou),
+            description: Text(localizations.settingMaterialYouSubtitle),
+            value: _controller.useMaterialYou,
+            enabled: androidInfoSnapshot.hasData &&
+                androidInfoSnapshot.data!.getMajorVersion() >= 12,
+            onToggle: (value) => _controller.updateUseMaterialYou(value),
           ),
-          onTap: (context) async {
-            var result = await showDialog<String?>(
-              context: context,
-              builder: (context) => LanguageDialog(
-                currentLocale: _controller.locale?.languageCode ??
-                    localizations.localeName,
-              ),
-            );
-            _controller.updateLocale(result);
-          },
-        ),
-        MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.straighten),
-          title: Text(localizations.settingMeasurementUnit),
-          value: Text(
-            _controller.measurementUnit != null
-                ? Translator.getTranslation(
-                    context, _controller.measurementUnit)
-                : localizations.notSet,
+          MaterialBasicSettingsTile(
+            prefix: const Icon(Symbols.translate),
+            title: Text(localizations.settingLanguage),
+            value: Text(
+              _controller.locale != null
+                  ? LocaleNames.of(context)!
+                      .nameOf(_controller.locale!.languageCode)!
+                  : localizations.systemDefault,
+            ),
+            onTap: (context) async {
+              var result = await showDialog<String?>(
+                context: context,
+                builder: (context) => LanguageDialog(
+                  currentLocale: _controller.locale?.languageCode ??
+                      localizations.localeName,
+                ),
+              );
+              _controller.updateLocale(result);
+            },
           ),
-          onTap: (context) async {
-            var result = await showDialog<MeasurementUnit>(
-              context: context,
-              builder: (context) => MeasurementUnitDialog(
-                currentValue:
-                    _controller.measurementUnit ?? MeasurementUnit.metric,
-              ),
-            );
-            _controller.updateMeasurementUnit(result);
-          },
-        )
-      ],
+          MaterialBasicSettingsTile(
+            prefix: const Icon(Symbols.straighten),
+            title: Text(localizations.settingMeasurementUnit),
+            value: Text(
+              _controller.measurementUnit != null
+                  ? Translator.getTranslation(
+                      context, _controller.measurementUnit)
+                  : localizations.notSet,
+            ),
+            onTap: (context) async {
+              var result = await showDialog<MeasurementUnit>(
+                context: context,
+                builder: (context) => MeasurementUnitDialog(
+                  currentValue:
+                      _controller.measurementUnit ?? MeasurementUnit.metric,
+                ),
+              );
+              _controller.updateMeasurementUnit(result);
+            },
+          )
+        ],
+      ),
     );
   }
 

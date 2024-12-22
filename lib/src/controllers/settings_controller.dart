@@ -18,6 +18,7 @@ class SettingsController with ChangeNotifier {
   final FoodFactService _foodfactService;
 
   ThemeMode _themeMode = ThemeMode.system;
+  bool _useMaterialYou = false;
   String? _locale;
   MeasurementUnit? _measurementUnit;
   Gender? _gender;
@@ -26,6 +27,7 @@ class SettingsController with ChangeNotifier {
   double? _weight;
 
   ThemeMode get themeMode => _themeMode;
+  bool get useMaterialYou => _useMaterialYou;
   Locale? get locale =>
       _locale != null ? Locale.fromSubtags(languageCode: _locale!) : null;
   MeasurementUnit? get measurementUnit => _measurementUnit;
@@ -59,6 +61,7 @@ class SettingsController with ChangeNotifier {
   /// Load the user's settings from the SettingsService
   Future<void> loadSettings() async {
     _themeMode = await _settingsService.getThemeMode();
+    _useMaterialYou = await _settingsService.getUseMaterialYou();
     _locale = await _settingsService.getLocale();
     _measurementUnit = await _settingsService.getMeasurementUnit();
     _gender = await _settingsService.getGender();
@@ -80,6 +83,15 @@ class SettingsController with ChangeNotifier {
     _themeMode = value;
     notifyListeners();
     await _settingsService.updateThemeMode(value);
+  }
+
+  /// Update and persist the Material You preference
+  Future<void> updateUseMaterialYou(bool value) async {
+    if (value == _useMaterialYou) return;
+
+    _useMaterialYou = value;
+    notifyListeners();
+    await _settingsService.updateUseMaterialYou(value);
   }
 
   /// Update and persist the locale
