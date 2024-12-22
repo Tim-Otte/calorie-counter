@@ -15,6 +15,14 @@ class UnitConverter {
     return (feet * cmInFoot) + (inches * cmInInch);
   }
 
+  static double centimetersToInches(double centimeters) {
+    return centimeters / cmInInch;
+  }
+
+  static double inchesToCentimeters(double inches) {
+    return inches * cmInInch;
+  }
+
   static double kilogrammesToPounds(double kilogrammes) {
     return kilogrammes / kgInPound;
   }

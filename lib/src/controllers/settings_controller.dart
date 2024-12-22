@@ -25,6 +25,7 @@ class SettingsController with ChangeNotifier {
   DateTime? _dateOfBirth;
   double? _height;
   double? _weight;
+  double? _hipCircumference;
 
   ThemeMode get themeMode => _themeMode;
   bool get useMaterialYou => _useMaterialYou;
@@ -58,6 +59,18 @@ class SettingsController with ChangeNotifier {
     }
   }
 
+  double? get hipCircumference => _hipCircumference;
+  String? get hipCircumferenceString {
+    if (hipCircumference == null) return null;
+
+    if (measurementUnit == null || measurementUnit == MeasurementUnit.metric) {
+      return "${hipCircumference!.toStringAsFixed(1)} cm";
+    } else {
+      var imperial = UnitConverter.centimetersToInches(hipCircumference!);
+      return "${imperial.toStringAsFixed(1)}\"";
+    }
+  }
+
   /// Load the user's settings from the SettingsService
   Future<void> loadSettings() async {
     _themeMode = await _settingsService.getThemeMode();
@@ -68,6 +81,7 @@ class SettingsController with ChangeNotifier {
     _dateOfBirth = await _settingsService.getDateOfBirth();
     _height = await _settingsService.getHeight();
     _weight = await _settingsService.getWeight();
+    _hipCircumference = await _settingsService.getHipCircumference();
 
     // Important! Inform listeners a change has occurred.
     notifyListeners();
@@ -147,5 +161,14 @@ class SettingsController with ChangeNotifier {
     _weight = value;
     notifyListeners();
     await _settingsService.updateWeight(value);
+  }
+
+  /// Update and persist the hip circumference
+  Future<void> updateHipCircumference(double? value) async {
+    if (value == null || value == _hipCircumference) return;
+
+    _hipCircumference = value;
+    notifyListeners();
+    await _settingsService.updateHipCircumference(value);
   }
 }

@@ -92,4 +92,14 @@ class SettingsService {
   Future<void> updateWeight(double value) {
     return SharedPreferencesAsync().setDouble('weight', value);
   }
+
+  /// Loads the user's hip circumference.
+  Future<double?> getHipCircumference() {
+    return SharedPreferencesAsync().getDouble('hipCircumference');
+  }
+
+  /// Saves the user's hip circumference.
+  Future<void> updateHipCircumference(double value) {
+    return SharedPreferencesAsync().setDouble('hipCircumference', value);
+  }
 }

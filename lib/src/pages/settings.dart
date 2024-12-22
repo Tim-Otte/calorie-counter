@@ -2,9 +2,9 @@ import 'package:calorie_counter/src/extensions/android_device_info.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../components/all.dart';
@@ -30,7 +30,7 @@ class SettingsPage extends StatelessWidget {
         title: Text(localizations.settingsGeneralSection),
         tiles: [
           MaterialBasicSettingsTile(
-            prefix: const Icon(Symbols.palette),
+            prefix: const Icon(Symbols.palette_rounded),
             title: Text(localizations.settingTheme),
             value: Text(
               Translator.getTranslation(context, _controller.themeMode),
@@ -55,7 +55,7 @@ class SettingsPage extends StatelessWidget {
             onToggle: (value) => _controller.updateUseMaterialYou(value),
           ),
           MaterialBasicSettingsTile(
-            prefix: const Icon(Symbols.translate),
+            prefix: const Icon(Symbols.translate_rounded),
             title: Text(localizations.settingLanguage),
             value: Text(
               _controller.locale != null
@@ -75,7 +75,7 @@ class SettingsPage extends StatelessWidget {
             },
           ),
           MaterialBasicSettingsTile(
-            prefix: const Icon(Symbols.straighten),
+            prefix: const Icon(Symbols.straighten_rounded),
             title: Text(localizations.settingMeasurementUnit),
             value: Text(
               _controller.measurementUnit != null
@@ -109,7 +109,7 @@ class SettingsPage extends StatelessWidget {
       title: Text(localizations.settingsPersonalInformationSection),
       tiles: [
         MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.person_play),
+          prefix: const Icon(Symbols.person_play_rounded),
           title: Text(localizations.settingGender),
           value: Text(
             _controller.gender != null
@@ -140,7 +140,7 @@ class SettingsPage extends StatelessWidget {
           },
         ),
         MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.calendar_month),
+          prefix: const Icon(Symbols.calendar_month_rounded),
           title: Text(localizations.settingDateOfBirth),
           description: Text(
             _controller.dateOfBirth != null
@@ -167,7 +167,7 @@ class SettingsPage extends StatelessWidget {
           },
         ),
         MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.height),
+          prefix: const Icon(Symbols.height_rounded),
           title: Text(localizations.settingHeight),
           description: Text(_controller.heightString ?? localizations.notSet),
           onTap: (context) async {
@@ -183,7 +183,7 @@ class SettingsPage extends StatelessWidget {
           },
         ),
         MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.scale),
+          prefix: const Icon(Symbols.scale_rounded),
           title: Text(localizations.settingWeight),
           description: Text(_controller.weightString ?? localizations.notSet),
           onTap: (context) async {
@@ -196,6 +196,23 @@ class SettingsPage extends StatelessWidget {
               ),
             );
             _controller.updateWeight(result);
+          },
+        ),
+        MaterialBasicSettingsTile(
+          prefix: const Icon(Symbols.measuring_tape_rounded),
+          title: Text(localizations.settingHipCircumference),
+          description:
+              Text(_controller.hipCircumferenceString ?? localizations.notSet),
+          onTap: (context) async {
+            var result = await showDialog<double>(
+              context: context,
+              builder: (context) => HipCircumferenceInputDialog(
+                measurementUnit:
+                    _controller.measurementUnit ?? MeasurementUnit.metric,
+                currentValue: _controller.hipCircumference ?? 0,
+              ),
+            );
+            _controller.updateHipCircumference(result);
           },
         ),
       ],
