@@ -5,5 +5,6 @@
     "dart.analyzeAngularTemplates": false,
     "dart.useLegacyAnalyzerProtocol": false,
     "dart.onlyAnalyzeProjectsWithOpenFiles": true,
-    "dart.includeDependenciesInWorkspaceSymbols": false
+    "dart.includeDependenciesInWorkspaceSymbols": false,
+    "json.format.keepLines": true
 }
