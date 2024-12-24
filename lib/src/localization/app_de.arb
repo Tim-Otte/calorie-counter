@@ -30,6 +30,7 @@
   "errorWhileLoadingCamera": "Beim Versuch, die Kamera zu laden, ist ein Problem aufgetreten. Bitte überprüfen Sie Ihre Einstellungen und klicken Sie auf \"Erneut probieren\", um zu versuchen, die Kamera erneut zu laden.",
 
   "addMealPageTitle": "Mahlzeit hinzufügen",
+  "mealType": "Art der Mahlzeit",
   "product": "Produkt",
   "servingSize": "Portionsgröße",
   "servingSizeName": "Name",
@@ -138,6 +139,13 @@
 
   "genderFemale": "Weiblich",
   "genderMale": "Männlich",
+
+  "mealTypeBreakfast": "Frühstück",
+  "mealTypeLunch": "Mittagessen",
+  "mealTypeDinner": "Abendessen",
+  "mealTypeSnack": "Snack",
+  "mealTypeDrink": "Getränk",
+  "mealTypeOther": "Sonstiges",
 
   "validationErrorInvalidInput": "Ungültige Eingabe"
 }

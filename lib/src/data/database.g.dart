@@ -24,6 +24,15 @@ class $ProductTable extends Product with TableInfo<$ProductTable, ProductData> {
   late final GeneratedColumn<String> brand = GeneratedColumn<String>(
       'brand', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _isLiquidMeta =
+      const VerificationMeta('isLiquid');
+  @override
+  late final GeneratedColumn<bool> isLiquid = GeneratedColumn<bool>(
+      'is_liquid', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_liquid" IN (0, 1))'));
   static const VerificationMeta _caloriesPer100UnitsMeta =
       const VerificationMeta('caloriesPer100Units');
   @override
@@ -53,6 +62,7 @@ class $ProductTable extends Product with TableInfo<$ProductTable, ProductData> {
         productCode,
         name,
         brand,
+        isLiquid,
         caloriesPer100Units,
         carbsPer100Units,
         fatPer100Units,
@@ -87,6 +97,12 @@ class $ProductTable extends Product with TableInfo<$ProductTable, ProductData> {
           _brandMeta, brand.isAcceptableOrUnknown(data['brand']!, _brandMeta));
     } else if (isInserting) {
       context.missing(_brandMeta);
+    }
+    if (data.containsKey('is_liquid')) {
+      context.handle(_isLiquidMeta,
+          isLiquid.isAcceptableOrUnknown(data['is_liquid']!, _isLiquidMeta));
+    } else if (isInserting) {
+      context.missing(_isLiquidMeta);
     }
     if (data.containsKey('calories_per100_units')) {
       context.handle(
@@ -135,6 +151,8 @@ class $ProductTable extends Product with TableInfo<$ProductTable, ProductData> {
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       brand: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}brand'])!,
+      isLiquid: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_liquid'])!,
       caloriesPer100Units: attachedDatabase.typeMapping.read(
           DriftSqlType.double,
           data['${effectivePrefix}calories_per100_units'])!,
@@ -158,6 +176,7 @@ class ProductData extends DataClass implements Insertable<ProductData> {
   final String productCode;
   final String name;
   final String brand;
+  final bool isLiquid;
   final double caloriesPer100Units;
   final double carbsPer100Units;
   final double fatPer100Units;
@@ -166,6 +185,7 @@ class ProductData extends DataClass implements Insertable<ProductData> {
       {required this.productCode,
       required this.name,
       required this.brand,
+      required this.isLiquid,
       required this.caloriesPer100Units,
       required this.carbsPer100Units,
       required this.fatPer100Units,
@@ -176,6 +196,7 @@ class ProductData extends DataClass implements Insertable<ProductData> {
     map['product_code'] = Variable<String>(productCode);
     map['name'] = Variable<String>(name);
     map['brand'] = Variable<String>(brand);
+    map['is_liquid'] = Variable<bool>(isLiquid);
     map['calories_per100_units'] = Variable<double>(caloriesPer100Units);
     map['carbs_per100_units'] = Variable<double>(carbsPer100Units);
     map['fat_per100_units'] = Variable<double>(fatPer100Units);
@@ -188,6 +209,7 @@ class ProductData extends DataClass implements Insertable<ProductData> {
       productCode: Value(productCode),
       name: Value(name),
       brand: Value(brand),
+      isLiquid: Value(isLiquid),
       caloriesPer100Units: Value(caloriesPer100Units),
       carbsPer100Units: Value(carbsPer100Units),
       fatPer100Units: Value(fatPer100Units),
@@ -202,6 +224,7 @@ class ProductData extends DataClass implements Insertable<ProductData> {
       productCode: serializer.fromJson<String>(json['productCode']),
       name: serializer.fromJson<String>(json['name']),
       brand: serializer.fromJson<String>(json['brand']),
+      isLiquid: serializer.fromJson<bool>(json['isLiquid']),
       caloriesPer100Units:
           serializer.fromJson<double>(json['caloriesPer100Units']),
       carbsPer100Units: serializer.fromJson<double>(json['carbsPer100Units']),
@@ -217,6 +240,7 @@ class ProductData extends DataClass implements Insertable<ProductData> {
       'productCode': serializer.toJson<String>(productCode),
       'name': serializer.toJson<String>(name),
       'brand': serializer.toJson<String>(brand),
+      'isLiquid': serializer.toJson<bool>(isLiquid),
       'caloriesPer100Units': serializer.toJson<double>(caloriesPer100Units),
       'carbsPer100Units': serializer.toJson<double>(carbsPer100Units),
       'fatPer100Units': serializer.toJson<double>(fatPer100Units),
@@ -228,6 +252,7 @@ class ProductData extends DataClass implements Insertable<ProductData> {
           {String? productCode,
           String? name,
           String? brand,
+          bool? isLiquid,
           double? caloriesPer100Units,
           double? carbsPer100Units,
           double? fatPer100Units,
@@ -236,6 +261,7 @@ class ProductData extends DataClass implements Insertable<ProductData> {
         productCode: productCode ?? this.productCode,
         name: name ?? this.name,
         brand: brand ?? this.brand,
+        isLiquid: isLiquid ?? this.isLiquid,
         caloriesPer100Units: caloriesPer100Units ?? this.caloriesPer100Units,
         carbsPer100Units: carbsPer100Units ?? this.carbsPer100Units,
         fatPer100Units: fatPer100Units ?? this.fatPer100Units,
@@ -247,6 +273,7 @@ class ProductData extends DataClass implements Insertable<ProductData> {
           data.productCode.present ? data.productCode.value : this.productCode,
       name: data.name.present ? data.name.value : this.name,
       brand: data.brand.present ? data.brand.value : this.brand,
+      isLiquid: data.isLiquid.present ? data.isLiquid.value : this.isLiquid,
       caloriesPer100Units: data.caloriesPer100Units.present
           ? data.caloriesPer100Units.value
           : this.caloriesPer100Units,
@@ -268,6 +295,7 @@ class ProductData extends DataClass implements Insertable<ProductData> {
           ..write('productCode: $productCode, ')
           ..write('name: $name, ')
           ..write('brand: $brand, ')
+          ..write('isLiquid: $isLiquid, ')
           ..write('caloriesPer100Units: $caloriesPer100Units, ')
           ..write('carbsPer100Units: $carbsPer100Units, ')
           ..write('fatPer100Units: $fatPer100Units, ')
@@ -277,8 +305,15 @@ class ProductData extends DataClass implements Insertable<ProductData> {
   }
 
   @override
-  int get hashCode => Object.hash(productCode, name, brand, caloriesPer100Units,
-      carbsPer100Units, fatPer100Units, proteinsPer100Units);
+  int get hashCode => Object.hash(
+      productCode,
+      name,
+      brand,
+      isLiquid,
+      caloriesPer100Units,
+      carbsPer100Units,
+      fatPer100Units,
+      proteinsPer100Units);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -286,6 +321,7 @@ class ProductData extends DataClass implements Insertable<ProductData> {
           other.productCode == this.productCode &&
           other.name == this.name &&
           other.brand == this.brand &&
+          other.isLiquid == this.isLiquid &&
           other.caloriesPer100Units == this.caloriesPer100Units &&
           other.carbsPer100Units == this.carbsPer100Units &&
           other.fatPer100Units == this.fatPer100Units &&
@@ -296,6 +332,7 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
   final Value<String> productCode;
   final Value<String> name;
   final Value<String> brand;
+  final Value<bool> isLiquid;
   final Value<double> caloriesPer100Units;
   final Value<double> carbsPer100Units;
   final Value<double> fatPer100Units;
@@ -305,6 +342,7 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
     this.productCode = const Value.absent(),
     this.name = const Value.absent(),
     this.brand = const Value.absent(),
+    this.isLiquid = const Value.absent(),
     this.caloriesPer100Units = const Value.absent(),
     this.carbsPer100Units = const Value.absent(),
     this.fatPer100Units = const Value.absent(),
@@ -315,6 +353,7 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
     required String productCode,
     required String name,
     required String brand,
+    required bool isLiquid,
     required double caloriesPer100Units,
     required double carbsPer100Units,
     required double fatPer100Units,
@@ -323,6 +362,7 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
   })  : productCode = Value(productCode),
         name = Value(name),
         brand = Value(brand),
+        isLiquid = Value(isLiquid),
         caloriesPer100Units = Value(caloriesPer100Units),
         carbsPer100Units = Value(carbsPer100Units),
         fatPer100Units = Value(fatPer100Units),
@@ -331,6 +371,7 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
     Expression<String>? productCode,
     Expression<String>? name,
     Expression<String>? brand,
+    Expression<bool>? isLiquid,
     Expression<double>? caloriesPer100Units,
     Expression<double>? carbsPer100Units,
     Expression<double>? fatPer100Units,
@@ -341,6 +382,7 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
       if (productCode != null) 'product_code': productCode,
       if (name != null) 'name': name,
       if (brand != null) 'brand': brand,
+      if (isLiquid != null) 'is_liquid': isLiquid,
       if (caloriesPer100Units != null)
         'calories_per100_units': caloriesPer100Units,
       if (carbsPer100Units != null) 'carbs_per100_units': carbsPer100Units,
@@ -355,6 +397,7 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
       {Value<String>? productCode,
       Value<String>? name,
       Value<String>? brand,
+      Value<bool>? isLiquid,
       Value<double>? caloriesPer100Units,
       Value<double>? carbsPer100Units,
       Value<double>? fatPer100Units,
@@ -364,6 +407,7 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
       productCode: productCode ?? this.productCode,
       name: name ?? this.name,
       brand: brand ?? this.brand,
+      isLiquid: isLiquid ?? this.isLiquid,
       caloriesPer100Units: caloriesPer100Units ?? this.caloriesPer100Units,
       carbsPer100Units: carbsPer100Units ?? this.carbsPer100Units,
       fatPer100Units: fatPer100Units ?? this.fatPer100Units,
@@ -383,6 +427,9 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
     }
     if (brand.present) {
       map['brand'] = Variable<String>(brand.value);
+    }
+    if (isLiquid.present) {
+      map['is_liquid'] = Variable<bool>(isLiquid.value);
     }
     if (caloriesPer100Units.present) {
       map['calories_per100_units'] =
@@ -410,6 +457,7 @@ class ProductCompanion extends UpdateCompanion<ProductData> {
           ..write('productCode: $productCode, ')
           ..write('name: $name, ')
           ..write('brand: $brand, ')
+          ..write('isLiquid: $isLiquid, ')
           ..write('caloriesPer100Units: $caloriesPer100Units, ')
           ..write('carbsPer100Units: $carbsPer100Units, ')
           ..write('fatPer100Units: $fatPer100Units, ')
@@ -897,6 +945,7 @@ typedef $$ProductTableCreateCompanionBuilder = ProductCompanion Function({
   required String productCode,
   required String name,
   required String brand,
+  required bool isLiquid,
   required double caloriesPer100Units,
   required double carbsPer100Units,
   required double fatPer100Units,
@@ -907,6 +956,7 @@ typedef $$ProductTableUpdateCompanionBuilder = ProductCompanion Function({
   Value<String> productCode,
   Value<String> name,
   Value<String> brand,
+  Value<bool> isLiquid,
   Value<double> caloriesPer100Units,
   Value<double> carbsPer100Units,
   Value<double> fatPer100Units,
@@ -951,6 +1001,9 @@ class $$ProductTableFilterComposer
 
   ColumnFilters<String> get brand => $composableBuilder(
       column: $table.brand, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isLiquid => $composableBuilder(
+      column: $table.isLiquid, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<double> get caloriesPer100Units => $composableBuilder(
       column: $table.caloriesPer100Units,
@@ -1008,6 +1061,9 @@ class $$ProductTableOrderingComposer
   ColumnOrderings<String> get brand => $composableBuilder(
       column: $table.brand, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get isLiquid => $composableBuilder(
+      column: $table.isLiquid, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<double> get caloriesPer100Units => $composableBuilder(
       column: $table.caloriesPer100Units,
       builder: (column) => ColumnOrderings(column));
@@ -1042,6 +1098,9 @@ class $$ProductTableAnnotationComposer
 
   GeneratedColumn<String> get brand =>
       $composableBuilder(column: $table.brand, builder: (column) => column);
+
+  GeneratedColumn<bool> get isLiquid =>
+      $composableBuilder(column: $table.isLiquid, builder: (column) => column);
 
   GeneratedColumn<double> get caloriesPer100Units => $composableBuilder(
       column: $table.caloriesPer100Units, builder: (column) => column);
@@ -1103,6 +1162,7 @@ class $$ProductTableTableManager extends RootTableManager<
             Value<String> productCode = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String> brand = const Value.absent(),
+            Value<bool> isLiquid = const Value.absent(),
             Value<double> caloriesPer100Units = const Value.absent(),
             Value<double> carbsPer100Units = const Value.absent(),
             Value<double> fatPer100Units = const Value.absent(),
@@ -1113,6 +1173,7 @@ class $$ProductTableTableManager extends RootTableManager<
             productCode: productCode,
             name: name,
             brand: brand,
+            isLiquid: isLiquid,
             caloriesPer100Units: caloriesPer100Units,
             carbsPer100Units: carbsPer100Units,
             fatPer100Units: fatPer100Units,
@@ -1123,6 +1184,7 @@ class $$ProductTableTableManager extends RootTableManager<
             required String productCode,
             required String name,
             required String brand,
+            required bool isLiquid,
             required double caloriesPer100Units,
             required double carbsPer100Units,
             required double fatPer100Units,
@@ -1133,6 +1195,7 @@ class $$ProductTableTableManager extends RootTableManager<
             productCode: productCode,
             name: name,
             brand: brand,
+            isLiquid: isLiquid,
             caloriesPer100Units: caloriesPer100Units,
             carbsPer100Units: carbsPer100Units,
             fatPer100Units: fatPer100Units,

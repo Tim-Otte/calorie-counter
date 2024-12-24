@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../components/all.dart' as c;
 import '../extensions/all.dart';
-import '../data/database.dart';
+import '../data/all.dart';
 
 class AddMealPage extends StatefulWidget {
   const AddMealPage({
@@ -21,14 +21,16 @@ class AddMealPage extends StatefulWidget {
 
 class _AddMealPageState extends State<AddMealPage> {
   var _servingSizes = <ServingSizeData>[];
-  ServingSizeData? _selectedServingSize;
+  late MealType _mealType;
   ProductData? _product;
   double? _amount = 1;
+  ServingSizeData? _selectedServingSize;
 
   @override
   void initState() {
     super.initState();
     _product = widget.product;
+    _mealType = MealType.suggest(_product?.isLiquid ?? false);
   }
 
   @override
@@ -63,6 +65,15 @@ class _AddMealPageState extends State<AddMealPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Meal type selector
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: c.MealTypeSelector(
+                initialValue: _mealType,
+                onChanged: (value) => setState(() => _mealType =
+                    value ?? MealType.suggest(_product?.isLiquid ?? false)),
+              ),
+            ),
             // Product selector
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -155,7 +166,6 @@ class _AddMealPageState extends State<AddMealPage> {
               padding: const EdgeInsets.only(left: 20, right: 20, top: 25),
               child: Card.filled(
                 color: theme.colorScheme.primary.useOpacity(0.1),
-                elevation: 3,
                 child: Padding(
                   padding: EdgeInsets.all(15),
                   child: Wrap(
@@ -223,7 +233,7 @@ class _AddMealPageState extends State<AddMealPage> {
         ),
         Expanded(
           child: c.SegmentedBarChart(
-            gap: 4,
+            gap: 2,
             gapColor: theme.colorScheme.surfaceContainer,
             tooltipBuilder: (value) => "${(value * 100).toInt()} %",
             data: [

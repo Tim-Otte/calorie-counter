@@ -4,6 +4,7 @@ class Product extends Table {
   TextColumn get productCode => text()();
   TextColumn get name => text()();
   TextColumn get brand => text()();
+  BoolColumn get isLiquid => boolean()();
   RealColumn get caloriesPer100Units => real()();
   RealColumn get carbsPer100Units => real()();
   RealColumn get fatPer100Units => real()();
