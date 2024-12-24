@@ -1,5 +1,6 @@
 {
   "@@locale": "de",
+
   "yes": "Ja",
   "no": "Nein",
   "apply": "Anwenden",
@@ -8,20 +9,26 @@
   "edit": "Bearbeiten",
   "delete": "Löschen",
   "notSet": "Nicht ausgewählt",
-  "search": "Suche",
-  "searchEmpty": "Bitte geben Sie einen Suchbegriff ein...",
-  "searchNoResult": "Kein Ergebnis für diesen Suchbegriff gefunden...",
+
   "systemDefault": "Systemstandard",
   "tryAgain": "Erneut probieren",
   "confirmDeleteTitle": "Löschen bestätigen?",
   "confirmDeleteText": "Möchten Sie wirklich diesen Eintrag löschen?",
+
+  "search": "Suche",
+  "searchEmpty": "Bitte geben Sie einen Suchbegriff ein...",
+  "searchNoResult": "Kein Ergebnis für diesen Suchbegriff gefunden...",
+
   "appTitle": "Kalorienzähler",
+
   "todayPageTitle": "Heute",
   "monthlyOverviewPageTitle": "Kalender",
   "scanBarcodePageTitle": "Einen Barcode scannen",
+
   "missingCameraPermissions": "Das Feature zum Scannen von Barcodes benötigt Zugriff auf die Kamera. Bitte erlauben Sie den Kamerazugriff, um dieses Feature zu nutzen.",
   "requestCameraPermissions": "Zugriff erlauben",
   "errorWhileLoadingCamera": "Beim Versuch, die Kamera zu laden, ist ein Problem aufgetreten. Bitte überprüfen Sie Ihre Einstellungen und klicken Sie auf \"Erneut probieren\", um zu versuchen, die Kamera erneut zu laden.",
+
   "addMealPageTitle": "Mahlzeit hinzufügen",
   "product": "Produkt",
   "servingSize": "Portionsgröße",
@@ -30,6 +37,8 @@
   "servingSizeAmount": "Menge",
   "searchProductPageTitle": "Produkt suchen",
   "favourites": "Favoriten",
+  "dailyNutrimentDiagramTitle": "Tägliche Nährstoffübersicht",
+
   "addProductPageTitle": "Produkt hinzufügen",
   "switchToEditModeTooltip": "Produktdaten manuell bearbeiten",
   "switchToSearchModeTooltip": "Produkt suchen",
@@ -55,6 +64,7 @@
       }
     }
   },
+
   "customServingSizesTitle": "Individuelle Portionsgrößen",
   "addCustomServingSizeTooltip": "Individuelle Portionsgröße hinzufügen",
   "addCustomServingSizeTitle": "Portionsgröße hinzufügen",
@@ -67,6 +77,7 @@
   "errorWhileSavingProductData": "Beim Speichern ist ein Fehler aufgetreten...",
   "selectServingSizePageTitle": "Portionsgröße auswählen",
   "errorWhileFetchingServingSizes": "Beim Laden der Portionsgrößen ist ein Fehler aufgetreten.",
+
   "settingsPageTitle": "Einstellungen",
   "settingsGeneralSection": "Allgemein",
   "settingTheme": "Design",
@@ -97,6 +108,7 @@
   "settingAboutOpenFoodFacts": "Open Food Facts API",
   "settingAboutOpenFoodFactsSubtitle": "für Lebensmittel & Nährwertangaben",
   "settingAboutPackages": "Open Source Lizenzen",
+
   "aboutPersonalDataTitle": "Persönliche Informationen",
   "aboutPersonalDataGenderTitle": "Geschlecht",
   "aboutPersonalDataGenderBody": "Das von Ihnen gewählte Geschlecht wird zur Personalisierung von Fitnessberechnungen und Gesundheitsmetriken verwendet, die auf physiologischen Faktoren basieren, die zwischen den Geschlechtern variieren können. Transgender-Nutzer sollten das Geschlecht auswählen, das ihren aktuellen biologischen Merkmalen am besten entspricht, um genaue Berechnungen zu gewährleisten. Diese Informationen werden verwendet, um Unterschiede in der Körperzusammensetzung, wie Muskelmasse und Fettverteilung, zu berücksichtigen, die sich auf Messgrößen wie BMI und WHtR auswirken.",
@@ -104,22 +116,28 @@
   "aboutPersonalDataAgeBody": "Das Alter ist ein wichtiger Faktor bei der Bestimmung Ihres Fitness- und Gesundheitszustands. Mit zunehmendem Alter wirken sich Veränderungen der Muskelmasse und der Fettverteilung auf Ihre Fitnesswerte und Gesundheitsindikatoren aus.",
   "aboutPersonalDataWeightHeightTitle": "Größe & Gewicht",
   "aboutPersonalDataWeightHeightBody": "Sowohl Gewicht als auch Größe sind für die Berechnung von Kennzahlen wie BMI (Body Mass Index) und WHtR (Waist-to-Height Ratio) von grundlegender Bedeutung. Anhand dieser Werte werden Ihre allgemeine Körperzusammensetzung und Ihr Gesundheitsrisiko bestimmt.",
+
   "measurementUnitMetric": "Metrisch",
   "measurementUnitMetricSubtitle": "z.B.: kg, cm",
   "measurementUnitImperial": "Imperial",
   "measurementUnitImperialSubtitle": "z.B.: lb, ft",
+
   "servingSizeFilter": "Filter",
   "servingSizeFilterAll": "Alle",
   "servingSizeFilterLiquid": "Flüssig",
   "servingSizeFilterSolid": "Fest",
+
   "serving_size_gram": "Gramm",
   "serving_size_milliliter": "Milliliter",
   "serving_size_ounces": "Unzen",
   "serving_size_liquid_ounces": "Unzen (Flüssigkeit)",
+
   "themeModeLight": "Hell",
   "themeModeDark": "Dunkel",
   "themeModeSystem": "System",
+
   "genderFemale": "Weiblich",
   "genderMale": "Männlich",
+
   "validationErrorInvalidInput": "Ungültige Eingabe"
 }

@@ -1,5 +1,6 @@
 {
   "@@locale": "en",
+
   "yes": "Yes",
   "no": "No",
   "apply": "Apply",
@@ -8,20 +9,26 @@
   "edit": "Edit",
   "delete": "Delete",
   "notSet": "Not set",
-  "search": "Search",
-  "searchEmpty": "Please enter a search term...",
-  "searchNoResult": "No results found for this search term...",
+
   "systemDefault": "System default",
   "tryAgain": "Try again",
   "confirmDeleteTitle": "Confirm deletion?",
   "confirmDeleteText": "Do you really want to delete this entry?",
+
+  "search": "Search",
+  "searchEmpty": "Please enter a search term...",
+  "searchNoResult": "No results found for this search term...",
+
   "appTitle": "Colorie Counter",
+
   "todayPageTitle": "Today",
   "monthlyOverviewPageTitle": "Calendar",
   "scanBarcodePageTitle": "Scan a barcode",
+
   "missingCameraPermissions": "The barcode scanning feature requires access to the camera. Please allow camera access to use this feature.",
   "requestCameraPermissions": "Grant permissions",
   "errorWhileLoadingCamera": "We encountered an issue while trying to load the camera. Please check your settings and click \"Try again\" to attempt reloading the camera.",
+
   "addMealPageTitle": "Add a meal",
   "product": "Product",
   "servingSize": "Serving size",
@@ -30,6 +37,8 @@
   "servingSizeAmount": "Amount",
   "searchProductPageTitle": "Find product",
   "favourites": "Favourites",
+  "dailyNutrimentDiagramTitle": "Daily nutrient breakdown",
+
   "addProductPageTitle": "Add product",
   "switchToEditModeTooltip": "Manually edit product",
   "switchToSearchModeTooltip": "Search for product",
@@ -55,6 +64,7 @@
       }
     }
   },
+
   "customServingSizesTitle": "Custom serving sizes",
   "addCustomServingSizeTooltip": "Add custom serving size",
   "addCustomServingSizeTitle": "Add serving size",
@@ -67,6 +77,7 @@
   "errorWhileSavingProductData": "An error occurred while saving...",
   "selectServingSizePageTitle": "Select a serving size",
   "errorWhileFetchingServingSizes": "An error occured while fetching the serving sizes.",
+
   "settingsPageTitle": "Settings",
   "settingsGeneralSection": "General",
   "settingTheme": "Theme",
@@ -97,6 +108,7 @@
   "settingAboutOpenFoodFacts": "Open Food Facts API",
   "settingAboutOpenFoodFactsSubtitle": "for food & nutritional information",
   "settingAboutPackages": "Open Source Licenses",
+
   "aboutPersonalDataTitle": "About personal information",
   "aboutPersonalDataGenderTitle": "Sex",
   "aboutPersonalDataGenderBody": "Your selected sex is used to personalize fitness calculations and health metrics based on physiological factors that may vary between sexes. Transgender users should select the sex that best reflects their current biological characteristics to ensure accurate calculations. This information is used to account for differences in body composition, such as muscle mass and fat distribution, which impact metrics like BMI and WHtR.",
@@ -104,22 +116,28 @@
   "aboutPersonalDataAgeBody": "Age is a key factor in determining your fitness and health status. As you age, changes in muscle mass and fat distribution affect your fitness scores and health indicators.",
   "aboutPersonalDataWeightHeightTitle": "Weight & height",
   "aboutPersonalDataWeightHeightBody": "Both weight and height are fundamental for calculating metrics like BMI (Body Mass Index) and WHtR (Waist-to-Height Ratio). These values are used to determine your overall body composition and health risk.",
+
   "measurementUnitMetric": "Metric",
   "measurementUnitMetricSubtitle": "e.g.: kg, cm",
   "measurementUnitImperial": "Imperial",
   "measurementUnitImperialSubtitle": "e.g.: lb, ft",
+
   "servingSizeFilter": "Filter",
   "servingSizeFilterAll": "All",
   "servingSizeFilterLiquid": "Liquid",
   "servingSizeFilterSolid": "Solid",
+
   "serving_size_gram": "Grams",
   "serving_size_milliliter": "Milliliters",
   "serving_size_ounces": "Ounces",
   "serving_size_liquid_ounces": "Liquid ounces",
+
   "themeModeLight": "Light",
   "themeModeDark": "Dark",
   "themeModeSystem": "System",
+
   "genderFemale": "Female",
   "genderMale": "Male",
+
   "validationErrorInvalidInput": "Invalid value"
 }

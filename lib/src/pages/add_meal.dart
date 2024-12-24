@@ -4,6 +4,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 import '../components/all.dart' as c;
+import '../extensions/all.dart';
 import '../data/database.dart';
 
 class AddMealPage extends StatefulWidget {
@@ -62,6 +63,7 @@ class _AddMealPageState extends State<AddMealPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Product selector
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: c.ProductSelector(
@@ -69,8 +71,9 @@ class _AddMealPageState extends State<AddMealPage> {
                 onChanged: (value) => setState(() => _product = value),
               ),
             ),
+            // Serving size and amount
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               child: Wrap(
                 alignment: WrapAlignment.spaceBetween,
                 spacing: 18,
@@ -109,6 +112,7 @@ class _AddMealPageState extends State<AddMealPage> {
                 ],
               ),
             ),
+            // Nutriment information (stats)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               child: Wrap(
@@ -143,51 +147,56 @@ class _AddMealPageState extends State<AddMealPage> {
                     _product?.proteinsPer100Units ?? 0,
                     'g',
                   ),
-                  Card.filled(
-                    color: theme.colorScheme.surfaceContainer,
-                    child: Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Wrap(
-                        runSpacing: 10,
-                        children: [
-                          Text(
-                            'Anteil Tagesbedarf',
-                            style: theme.textTheme.bodyMedium!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          _getNutrimentBar(
-                            theme,
-                            Symbols.mode_heat_rounded,
-                            const Color(0xFFFFD700),
-                            _product?.caloriesPer100Units ?? 0,
-                            2700,
-                          ),
-                          _getNutrimentBar(
-                            theme,
-                            Symbols.nutrition_rounded,
-                            const Color(0xFF1E90FF),
-                            _product?.caloriesPer100Units ?? 0,
-                            500,
-                          ),
-                          _getNutrimentBar(
-                            theme,
-                            Symbols.water_drop_rounded,
-                            const Color(0xFFFF8C00),
-                            _product?.fatPer100Units ?? 0,
-                            50,
-                          ),
-                          _getNutrimentBar(
-                            theme,
-                            Symbols.exercise_rounded,
-                            const Color(0xFF32CD32),
-                            _product?.proteinsPer100Units ?? 0,
-                            50,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 ],
+              ),
+            ),
+            // Nutriment information (bars)
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 25),
+              child: Card.filled(
+                color: theme.colorScheme.primary.useOpacity(0.1),
+                elevation: 3,
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Wrap(
+                    runSpacing: 10,
+                    children: [
+                      Text(
+                        localizations.dailyNutrimentDiagramTitle,
+                        style: theme.textTheme.bodyMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      _getNutrimentBar(
+                        theme,
+                        Symbols.mode_heat_rounded,
+                        const Color(0xFFFFD700),
+                        _product?.caloriesPer100Units ?? 0,
+                        2700,
+                      ),
+                      _getNutrimentBar(
+                        theme,
+                        Symbols.nutrition_rounded,
+                        const Color(0xFF1E90FF),
+                        _product?.caloriesPer100Units ?? 0,
+                        500,
+                      ),
+                      _getNutrimentBar(
+                        theme,
+                        Symbols.water_drop_rounded,
+                        const Color(0xFFFF8C00),
+                        _product?.fatPer100Units ?? 0,
+                        50,
+                      ),
+                      _getNutrimentBar(
+                        theme,
+                        Symbols.exercise_rounded,
+                        const Color(0xFF32CD32),
+                        _product?.proteinsPer100Units ?? 0,
+                        50,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],
@@ -238,13 +247,6 @@ class _AddMealPageState extends State<AddMealPage> {
             ],
           ),
         ),
-        /* Padding(
-          padding: EdgeInsets.only(left: 10),
-          child: Text(
-            "${value.toInt()} / ${max.toInt()}",
-            style: theme.textTheme.bodySmall,
-          ),
-        ), */
       ],
     );
   }
@@ -284,7 +286,7 @@ class _AddMealPageState extends State<AddMealPage> {
               Text(
                 "${valPerServing.toStringAsFixed(2)} $servingShort",
                 style: theme.textTheme.bodyMedium!.copyWith(
-                  color: theme.textTheme.bodyMedium!.color!.withOpacity(0.75),
+                  color: theme.textTheme.bodyMedium!.color!.useOpacity(0.75),
                 ),
               )
             ],

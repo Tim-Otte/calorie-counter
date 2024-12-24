@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../extensions/all.dart';
+
 class IconWithText extends StatelessWidget {
   final IconData icon;
   final Color? iconColor;
@@ -27,14 +29,14 @@ class IconWithText extends StatelessWidget {
             child: Icon(
               icon,
               size: 75,
-              color: iconColor ?? theme.colorScheme.secondary.withOpacity(0.75),
+              color: iconColor ?? theme.colorScheme.secondary.useOpacity(0.75),
             ),
           ),
           Text(
             text,
             style: theme.textTheme.bodyLarge!.copyWith(
               fontStyle: FontStyle.italic,
-              color: theme.textTheme.bodyLarge!.color!.withOpacity(0.75),
+              color: theme.textTheme.bodyLarge!.color!.useOpacity(0.75),
             ),
             textAlign: TextAlign.center,
           )

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../controllers/settings_controller.dart';
 import '../../data/all.dart';
-import '../../extensions/scaffold_messenger_state.dart';
+import '../../extensions/all.dart';
 import '../../tools/all.dart';
 import '../all.dart' as c;
 
@@ -133,7 +133,7 @@ class _ProductFormState extends State<ProductForm> {
                                   : localizations.isLiquid_false,
                               style: theme.textTheme.bodyMedium!.copyWith(
                                   color: theme.textTheme.bodyMedium!.color!
-                                      .withOpacity(0.75)),
+                                      .useOpacity(0.75)),
                             )
                           ],
                         ),
@@ -226,15 +226,18 @@ class _ProductFormState extends State<ProductForm> {
                       .copyWith(color: theme.colorScheme.primary),
                 ),
                 _servingSizes.isEmpty
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(right: 10),
-                            child: Icon(Symbols.no_meals_rounded),
-                          ),
-                          Text(localizations.customServingSizesEmpty)
-                        ],
+                    ? Padding(
+                        padding: EdgeInsets.only(bottom: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: Icon(Symbols.no_meals_rounded),
+                            ),
+                            Text(localizations.customServingSizesEmpty)
+                          ],
+                        ),
                       )
                     : ListView.builder(
                         shrinkWrap: true,

@@ -6,9 +6,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-import 'data/all.dart' show AppDatabase;
-import 'pages/all.dart';
 import 'controllers/settings_controller.dart';
+import 'data/all.dart' show AppDatabase;
+import 'extensions/all.dart';
+import 'pages/all.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key, required this.settingsController});
@@ -85,8 +86,8 @@ class _MainLayoutState extends State<MainLayout> {
           : null,
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       bottomNavigationBar: NavigationBar(
-        backgroundColor: colorScheme.primary.withOpacity(0.1),
-        indicatorColor: colorScheme.primary.withOpacity(0.69),
+        backgroundColor: colorScheme.primary.useOpacity(0.1),
+        indicatorColor: colorScheme.primary.useOpacity(0.69),
         onDestinationSelected: (value) {
           setState(() => currentPage = value);
           unawaited(HapticFeedback.selectionClick());

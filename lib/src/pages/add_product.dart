@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../components/all.dart' as c;
 import '../data/all.dart';
-import '../extensions/scaffold_messenger_state.dart';
+import '../extensions/all.dart';
 
 class AddProductPage extends StatefulWidget {
   final ProductTemplate? product;
@@ -59,7 +59,7 @@ class _AddProductPageState extends State<AddProductPage> {
       ),
       bottomNavigationBar: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        height: 80,
+        height: 100,
         child: BottomAppBar(
           elevation: 1,
           child: Row(
@@ -108,9 +108,9 @@ class _AddProductPageState extends State<AddProductPage> {
         icon: Icon(Symbols.save_rounded),
         label: Text(localizations.save),
         elevation: 0,
-        backgroundColor: theme.colorScheme.secondaryContainer.withOpacity(
+        backgroundColor: theme.colorScheme.secondaryContainer.useOpacity(
             _product.isNotEmpty && _servingSizes.isNotEmpty ? 1 : 0.6),
-        foregroundColor: theme.colorScheme.onSecondaryContainer.withOpacity(
+        foregroundColor: theme.colorScheme.onSecondaryContainer.useOpacity(
             _product.isNotEmpty && _servingSizes.isNotEmpty ? 1 : 0.6),
       ),
       body: _baseServingSizes.isEmpty
