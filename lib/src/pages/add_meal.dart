@@ -14,9 +14,11 @@ class AddMealPage extends StatefulWidget {
   const AddMealPage({
     super.key,
     this.product,
+    this.consumption,
   });
 
   final ProductData? product;
+  final ConsumptionEntry? consumption;
 
   @override
   State<StatefulWidget> createState() => _AddMealPageState();
@@ -32,8 +34,18 @@ class _AddMealPageState extends State<AddMealPage> {
   @override
   void initState() {
     super.initState();
-    _product = widget.product;
-    _mealType = MealType.suggest(_product?.isLiquid ?? false);
+
+    if (widget.product != null) {
+      _product = widget.product;
+      _mealType = MealType.suggest(_product?.isLiquid ?? false);
+    }
+
+    if (widget.consumption != null) {
+      _product = widget.consumption!.product;
+      _mealType = widget.consumption!.consumption.mealType;
+      _amount = widget.consumption!.consumption.quantity;
+      _selectedServingSize = widget.consumption!.servingSize;
+    }
   }
 
   @override
@@ -56,7 +68,9 @@ class _AddMealPageState extends State<AddMealPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations.addMealPageTitle),
+        title: Text(widget.consumption == null
+            ? localizations.addMealPageTitle
+            : localizations.editMealPageTitle),
         forceMaterialTransparency: true,
         actions: [
           IconButton(
@@ -177,7 +191,9 @@ class _AddMealPageState extends State<AddMealPage> {
               child: Card.filled(
                 color: theme.colorScheme.primary.useOpacity(0.1),
                 child: FutureBuilder(
-                  future: database.calculateTotalNutrimentsForToday(),
+                  future: database.calculateTotalNutrimentsForToday(
+                    withoutConsumptionId: widget.consumption?.consumption.id,
+                  ),
                   builder: (context, nutrimentSnapshot) => Padding(
                     padding: EdgeInsets.all(15),
                     child: Wrap(
@@ -249,7 +265,14 @@ class _AddMealPageState extends State<AddMealPage> {
         servingSizeId: _selectedServingSize!.id,
       );
 
-      await database.insertConsumption(consumption.getForInsert());
+      if (widget.consumption != null) {
+        await database.updateConsumption(
+          widget.consumption!.consumption.id,
+          consumption.getForInsert(),
+        );
+      } else {
+        await database.insertConsumption(consumption.getForInsert());
+      }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context)

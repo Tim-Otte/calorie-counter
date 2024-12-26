@@ -32,6 +32,7 @@
   "errorWhileLoadingCamera": "We encountered an issue while trying to load the camera. Please check your settings and click \"Try again\" to attempt reloading the camera.",
 
   "addMealPageTitle": "Add a meal",
+  "editMealPageTitle": "Edit meal",
   "mealType": "Type of meal",
   "product": "Product",
   "servingSize": "Serving size",

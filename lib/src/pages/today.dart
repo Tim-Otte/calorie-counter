@@ -1,8 +1,10 @@
+import 'package:calorie_counter/src/pages/add_meal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+import '../components/all.dart';
 import '../data/all.dart' show AppDatabase, ConsumptionEntry, MealType;
 import '../extensions/all.dart';
 import '../tools/all.dart';
@@ -115,6 +117,8 @@ class TodayPage extends StatelessWidget {
                             itemBuilder: (context, index) =>
                                 _getConsumptionEntry(
                               context,
+                              localizations,
+                              database,
                               consumptionSnapshot.data![index],
                             ),
                           )
@@ -134,15 +138,67 @@ class TodayPage extends StatelessWidget {
     );
   }
 
-  Widget _getConsumptionEntry(BuildContext context, ConsumptionEntry entry) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      visualDensity: VisualDensity.compact,
-      title: Text(entry.product.name),
-      subtitle: Text(entry.product.brand),
-      trailing: Text(
-        '${entry.consumption.quantity.toString().replaceAll(RegExp(r'[\.,]0'), '')} ${entry.servingSize.name}',
+  Widget _getConsumptionEntry(
+    BuildContext context,
+    AppLocalizations localizations,
+    AppDatabase database,
+    ConsumptionEntry entry,
+  ) {
+    final theme = Theme.of(context);
+
+    return MenuAnchor(
+      menuChildren: [
+        MenuItemButton(
+          leadingIcon: Icon(
+            Symbols.edit_rounded,
+            color: theme.colorScheme.primary,
+          ),
+          child: Text(localizations.edit),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddMealPage(
+                consumption: entry,
+              ),
+            ),
+          ),
+        ),
+        MenuItemButton(
+          leadingIcon: Icon(
+            Symbols.delete_rounded,
+            color: theme.colorScheme.error,
+          ),
+          child: Text(localizations.delete),
+          onPressed: () async {
+            await _deleteConsumption(context, database, entry);
+          },
+        ),
+      ],
+      builder: (context, controller, child) => ListTile(
+        contentPadding: EdgeInsets.symmetric(horizontal: 5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        visualDensity: VisualDensity.compact,
+        title: Text(entry.product.name),
+        subtitle: Text(entry.product.brand),
+        trailing: Text(
+          '${entry.consumption.quantity.toString().replaceAll(RegExp(r'[\.,]0'), '')} ${entry.servingSize.name}',
+        ),
+        onLongPress: () => controller.open(),
       ),
     );
+  }
+
+  Future<void> _deleteConsumption(BuildContext context, AppDatabase database,
+      ConsumptionEntry entry) async {
+    var result = await showDialog<bool>(
+      context: context,
+      builder: (context) => ConfirmDeleteDialog(),
+    );
+
+    if (result == true) {
+      await database.deleteConsumption(entry.consumption.id);
+    }
   }
 }

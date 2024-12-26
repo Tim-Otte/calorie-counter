@@ -197,6 +197,32 @@ class AppDatabase extends _$AppDatabase {
     return into(consumption).insert(consumptionData);
   }
 
+  /// Updates an existing consumption record in the database.
+  ///
+  /// Parameters:
+  /// - [consumptionId]: The ID of the consumption record to update.
+  /// - [consumptionData]: The new consumption data to update.
+  ///
+  /// Returns a [Future] that completes when the consumption record has been updated.
+  Future<void> updateConsumption(
+    int consumptionId,
+    ConsumptionCompanion consumptionData,
+  ) {
+    consumptionData = consumptionData.copyWith(id: Value(consumptionId));
+    return (update(consumption)..where((tbl) => tbl.id.equals(consumptionId)))
+        .write(consumptionData);
+  }
+
+  /// Deletes a consumption record from the database.
+  /// Parameters:
+  /// - [consumptionId]: The ID of the consumption record to delete.
+  ///
+  /// Returns a [Future] that completes when the consumption record has been deleted.
+  Future<void> deleteConsumption(int consumptionId) {
+    return (delete(consumption)..where((tbl) => tbl.id.equals(consumptionId)))
+        .go();
+  }
+
   /// Retrieves a list of consumption entries for the current day.
   ///
   /// This method fetches the consumption entries for today, optionally filtered by meal type.
@@ -243,7 +269,9 @@ class AppDatabase extends _$AppDatabase {
   ///
   /// Returns a [Future] that completes with a [Nutriments] object containing
   /// the total calories, carbs, fats, and proteins consumed for today.
-  Future<Nutriments> calculateTotalNutrimentsForToday() {
+  Future<Nutriments> calculateTotalNutrimentsForToday({
+    int? withoutConsumptionId,
+  }) {
     final today = DateTime.now();
     final startOfDay = DateTime(today.year, today.month, today.day);
     final endOfDay = startOfDay.add(Duration(days: 1));
@@ -279,10 +307,14 @@ class AppDatabase extends _$AppDatabase {
       proteinsInConsumption,
     ]);
 
-    return manager
-        .filter((f) => f.loggedOn.isBetween(startOfDay, endOfDay))
-        .get()
-        .then(
+    var query =
+        manager.filter((f) => f.loggedOn.isBetween(startOfDay, endOfDay));
+
+    if (withoutConsumptionId != null) {
+      query = query.filter((f) => f.id.equals(withoutConsumptionId).not());
+    }
+
+    return query.get().then(
           (data) => data.fold<Nutriments>(
             Nutriments.empty,
             (a, b) => Nutriments(

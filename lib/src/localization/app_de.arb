@@ -32,6 +32,7 @@
   "errorWhileLoadingCamera": "Beim Versuch, die Kamera zu laden, ist ein Problem aufgetreten. Bitte überprüfen Sie Ihre Einstellungen und klicken Sie auf \"Erneut probieren\", um zu versuchen, die Kamera erneut zu laden.",
 
   "addMealPageTitle": "Mahlzeit hinzufügen",
+  "editMealPageTitle": "Mahlzeit bearbeiten",
   "mealType": "Art der Mahlzeit",
   "product": "Produkt",
   "servingSize": "Portionsgröße",
