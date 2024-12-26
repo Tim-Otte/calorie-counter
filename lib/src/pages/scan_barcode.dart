@@ -8,7 +8,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-import 'all.dart';
+import 'all.dart' show AddMealPage, AddProductPage;
 import '../data/all.dart';
 import '../services/all.dart';
 import '../components/all.dart';
@@ -33,12 +33,14 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
   bool _hasNeverCameraPermissions = false;
 
   Future _handleBarcode(BarcodeCapture capture) async {
+    // If no barcodes are captured or the first barcode has no value, return early.
     if (capture.barcodes.isEmpty ||
         capture.barcodes.first.rawValue == null ||
         !mounted) {
       return;
     }
 
+    // Stop the scanner and provide haptic feedback.
     unawaited(_controller.stop());
     unawaited(HapticFeedback.mediumImpact());
 
@@ -48,52 +50,51 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
     final database = Provider.of<AppDatabase>(context, listen: false);
     final barcodeValue = capture.barcodes.first.rawValue!;
 
+    // Try to get the product from the local database.
     var dbProduct = await database.getProduct(barcodeValue);
+    ProductTemplate product;
+    List<ServingSizeTemplate>? servingSizes;
 
     if (dbProduct == null) {
-      final product = await foodFactService.getProduct(barcodeValue);
+      // If the product is not in the local database, fetch it from the FoodFactService.
+      final foodfacts = await foodFactService.getProduct(barcodeValue);
       final baseServingSizes =
           await database.select(database.servingSize).get();
 
-      if (product.product != null) {
-        final productData = foodFactService.getProductDataFromProduct(
-          product.product!,
+      if (foodfacts.product != null) {
+        // If the product is found in the FoodFactService, extract its data and serving sizes.
+        product = foodFactService.getProductDataFromProduct(
+          foodfacts.product!,
           baseServingSizes,
         );
-        final servingSizes = foodFactService.getServingSizesFromProduct(
-          product.product!,
+        servingSizes = foodFactService.getServingSizesFromProduct(
+          foodfacts.product!,
           baseServingSizes,
           localizations.serving,
           localizations.container,
         );
-
-        if (mounted && context.mounted) {
-          dbProduct = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddProductPage(
-                product: productData,
-                servingSizes: servingSizes,
-              ),
-            ),
-          );
-        }
       } else {
-        if (mounted && context.mounted) {
-          dbProduct = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddProductPage(
-                product: ProductTemplate.fromValues(
-                  productCode: barcodeValue,
-                ),
-              ),
+        // If the product is not found, create a new product template with the barcode value.
+        product = ProductTemplate.fromValues(
+          productCode: barcodeValue,
+        );
+      }
+
+      // Navigate to the AddProductPage to add the new product.
+      if (mounted && context.mounted) {
+        dbProduct = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AddProductPage(
+              product: product,
+              servingSizes: servingSizes,
             ),
-          );
-        }
+          ),
+        );
       }
     }
 
+    // If the product is found or added, navigate to the AddMealPage.
     if (dbProduct != null) {
       if (mounted && context.mounted) {
         await Navigator.pushReplacement(
@@ -105,6 +106,7 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
       }
     }
 
+    // Return to the previous page.
     if (mounted && context.mounted) {
       Navigator.pop(context);
     }
