@@ -171,4 +171,29 @@ class SettingsController with ChangeNotifier {
     notifyListeners();
     await _settingsService.updateHipCircumference(value);
   }
+
+  /// Calculates the maximum daily calorie intake based on the user's weight, height,
+  /// date of birth, and gender.
+  ///
+  /// The formula used is a variation of the Mifflin-St Jeor Equation:
+  /// - For males: `calories = (9.99 * weight) + (6.25 * height) - (4.92 * age) + 5`
+  /// - For females: `calories = (9.99 * weight) + (6.25 * height) - (4.92 * age) - 161`
+  ///
+  /// If the gender is not specified, the base calorie calculation is returned without
+  /// the gender adjustment.
+  ///
+  /// Returns the calculated maximum daily calories as a double.
+  double calculateMaxDailyCalories() {
+    double calories = (9.99 * (weight ?? 0)) +
+        (6.25 * (height ?? 0)) -
+        (4.92 * (DateTime.now().year - (dateOfBirth?.year ?? 0)));
+
+    if (gender == Gender.male) {
+      return calories + 5;
+    } else if (gender == Gender.female) {
+      return calories - 161;
+    } else {
+      return calories;
+    }
+  }
 }

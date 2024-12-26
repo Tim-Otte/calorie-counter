@@ -22,6 +22,8 @@
   "appTitle": "Kalorienzähler",
 
   "todayPageTitle": "Heute",
+  "nothingConsumedYet": "Noch nichts eingetragen...",
+
   "monthlyOverviewPageTitle": "Kalender",
   "scanBarcodePageTitle": "Einen Barcode scannen",
 

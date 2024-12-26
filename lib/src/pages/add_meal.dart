@@ -1,9 +1,12 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 import '../components/all.dart' as c;
+import '../controllers/settings_controller.dart';
 import '../extensions/all.dart';
 import '../data/all.dart';
 
@@ -38,6 +41,7 @@ class _AddMealPageState extends State<AddMealPage> {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final database = Provider.of<AppDatabase>(context);
+    final settingsController = Provider.of<SettingsController>(context);
 
     if (_product != null &&
         !_servingSizes.any((x) => x.forProduct == _product!.productCode)) {
@@ -56,7 +60,13 @@ class _AddMealPageState extends State<AddMealPage> {
         forceMaterialTransparency: true,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: _product == null ||
+                    _selectedServingSize == null ||
+                    (_amount ?? 0) <= 0
+                ? null
+                : () async {
+                    await _saveConsumption(database, context, theme);
+                  },
             icon: const Icon(Symbols.check),
           ),
           const SizedBox(width: 10)
@@ -166,45 +176,56 @@ class _AddMealPageState extends State<AddMealPage> {
               padding: const EdgeInsets.only(left: 20, right: 20, top: 25),
               child: Card.filled(
                 color: theme.colorScheme.primary.useOpacity(0.1),
-                child: Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Wrap(
-                    runSpacing: 10,
-                    children: [
-                      Text(
-                        localizations.dailyNutrimentDiagramTitle,
-                        style: theme.textTheme.bodyMedium!
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      _getNutrimentBar(
-                        theme,
-                        Symbols.mode_heat_rounded,
-                        const Color(0xFFFFD700),
-                        _product?.caloriesPer100Units ?? 0,
-                        2700,
-                      ),
-                      _getNutrimentBar(
-                        theme,
-                        Symbols.nutrition_rounded,
-                        const Color(0xFF1E90FF),
-                        _product?.caloriesPer100Units ?? 0,
-                        500,
-                      ),
-                      _getNutrimentBar(
-                        theme,
-                        Symbols.water_drop_rounded,
-                        const Color(0xFFFF8C00),
-                        _product?.fatPer100Units ?? 0,
-                        50,
-                      ),
-                      _getNutrimentBar(
-                        theme,
-                        Symbols.exercise_rounded,
-                        const Color(0xFF32CD32),
-                        _product?.proteinsPer100Units ?? 0,
-                        50,
-                      ),
-                    ],
+                child: FutureBuilder(
+                  future: database.calculateTotalNutrimentsForToday(),
+                  builder: (context, nutrimentSnapshot) => Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Wrap(
+                      runSpacing: 10,
+                      children: [
+                        Text(
+                          localizations.dailyNutrimentDiagramTitle,
+                          style: theme.textTheme.bodyMedium!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        _getNutrimentBar(
+                          theme,
+                          Symbols.mode_heat_rounded,
+                          false,
+                          const Color(0xFFFF8C00),
+                          nutrimentSnapshot.data?.calories ?? 0,
+                          _product?.caloriesPer100Units ?? 0,
+                          settingsController.calculateMaxDailyCalories(),
+                        ),
+                        _getNutrimentBar(
+                          theme,
+                          Symbols.nutrition_rounded,
+                          false,
+                          const Color(0xFF32CD32),
+                          nutrimentSnapshot.data?.carbs ?? 0,
+                          _product?.carbsPer100Units ?? 0,
+                          500,
+                        ),
+                        _getNutrimentBar(
+                          theme,
+                          Symbols.water_drop_rounded,
+                          true,
+                          const Color(0xFFF5D000),
+                          nutrimentSnapshot.data?.fats ?? 0,
+                          _product?.fatPer100Units ?? 0,
+                          50,
+                        ),
+                        _getNutrimentBar(
+                          theme,
+                          Symbols.exercise_rounded,
+                          false,
+                          const Color(0xFF1E90FF),
+                          nutrimentSnapshot.data?.proteins ?? 0,
+                          _product?.proteinsPer100Units ?? 0,
+                          50,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -215,13 +236,53 @@ class _AddMealPageState extends State<AddMealPage> {
     );
   }
 
+  Future<void> _saveConsumption(
+    AppDatabase database,
+    BuildContext context,
+    ThemeData theme,
+  ) async {
+    try {
+      final consumption = ConsumptionTemplate.fromValues(
+        mealType: _mealType,
+        productCode: _product!.productCode,
+        quantity: _amount!,
+        servingSizeId: _selectedServingSize!.id,
+      );
+
+      await database.insertConsumption(consumption.getForInsert());
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showError('Mahlzeit konnte nicht hinzugefügt werden');
+      }
+    }
+
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
   Widget _getNutrimentBar(
     ThemeData theme,
     IconData icon,
+    bool fillIcon,
     Color color,
+    double alreadyConsumed,
     double value,
     double max,
   ) {
+    double consumption = value /
+        100 *
+        (_amount ?? 0) *
+        (_selectedServingSize?.valueInBaseServingSize ?? 0);
+
+    double total = math.max(max, consumption + alreadyConsumed);
+
+    double alreadyConsumedPercent = alreadyConsumed / total;
+    double currentConsumptionPercent = consumption / total;
+    double availablePercent =
+        math.max(0, 1 - (alreadyConsumedPercent + currentConsumptionPercent));
+
     return Row(
       children: [
         Padding(
@@ -229,6 +290,7 @@ class _AddMealPageState extends State<AddMealPage> {
           child: Icon(
             icon,
             color: color,
+            fill: fillIcon ? 1 : 0,
           ),
         ),
         Expanded(
@@ -238,20 +300,15 @@ class _AddMealPageState extends State<AddMealPage> {
             tooltipBuilder: (value) => "${(value * 100).toInt()} %",
             data: [
               c.Segment(
-                fractionalValue: value /
-                    100 *
-                    (_selectedServingSize?.valueInBaseServingSize ?? 0) *
-                    (_amount ?? 0) /
-                    max,
+                fractionalValue: alreadyConsumedPercent,
+                color: color.useOpacity(0.5),
+              ),
+              c.Segment(
+                fractionalValue: currentConsumptionPercent,
                 color: color,
               ),
               c.Segment(
-                fractionalValue: 1 -
-                    (value /
-                        100 *
-                        (_selectedServingSize?.valueInBaseServingSize ?? 0) *
-                        (_amount ?? 0) /
-                        max),
+                fractionalValue: availablePercent,
                 color: theme.colorScheme.surfaceDim,
               )
             ],

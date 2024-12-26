@@ -22,6 +22,8 @@
   "appTitle": "Colorie Counter",
 
   "todayPageTitle": "Today",
+  "nothingConsumedYet": "Nothing logged yet...",
+
   "monthlyOverviewPageTitle": "Calendar",
   "scanBarcodePageTitle": "Scan a barcode",
 
