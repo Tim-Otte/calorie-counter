@@ -6,8 +6,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
-import 'add_meal.dart';
+import 'all.dart';
+import '../data/all.dart';
+import '../services/all.dart';
 import '../components/all.dart';
 
 class ScanBarcodePage extends StatefulWidget {
@@ -39,12 +42,72 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
     unawaited(_controller.stop());
     unawaited(HapticFeedback.mediumImpact());
 
-    await Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddMealPage(),
-      ),
-    );
+    final localizations = AppLocalizations.of(context)!;
+    final foodFactService =
+        Provider.of<FoodFactService>(context, listen: false);
+    final database = Provider.of<AppDatabase>(context, listen: false);
+    final barcodeValue = capture.barcodes.first.rawValue!;
+
+    var dbProduct = await database.getProduct(barcodeValue);
+
+    if (dbProduct == null) {
+      final product = await foodFactService.getProduct(barcodeValue);
+      final baseServingSizes =
+          await database.select(database.servingSize).get();
+
+      if (product.product != null) {
+        final productData = foodFactService.getProductDataFromProduct(
+          product.product!,
+          baseServingSizes,
+        );
+        final servingSizes = foodFactService.getServingSizesFromProduct(
+          product.product!,
+          baseServingSizes,
+          localizations.serving,
+          localizations.container,
+        );
+
+        if (mounted && context.mounted) {
+          dbProduct = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddProductPage(
+                product: productData,
+                servingSizes: servingSizes,
+              ),
+            ),
+          );
+        }
+      } else {
+        if (mounted && context.mounted) {
+          dbProduct = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddProductPage(
+                product: ProductTemplate.fromValues(
+                  productCode: barcodeValue,
+                ),
+              ),
+            ),
+          );
+        }
+      }
+    }
+
+    if (dbProduct != null) {
+      if (mounted && context.mounted) {
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AddMealPage(product: dbProduct),
+          ),
+        );
+      }
+    }
+
+    if (mounted && context.mounted) {
+      Navigator.pop(context);
+    }
   }
 
   void _startScanning() {

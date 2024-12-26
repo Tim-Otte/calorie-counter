@@ -164,10 +164,10 @@ class AppDatabase extends _$AppDatabase {
   /// - [productCode]: The code of the product to retrieve.
   ///
   /// Returns a [Future] that completes with a [ProductData] object.
-  Future<ProductData> getProduct(String productCode) {
+  Future<ProductData?> getProduct(String productCode) {
     return (select(product)
           ..where((tbl) => tbl.productCode.equals(productCode)))
-        .getSingle();
+        .getSingleOrNull();
   }
 
   /// Retrieves a list of serving sizes for a given product.

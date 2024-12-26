@@ -139,12 +139,9 @@ class TodayPage extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
       title: Text(entry.product.name),
-      subtitle: Text(Translator.getTranslation(
-        context,
-        entry.consumption.mealType,
-      )),
+      subtitle: Text(entry.product.brand),
       trailing: Text(
-        '${entry.consumption.quantity} ${entry.servingSize.name}',
+        '${entry.consumption.quantity.toString().replaceAll(RegExp(r'[\.,]0'), '')} ${entry.servingSize.name}',
       ),
     );
   }
