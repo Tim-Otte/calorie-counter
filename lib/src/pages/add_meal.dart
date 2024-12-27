@@ -13,10 +13,12 @@ import '../data/all.dart';
 class AddMealPage extends StatefulWidget {
   const AddMealPage({
     super.key,
+    this.mealType,
     this.product,
     this.consumption,
   });
 
+  final MealType? mealType;
   final ProductData? product;
   final ConsumptionEntry? consumption;
 
@@ -37,14 +39,15 @@ class _AddMealPageState extends State<AddMealPage> {
 
     if (widget.product != null) {
       _product = widget.product;
-      _mealType = MealType.suggest(_product?.isLiquid ?? false);
-    }
-
-    if (widget.consumption != null) {
+      _mealType =
+          widget.mealType ?? MealType.suggest(_product?.isLiquid ?? false);
+    } else if (widget.consumption != null) {
       _product = widget.consumption!.product;
       _mealType = widget.consumption!.consumption.mealType;
       _amount = widget.consumption!.consumption.quantity;
       _selectedServingSize = widget.consumption!.servingSize;
+    } else {
+      throw ArgumentError('Provide at least one parameter');
     }
   }
 

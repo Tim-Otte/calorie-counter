@@ -1,9 +1,9 @@
-import 'package:calorie_counter/src/pages/add_meal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+import 'all.dart' show AddMealPage, SearchProductPage;
 import '../components/all.dart';
 import '../data/all.dart' show AppDatabase, ConsumptionEntry, MealType;
 import '../extensions/all.dart';
@@ -79,27 +79,61 @@ class TodayPage extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 15),
       child: Card.outlined(
         child: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.fromLTRB(15, 10, 10, 15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: 5),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 7),
-                      child: Icon(
-                        _getIconForMealType(mealType),
-                        size: 16,
-                        color: theme.colorScheme.primary,
-                      ),
+                    Wrap(
+                      spacing: 7,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Icon(
+                          _getIconForMealType(mealType),
+                          size: 16,
+                          color: theme.colorScheme.primary,
+                        ),
+                        Text(
+                          Translator.getTranslation(context, mealType),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      Translator.getTranslation(context, mealType),
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.primary,
+                    IconButton(
+                      icon: Icon(
+                        Symbols.add_rounded,
+                        color: theme.colorScheme.secondary,
+                      ),
+                      style: IconButton.styleFrom(
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.all(2.5),
+                        iconSize: 20,
+                        fixedSize: Size.square(25),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SearchProductPage(
+                            onlyLiquids: mealType == MealType.drink,
+                            onSelect: (product) => Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddMealPage(
+                                  product: product,
+                                  mealType: mealType,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],

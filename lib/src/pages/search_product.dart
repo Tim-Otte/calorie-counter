@@ -9,10 +9,12 @@ import 'all.dart' show AddProductPage;
 
 class SearchProductPage extends StatefulWidget {
   final Function(ProductData product) onSelect;
+  final bool? onlyLiquids;
 
   const SearchProductPage({
     super.key,
     required this.onSelect,
+    this.onlyLiquids,
   });
 
   @override
@@ -86,6 +88,7 @@ class _SearchProductPageState extends State<SearchProductPage>
             focusNode: _favoritesFocusNode,
             enableOnlineSearch: false,
             baseServingSizes: _baseServingSizes,
+            onlyLiquids: widget.onlyLiquids,
             onSelect: widget.onSelect,
           ),
           ProductSearch(

@@ -12,6 +12,7 @@ import '../../services/all.dart';
 class ProductSearch extends StatelessWidget {
   final bool enableOnlineSearch;
   final List<ServingSizeData> baseServingSizes;
+  final bool? onlyLiquids;
   final Widget? trailing;
   final FocusNode? focusNode;
   final Function(ProductData product) onSelect;
@@ -20,6 +21,7 @@ class ProductSearch extends StatelessWidget {
     super.key,
     required this.enableOnlineSearch,
     required this.baseServingSizes,
+    this.onlyLiquids,
     this.trailing,
     this.focusNode,
     required this.onSelect,
@@ -94,10 +96,13 @@ class ProductSearch extends StatelessWidget {
       );
     } else {
       return FutureBuilder(
-        future: database.filteredProducts(),
+        future: database.filteredProducts(onlyLiquids: onlyLiquids),
         builder: (context, snapshot) => SearchableListView(
           initialData: snapshot.hasData ? snapshot.data : null,
-          searchFunction: (search) => database.filteredProducts(text: search),
+          searchFunction: (search) => database.filteredProducts(
+            text: search,
+            onlyLiquids: onlyLiquids,
+          ),
           trailing: trailing,
           itemBuilder: (context, item) => ListTile(
             title: Text(item.name),

@@ -143,9 +143,14 @@ class AppDatabase extends _$AppDatabase {
   /// Parameters:
   /// - [text]: The text to search for in the product name, brand, or code.
   ///  If `null`, all products are returned.
+  /// - [onlyLiquids]: If `true`, only liquid products are returned.
+  ///  If `false`, both liquid and solid products are returned.
   ///
   /// Returns a [Future] that completes with a list of [ProductData] objects that match
-  Future<List<ProductData>> filteredProducts({String? text}) {
+  Future<List<ProductData>> filteredProducts({
+    String? text,
+    bool? onlyLiquids,
+  }) {
     var query = select(product);
 
     if (text != null) {
@@ -153,6 +158,10 @@ class AppDatabase extends _$AppDatabase {
           tbl.name.like("%$text%") |
           tbl.brand.like("%$text%") |
           tbl.productCode.like("%$text%"));
+    }
+
+    if (onlyLiquids == true) {
+      query.where((tbl) => tbl.isLiquid.equals(true));
     }
 
     return query.get();
