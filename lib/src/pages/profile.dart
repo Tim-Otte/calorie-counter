@@ -137,14 +137,14 @@ class ProfilePage extends StatelessWidget {
               prefix: const Icon(Symbols.measuring_tape_rounded),
               title: Text(localizations.profileWaistCircumference),
               description: Text(
-                  _controller.WaistCircumferenceString ?? localizations.notSet),
+                  _controller.waistCircumferenceString ?? localizations.notSet),
               onTap: (context) async {
                 var result = await showDialog<double>(
                   context: context,
                   builder: (context) => WaistCircumferenceInputDialog(
                     measurementUnit:
                         _controller.measurementUnit ?? MeasurementUnit.metric,
-                    currentValue: _controller.WaistCircumference ?? 0,
+                    currentValue: _controller.waistCircumference ?? 0,
                   ),
                 );
                 _controller.updateWaistCircumference(result);

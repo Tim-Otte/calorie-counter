@@ -63,10 +63,7 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
 
       if (foodfacts.product != null) {
         // If the product is found in the FoodFactService, extract its data and serving sizes.
-        product = foodFactService.getProductDataFromProduct(
-          foodfacts.product!,
-          baseServingSizes,
-        );
+        product = foodFactService.getProductDataFromProduct(foodfacts.product!);
         servingSizes = foodFactService.getServingSizesFromProduct(
           foodfacts.product!,
           baseServingSizes,

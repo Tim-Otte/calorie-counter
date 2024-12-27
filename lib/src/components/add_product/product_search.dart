@@ -48,8 +48,7 @@ class ProductSearch extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => AddProductPage(
-                  product: foodFactService.getProductDataFromProduct(
-                      item, baseServingSizes),
+                  product: foodFactService.getProductDataFromProduct(item),
                   servingSizes: foodFactService.getServingSizesFromProduct(
                     item,
                     baseServingSizes,

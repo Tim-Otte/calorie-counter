@@ -14,11 +14,11 @@ class RegularExpressions {
       RegExp("[0-9${allowComma ? ',.' : '.'}]");
 
   /// A [RegExp] to validate that the input is a valid hip circumference
-  static RegExp WaistCircumferenceInputValidator = RegExp(
+  static RegExp waistCircumferenceInputValidator = RegExp(
       "^((?:(?:[1-9][0-9])|(?:[1-9]))[0-9](?:${allowComma ? '[,.]' : '.'}[0-9])?)\$");
 
   /// A [RegExp] that defines which characters are allowed in the hip circumference input
-  static RegExp WaistCircumferenceAllowedCharacters =
+  static RegExp waistCircumferenceAllowedCharacters =
       RegExp("[0-9${allowComma ? ',.' : '.'}]");
 
   /// Returns depending on [isMetric] a [RegExp] to validate that the input is a valid height

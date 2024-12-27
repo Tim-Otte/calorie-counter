@@ -25,7 +25,7 @@ class SettingsController with ChangeNotifier {
   DateTime? _dateOfBirth;
   double? _height;
   double? _weight;
-  double? _WaistCircumference;
+  double? _waistCircumference;
 
   ThemeMode get themeMode => _themeMode;
   bool get useMaterialYou => _useMaterialYou;
@@ -59,14 +59,14 @@ class SettingsController with ChangeNotifier {
     }
   }
 
-  double? get WaistCircumference => _WaistCircumference;
-  String? get WaistCircumferenceString {
-    if (WaistCircumference == null) return null;
+  double? get waistCircumference => _waistCircumference;
+  String? get waistCircumferenceString {
+    if (waistCircumference == null) return null;
 
     if (measurementUnit == null || measurementUnit == MeasurementUnit.metric) {
-      return "${WaistCircumference!.toStringAsFixed(1)} cm";
+      return "${waistCircumference!.toStringAsFixed(1)} cm";
     } else {
-      var imperial = UnitConverter.centimetersToInches(WaistCircumference!);
+      var imperial = UnitConverter.centimetersToInches(waistCircumference!);
       return "${imperial.toStringAsFixed(1)}\"";
     }
   }
@@ -81,7 +81,7 @@ class SettingsController with ChangeNotifier {
     _dateOfBirth = await _settingsService.getDateOfBirth();
     _height = await _settingsService.getHeight();
     _weight = await _settingsService.getWeight();
-    _WaistCircumference = await _settingsService.getWaistCircumference();
+    _waistCircumference = await _settingsService.getWaistCircumference();
 
     // Important! Inform listeners a change has occurred.
     notifyListeners();
@@ -165,9 +165,9 @@ class SettingsController with ChangeNotifier {
 
   /// Update and persist the hip circumference
   Future<void> updateWaistCircumference(double? value) async {
-    if (value == null || value == _WaistCircumference) return;
+    if (value == null || value == _waistCircumference) return;
 
-    _WaistCircumference = value;
+    _waistCircumference = value;
     notifyListeners();
     await _settingsService.updateWaistCircumference(value);
   }

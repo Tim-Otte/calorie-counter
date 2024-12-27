@@ -47,10 +47,10 @@ class WaistCircumferenceInputDialog extends StatelessWidget {
     return TextInputDialog<double>(
       title: localizations.profileWaistCircumference,
       allowedCharactersExp:
-          RegularExpressions.WaistCircumferenceAllowedCharacters,
+          RegularExpressions.waistCircumferenceAllowedCharacters,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       initialValue: initialValue,
-      inputValidatorExpr: RegularExpressions.WaistCircumferenceInputValidator,
+      inputValidatorExpr: RegularExpressions.waistCircumferenceInputValidator,
       valueConverter: (text) => getValueFromInput(isMetric, text),
       suffixText: isMetric ? 'cm' : 'in',
     );

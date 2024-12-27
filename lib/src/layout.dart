@@ -66,7 +66,7 @@ class _MainLayoutState extends State<MainLayout> {
                     mini: true,
                     backgroundColor: colorScheme.tertiary,
                     child: Icon(
-                      Symbols.add,
+                      Symbols.add_rounded,
                       color: colorScheme.onTertiary,
                       weight: 800,
                     ),
@@ -77,9 +77,10 @@ class _MainLayoutState extends State<MainLayout> {
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (colorScheme) => const ScanBarcodePage()),
+                      builder: (context) => const ScanBarcodePage(),
+                    ),
                   ),
-                  child: const Icon(Symbols.barcode_scanner),
+                  child: const Icon(Symbols.barcode_scanner_rounded),
                 )
               ],
             )
