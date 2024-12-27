@@ -5,8 +5,8 @@ import '../../../data/enums/all.dart' show MeasurementUnit;
 import '../../../tools/all.dart';
 import '../../dialogs/all.dart';
 
-class HipCircumferenceInputDialog extends StatelessWidget {
-  const HipCircumferenceInputDialog({
+class WaistCircumferenceInputDialog extends StatelessWidget {
+  const WaistCircumferenceInputDialog({
     super.key,
     required this.measurementUnit,
     required this.currentValue,
@@ -45,12 +45,12 @@ class HipCircumferenceInputDialog extends StatelessWidget {
     }
 
     return TextInputDialog<double>(
-      title: localizations.settingHipCircumference,
+      title: localizations.profileWaistCircumference,
       allowedCharactersExp:
-          RegularExpressions.hipCircumferenceAllowedCharacters,
+          RegularExpressions.WaistCircumferenceAllowedCharacters,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       initialValue: initialValue,
-      inputValidatorExpr: RegularExpressions.hipCircumferenceInputValidator,
+      inputValidatorExpr: RegularExpressions.WaistCircumferenceInputValidator,
       valueConverter: (text) => getValueFromInput(isMetric, text),
       suffixText: isMetric ? 'cm' : 'in',
     );

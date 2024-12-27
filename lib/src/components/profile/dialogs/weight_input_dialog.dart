@@ -45,7 +45,7 @@ class WeightInputDialog extends StatelessWidget {
     }
 
     return TextInputDialog<double>(
-      title: localizations.settingWeight,
+      title: localizations.profileWeight,
       allowedCharactersExp: RegularExpressions.weightAllowedCharacters,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       initialValue: initialValue,

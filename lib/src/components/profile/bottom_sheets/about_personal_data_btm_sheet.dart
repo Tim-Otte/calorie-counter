@@ -73,8 +73,8 @@ class AboutPersonalDataBtmSheet extends StatelessWidget {
               getParagraph(
                 theme,
                 localizations,
-                localizations.aboutPersonalDataWeightHeightTitle,
-                localizations.aboutPersonalDataWeightHeightBody,
+                localizations.aboutPersonalDataWeightHeightWaistTitle,
+                localizations.aboutPersonalDataWeightHeightWaistBody,
                 showPadding: false,
               ),
             ],

@@ -47,7 +47,7 @@ class HeightInputDialog extends StatelessWidget {
     }
 
     return TextInputDialog<double>(
-      title: localizations.settingHeight,
+      title: localizations.profileHeight,
       allowedCharactersExp:
           RegularExpressions.getHeightAllowedCharacters(isMetric),
       keyboardType: isMetric ? TextInputType.number : TextInputType.text,

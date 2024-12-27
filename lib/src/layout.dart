@@ -38,7 +38,7 @@ class _MainLayoutState extends State<MainLayout> {
         child: <Widget>[
           const TodayPage(),
           const MonthlyOverviewPage(),
-          SettingsPage(controller: widget.settingsController),
+          ProfilePage(controller: widget.settingsController),
         ].elementAt(currentPage),
       ),
       floatingActionButton: currentPage == 0
@@ -95,19 +95,19 @@ class _MainLayoutState extends State<MainLayout> {
         selectedIndex: currentPage,
         destinations: <Widget>[
           NavigationDestination(
-            icon: const Icon(Symbols.today),
-            selectedIcon: const Icon(Symbols.today, fill: 1),
+            icon: const Icon(Symbols.today_rounded),
+            selectedIcon: const Icon(Symbols.today_rounded, fill: 1),
             label: localizations.todayPageTitle,
           ),
           NavigationDestination(
             icon: const Icon(Symbols.calendar_month),
-            selectedIcon: const Icon(Symbols.calendar_month, fill: 1),
+            selectedIcon: const Icon(Symbols.calendar_month_rounded, fill: 1),
             label: localizations.monthlyOverviewPageTitle,
           ),
           NavigationDestination(
-            icon: const Icon(Symbols.settings),
-            selectedIcon: const Icon(Symbols.settings, fill: 1),
-            label: localizations.settingsPageTitle,
+            icon: const Icon(Symbols.account_circle_rounded),
+            selectedIcon: const Icon(Symbols.account_circle_rounded, fill: 1),
+            label: localizations.profilePageTitle,
           ),
         ],
       ),

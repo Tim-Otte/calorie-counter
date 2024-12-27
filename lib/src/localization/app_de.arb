@@ -89,11 +89,17 @@
   "settingMaterialYouSubtitle": "Nur verfügbar auf Android 12+",
   "settingLanguage": "Sprache",
   "settingMeasurementUnit": "Maßeinheiten",
-  "settingsPersonalInformationSection": "Persönliche Informationen",
-  "settingGender": "Geschlecht",
-  "settingDateOfBirth": "Geburtsdatum",
-  "settingDateOfBirthValue": "{dateOfBirth} / Alter: {age} Jahre",
-  "@settingDateOfBirthValue": {
+  "settingsAboutSection": "Über",
+  "settingAboutVersion": "Version",
+  "settingAboutOpenFoodFacts": "Open Food Facts API",
+  "settingAboutOpenFoodFactsSubtitle": "für Lebensmittel & Nährwertangaben",
+  "settingAboutPackages": "Open Source Lizenzen",
+
+  "profilePageTitle": "Profil",
+  "profileGender": "Geschlecht",
+  "profileDateOfBirth": "Geburtsdatum",
+  "profileDateOfBirthValue": "{dateOfBirth} / Alter: {age} Jahre",
+  "@profileDateOfBirthValue": {
     "placeholders": {
       "dateOfBirth": {
         "type": "DateTime",
@@ -104,22 +110,17 @@
       }
     }
   },
-  "settingHeight": "Körpergröße",
-  "settingWeight": "Gewicht",
-  "settingHipCircumference": "Hüftumfang",
-  "settingsAboutSection": "Über",
-  "settingAboutVersion": "Version",
-  "settingAboutOpenFoodFacts": "Open Food Facts API",
-  "settingAboutOpenFoodFactsSubtitle": "für Lebensmittel & Nährwertangaben",
-  "settingAboutPackages": "Open Source Lizenzen",
+  "profileHeight": "Körpergröße",
+  "profileWeight": "Gewicht",
+  "profileWaistCircumference": "Taillenumfang",
 
   "aboutPersonalDataTitle": "Persönliche Informationen",
   "aboutPersonalDataGenderTitle": "Geschlecht",
   "aboutPersonalDataGenderBody": "Das von Ihnen gewählte Geschlecht wird zur Personalisierung von Fitnessberechnungen und Gesundheitsmetriken verwendet, die auf physiologischen Faktoren basieren, die zwischen den Geschlechtern variieren können. Transgender-Nutzer sollten das Geschlecht auswählen, das ihren aktuellen biologischen Merkmalen am besten entspricht, um genaue Berechnungen zu gewährleisten. Diese Informationen werden verwendet, um Unterschiede in der Körperzusammensetzung, wie Muskelmasse und Fettverteilung, zu berücksichtigen, die sich auf Messgrößen wie BMI und WHtR auswirken.",
   "aboutPersonalDataAgeTitle": "Alter",
   "aboutPersonalDataAgeBody": "Das Alter ist ein wichtiger Faktor bei der Bestimmung Ihres Fitness- und Gesundheitszustands. Mit zunehmendem Alter wirken sich Veränderungen der Muskelmasse und der Fettverteilung auf Ihre Fitnesswerte und Gesundheitsindikatoren aus.",
-  "aboutPersonalDataWeightHeightTitle": "Größe & Gewicht",
-  "aboutPersonalDataWeightHeightBody": "Sowohl Gewicht als auch Größe sind für die Berechnung von Kennzahlen wie BMI (Body Mass Index) und WHtR (Waist-to-Height Ratio) von grundlegender Bedeutung. Anhand dieser Werte werden Ihre allgemeine Körperzusammensetzung und Ihr Gesundheitsrisiko bestimmt.",
+  "aboutPersonalDataWeightHeightWaistTitle": "Größe, Gewicht & Taillenumfang",
+  "aboutPersonalDataWeightHeightWaistBody": "Gewicht, Größe und Taillenumfang sind grundlegend für die Berechnung von Kennzahlen wie BMI (Body-Mass-Index) und WHtR (Waist-to-Height Ratio). Diese Werte werden verwendet, um Ihre gesamte Körperzusammensetzung und Ihr Gesundheitsrisiko zu bestimmen.",
 
   "measurementUnitMetric": "Metrisch",
   "measurementUnitMetricSubtitle": "z.B.: kg, cm",

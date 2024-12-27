@@ -25,7 +25,7 @@ class SettingsController with ChangeNotifier {
   DateTime? _dateOfBirth;
   double? _height;
   double? _weight;
-  double? _hipCircumference;
+  double? _WaistCircumference;
 
   ThemeMode get themeMode => _themeMode;
   bool get useMaterialYou => _useMaterialYou;
@@ -59,14 +59,14 @@ class SettingsController with ChangeNotifier {
     }
   }
 
-  double? get hipCircumference => _hipCircumference;
-  String? get hipCircumferenceString {
-    if (hipCircumference == null) return null;
+  double? get WaistCircumference => _WaistCircumference;
+  String? get WaistCircumferenceString {
+    if (WaistCircumference == null) return null;
 
     if (measurementUnit == null || measurementUnit == MeasurementUnit.metric) {
-      return "${hipCircumference!.toStringAsFixed(1)} cm";
+      return "${WaistCircumference!.toStringAsFixed(1)} cm";
     } else {
-      var imperial = UnitConverter.centimetersToInches(hipCircumference!);
+      var imperial = UnitConverter.centimetersToInches(WaistCircumference!);
       return "${imperial.toStringAsFixed(1)}\"";
     }
   }
@@ -81,7 +81,7 @@ class SettingsController with ChangeNotifier {
     _dateOfBirth = await _settingsService.getDateOfBirth();
     _height = await _settingsService.getHeight();
     _weight = await _settingsService.getWeight();
-    _hipCircumference = await _settingsService.getHipCircumference();
+    _WaistCircumference = await _settingsService.getWaistCircumference();
 
     // Important! Inform listeners a change has occurred.
     notifyListeners();
@@ -164,12 +164,12 @@ class SettingsController with ChangeNotifier {
   }
 
   /// Update and persist the hip circumference
-  Future<void> updateHipCircumference(double? value) async {
-    if (value == null || value == _hipCircumference) return;
+  Future<void> updateWaistCircumference(double? value) async {
+    if (value == null || value == _WaistCircumference) return;
 
-    _hipCircumference = value;
+    _WaistCircumference = value;
     notifyListeners();
-    await _settingsService.updateHipCircumference(value);
+    await _settingsService.updateWaistCircumference(value);
   }
 
   /// Calculates the maximum daily calorie intake based on the user's weight, height,

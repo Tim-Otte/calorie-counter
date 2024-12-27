@@ -18,8 +18,9 @@ class SettingsService {
 
   /// Loads the user's preference regarding Material You.
   Future<bool> getUseMaterialYou() {
-    return SharedPreferencesAsync().getBool('useMaterialYou').then(
-        (value) => value ?? false);
+    return SharedPreferencesAsync()
+        .getBool('useMaterialYou')
+        .then((value) => value ?? false);
   }
 
   /// Saves the user's preference regarding Material You.
@@ -94,12 +95,12 @@ class SettingsService {
   }
 
   /// Loads the user's hip circumference.
-  Future<double?> getHipCircumference() {
-    return SharedPreferencesAsync().getDouble('hipCircumference');
+  Future<double?> getWaistCircumference() {
+    return SharedPreferencesAsync().getDouble('WaistCircumference');
   }
 
   /// Saves the user's hip circumference.
-  Future<void> updateHipCircumference(double value) {
-    return SharedPreferencesAsync().setDouble('hipCircumference', value);
+  Future<void> updateWaistCircumference(double value) {
+    return SharedPreferencesAsync().setDouble('WaistCircumference', value);
   }
 }
