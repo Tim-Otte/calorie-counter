@@ -1,3 +1,4 @@
+import 'package:drift/native.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,13 +9,20 @@ part 'database.g.dart';
 
 @DriftDatabase(tables: [Product, ServingSize, Consumption])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase({bool? forTesting}) : super(_openConnection(forTesting ?? false));
 
   @override
   int get schemaVersion => 1;
 
-  static QueryExecutor _openConnection() {
-    return driftDatabase(name: 'calorie_counter_db');
+  static QueryExecutor _openConnection(bool forTesting) {
+    if (forTesting) {
+      return DatabaseConnection(
+        NativeDatabase.memory(),
+        closeStreamsSynchronously: true,
+      );
+    } else {
+      return driftDatabase(name: 'calorie_counter_db');
+    }
   }
 
   /// Creates default serving sizes in the database.

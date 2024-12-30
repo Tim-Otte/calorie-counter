@@ -87,6 +87,7 @@ class _MainLayoutState extends State<MainLayout> {
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
+                  key: ValueKey('btn_add_any_meal'),
                   style: IconButton.styleFrom(
                     backgroundColor: theme.colorScheme.secondaryContainer,
                     foregroundColor: theme.colorScheme.onSecondaryContainer,
@@ -167,6 +168,7 @@ class _MainLayoutState extends State<MainLayout> {
           AnimatedCrossFade(
             duration: Duration(milliseconds: 300),
             firstChild: IconButton.filledTonal(
+              key: ValueKey('bottom_nav_${index}_active'),
               icon: Icon(icon, fill: 1),
               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
               visualDensity: VisualDensity.compact,
@@ -174,6 +176,7 @@ class _MainLayoutState extends State<MainLayout> {
               onPressed: () => setState(() => _currentPage = index),
             ),
             secondChild: IconButton(
+              key: ValueKey('bottom_nav_$index'),
               icon: Icon(icon),
               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
               visualDensity: VisualDensity.compact,

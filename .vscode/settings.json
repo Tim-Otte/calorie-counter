@@ -1,6 +1,7 @@
 {
     "dart.flutterGenerateLocalizationsOnSave": "manualIfDirty",
     "arb-editor.suppressedWarnings": "all",
+    "dart.additionalAnalyzerFileExtensions": [ "drift" ],
     "dart.analysisServerFolding": false,
     "dart.analyzeAngularTemplates": false,
     "dart.useLegacyAnalyzerProtocol": false,
