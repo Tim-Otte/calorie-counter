@@ -35,6 +35,15 @@ class SettingsController with ChangeNotifier {
   Gender? get gender => _gender;
   DateTime? get dateOfBirth => _dateOfBirth;
 
+  int? get age {
+    if (dateOfBirth == null) return null;
+
+    const avgLengthOfYear = 365.2425;
+
+    return (DateTime.now().difference(dateOfBirth!).inDays / avgLengthOfYear)
+        .floor();
+  }
+
   double? get height => _height;
   String? get heightString {
     if (height == null) return null;

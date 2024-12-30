@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -26,14 +29,7 @@ class TodayPage extends StatelessWidget {
           padding: const EdgeInsets.all(15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              MealType.breakfast,
-              MealType.lunch,
-              MealType.dinner,
-              MealType.snack,
-              MealType.drink,
-              MealType.other,
-            ]
+            children: MealType.values
                 .map(
                   (mealType) => _getConsumptionEntriesForMealType(
                     context,
@@ -77,95 +73,106 @@ class TodayPage extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.only(bottom: 15),
-      child: Card.outlined(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(15, 10, 10, 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Wrap(
-                      spacing: 7,
-                      crossAxisAlignment: WrapCrossAlignment.center,
+      child: StreamBuilder(
+        stream: database.getConsumptionEntriesForToday(mealType: mealType),
+        builder: (context, consumptionSnapshot) => Card.outlined(
+          child: InkWell(
+            borderRadius: BorderRadius.circular(15),
+            onTap: consumptionSnapshot.data?.isEmpty ?? true
+                ? () => _addMealForMealType(context, mealType)
+                : null,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(15, 10, 10, 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(
-                          _getIconForMealType(mealType),
-                          size: 16,
-                          color: theme.colorScheme.primary,
+                        Wrap(
+                          spacing: 7,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Icon(
+                              _getIconForMealType(mealType),
+                              size: 16,
+                              color: theme.colorScheme.primary,
+                            ),
+                            Text(
+                              Translator.getTranslation(context, mealType),
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: theme.colorScheme.primary,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          Translator.getTranslation(context, mealType),
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: theme.colorScheme.primary,
+                        IconButton(
+                          icon: Icon(
+                            Symbols.add_rounded,
+                            color: theme.colorScheme.secondary,
                           ),
+                          style: IconButton.styleFrom(
+                            minimumSize: Size.zero,
+                            padding: EdgeInsets.all(2.5),
+                            iconSize: 20,
+                            fixedSize: Size.square(25),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          onPressed: () {
+                            _addMealForMealType(context, mealType);
+                          },
                         ),
                       ],
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Symbols.add_rounded,
-                        color: theme.colorScheme.secondary,
-                      ),
-                      style: IconButton.styleFrom(
-                        minimumSize: Size.zero,
-                        padding: EdgeInsets.all(2.5),
-                        iconSize: 20,
-                        fixedSize: Size.square(25),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        visualDensity: VisualDensity.compact,
-                      ),
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SearchProductPage(
-                            onlyLiquids: mealType == MealType.drink,
-                            onSelect: (product) => Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddMealPage(
-                                  product: product,
-                                  mealType: mealType,
-                                ),
-                              ),
-                            ),
+                  ),
+                  consumptionSnapshot.data?.isNotEmpty ?? false
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          primary: false,
+                          itemCount: consumptionSnapshot.data?.length ?? 0,
+                          itemBuilder: (context, index) => _getConsumptionEntry(
+                            context,
+                            localizations,
+                            database,
+                            consumptionSnapshot.data![index],
+                          ),
+                        )
+                      : Text(
+                          localizations.nothingConsumedYet,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.textTheme.bodyMedium?.color
+                                ?.useOpacity(0.9),
+                            fontStyle: FontStyle.italic,
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
+                ],
               ),
-              StreamBuilder(
-                stream:
-                    database.getConsumptionEntriesForToday(mealType: mealType),
-                builder: (context, consumptionSnapshot) =>
-                    consumptionSnapshot.data?.isNotEmpty ?? false
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            primary: false,
-                            itemCount: consumptionSnapshot.data?.length ?? 0,
-                            itemBuilder: (context, index) =>
-                                _getConsumptionEntry(
-                              context,
-                              localizations,
-                              database,
-                              consumptionSnapshot.data![index],
-                            ),
-                          )
-                        : Text(
-                            localizations.nothingConsumedYet,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.textTheme.bodyMedium?.color
-                                  ?.useOpacity(0.9),
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _addMealForMealType(BuildContext context, MealType mealType) {
+    unawaited(HapticFeedback.selectionClick());
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchProductPage(
+          onlyLiquids: mealType == MealType.drink,
+          onSelect: (product) => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddMealPage(
+                product: product,
+                mealType: mealType,
               ),
-            ],
+            ),
           ),
         ),
       ),

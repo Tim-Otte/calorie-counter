@@ -25,7 +25,6 @@ class SettingsPage extends StatelessWidget {
     return FutureBuilder(
       future: DeviceInfoPlugin().androidInfo,
       builder: (context, androidInfoSnapshot) => MaterialSettingsSection(
-        margin: const EdgeInsetsDirectional.all(10),
         title: Text(localizations.settingsGeneralSection),
         tiles: [
           MaterialBasicSettingsTile(
@@ -105,7 +104,6 @@ class SettingsPage extends StatelessWidget {
       future: PackageInfo.fromPlatform(),
       builder: (context, packageInfoSnapshot) => MaterialSettingsSection(
         title: Text(localizations.settingsAboutSection),
-        margin: const EdgeInsetsDirectional.all(10),
         tiles: [
           MaterialBasicSettingsTile(
             prefix: const Icon(Symbols.tag_rounded),

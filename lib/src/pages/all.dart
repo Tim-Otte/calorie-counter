@@ -1,3 +1,4 @@
+export 'about_personal_data.dart';
 export 'add_meal.dart';
 export 'add_product.dart';
 export 'monthly_overview.dart';

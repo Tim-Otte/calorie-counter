@@ -113,6 +113,8 @@
   "profileHeight": "Height",
   "profileWeight": "Weight",
   "profileWaistCircumference": "Waist circumference",
+  "profileDataUsageTitle": "Why we ask for your data...",
+  "profileDataUsageSubtitle": "...and how we use it for your benefit",
 
   "aboutPersonalDataTitle": "About personal information",
   "aboutPersonalDataGenderTitle": "Sex",

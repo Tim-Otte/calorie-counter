@@ -113,6 +113,8 @@
   "profileHeight": "Körpergröße",
   "profileWeight": "Gewicht",
   "profileWaistCircumference": "Taillenumfang",
+  "profileDataUsageTitle": "Warum wir Daten abfragen...",
+  "profileDataUsageSubtitle": "...und wofür sie genutzt werden",
 
   "aboutPersonalDataTitle": "Persönliche Informationen",
   "aboutPersonalDataGenderTitle": "Geschlecht",

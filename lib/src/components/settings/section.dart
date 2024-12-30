@@ -6,12 +6,12 @@ class MaterialSettingsSection extends StatelessWidget {
   const MaterialSettingsSection({
     super.key,
     required this.tiles,
-    required this.margin,
+    this.margin,
     this.title,
   });
 
   final List<MaterialSettingsTile> tiles;
-  final EdgeInsetsDirectional? margin;
+  final EdgeInsets? margin;
   final Widget? title;
 
   @override
@@ -23,14 +23,19 @@ class MaterialSettingsSection extends StatelessWidget {
     final tileList = buildTileList();
 
     if (title == null) {
-      return tileList;
+      return Padding(
+        padding: margin ?? EdgeInsets.zero,
+        child: tileList,
+      );
     }
 
     final theme = Theme.of(context);
     final textScaler = MediaQuery.of(context).textScaler;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: textScaler.scale(20)),
+      padding: (margin ?? EdgeInsets.zero).copyWith(
+        bottom: textScaler.scale(20),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
