@@ -8,6 +8,7 @@ version: 1.0.0+1
 
 environment:
   sdk: '>=3.0.1 <4.0.0'
+  flutter: 3.27.1
 
 dependencies:
   cached_network_image: ^3.4.1
