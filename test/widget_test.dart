@@ -16,7 +16,7 @@ void main() {
     late SettingsController settingsController;
     late AppDatabase database;
 
-    setUpAll(() {
+    setUp(() {
       SharedPreferencesAsyncPlatform.instance =
           InMemorySharedPreferencesAsync.empty();
 
@@ -39,7 +39,7 @@ void main() {
             Provider(create: (_) => foodFactService),
             ChangeNotifierProvider(create: (_) => settingsController),
           ],
-          child: MyApp(settingsController: settingsController),
+          child: MyApp(),
         ),
       );
 
@@ -57,7 +57,7 @@ void main() {
             Provider(create: (_) => foodFactService),
             ChangeNotifierProvider(create: (_) => settingsController),
           ],
-          child: MyApp(settingsController: settingsController),
+          child: MyApp(),
         ),
       );
 
@@ -76,7 +76,7 @@ void main() {
             Provider(create: (_) => foodFactService),
             ChangeNotifierProvider(create: (_) => settingsController),
           ],
-          child: MyApp(settingsController: settingsController),
+          child: MyApp(),
         ),
       );
 
@@ -96,7 +96,7 @@ void main() {
             Provider(create: (_) => foodFactService),
             ChangeNotifierProvider(create: (_) => settingsController),
           ],
-          child: MyApp(settingsController: settingsController),
+          child: MyApp(),
         ),
       );
 
@@ -116,7 +116,7 @@ void main() {
             Provider(create: (_) => foodFactService),
             ChangeNotifierProvider(create: (_) => settingsController),
           ],
-          child: MyApp(settingsController: settingsController),
+          child: MyApp(),
         ),
       );
 

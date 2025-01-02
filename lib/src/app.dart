@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
+import 'package:provider/provider.dart';
 
 import 'controllers/settings_controller.dart';
 import 'layout.dart';
@@ -10,16 +11,14 @@ import 'theme.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
-  const MyApp({
-    super.key,
-    required this.settingsController,
-  });
+  const MyApp({super.key});
 
   final bool useMaterial3 = true;
-  final SettingsController settingsController;
 
   @override
   Widget build(BuildContext context) {
+    final settingsController = Provider.of<SettingsController>(context);
+
     // Glue the SettingsController to the MaterialApp.
     //
     // The AnimatedBuilder Widget listens to the SettingsController for changes.
@@ -69,7 +68,7 @@ class MyApp extends StatelessWidget {
 
             debugShowCheckedModeBanner: false,
 
-            home: MainLayout(settingsController: settingsController),
+            home: MainLayout(),
           ),
         );
       },

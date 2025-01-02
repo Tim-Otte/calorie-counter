@@ -6,14 +6,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-import 'controllers/settings_controller.dart';
 import 'data/all.dart' show AppDatabase;
 import 'pages/all.dart';
 
 class MainLayout extends StatefulWidget {
-  const MainLayout({super.key, required this.settingsController});
-
-  final SettingsController settingsController;
+  const MainLayout({super.key});
 
   @override
   State<MainLayout> createState() => _MainLayoutState();
@@ -37,7 +34,7 @@ class _MainLayoutState extends State<MainLayout> {
         child: <Widget>[
           const TodayPage(),
           const MonthlyOverviewPage(),
-          ProfilePage(controller: widget.settingsController),
+          const ProfilePage(),
         ].elementAt(_currentPage),
       ),
       bottomNavigationBar: BottomAppBar(

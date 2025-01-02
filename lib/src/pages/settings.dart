@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../components/all.dart';
@@ -14,14 +15,15 @@ import '../services/all.dart';
 import '../tools/all.dart';
 
 class SettingsPage extends StatelessWidget {
-  final SettingsController _controller;
-
-  const SettingsPage({super.key, required SettingsController controller})
-      : _controller = controller;
+  const SettingsPage({super.key});
 
   /// Get the settings section for the general settings
   Widget _getGeneralSettingsSection(
-      BuildContext context, AppLocalizations localizations) {
+    BuildContext context,
+    AppLocalizations localizations,
+  ) {
+    final settingsController = Provider.of<SettingsController>(context);
+
     return FutureBuilder(
       future: DeviceInfoPlugin().androidInfo,
       builder: (context, androidInfoSnapshot) => MaterialSettingsSection(
@@ -31,65 +33,65 @@ class SettingsPage extends StatelessWidget {
             prefix: const Icon(Symbols.palette_rounded),
             title: Text(localizations.settingTheme),
             value: Text(
-              Translator.getTranslation(context, _controller.themeMode),
+              Translator.getTranslation(context, settingsController.themeMode),
             ),
             onTap: (context) async {
               var result = await showDialog<ThemeMode>(
                 context: context,
                 builder: (context) => ThemeModeDialog(
-                  currentValue: _controller.themeMode,
+                  currentValue: settingsController.themeMode,
                 ),
               );
-              _controller.updateThemeMode(result);
+              settingsController.updateThemeMode(result);
             },
           ),
           MaterialSwitchSettingsTile(
             prefix: const Icon(Symbols.format_paint_rounded),
             title: Text(localizations.settingMaterialYou),
             description: Text(localizations.settingMaterialYouSubtitle),
-            value: _controller.useMaterialYou,
+            value: settingsController.useMaterialYou,
             enabled: androidInfoSnapshot.hasData &&
                 androidInfoSnapshot.data!.getMajorVersion() >= 12,
-            onToggle: (value) => _controller.updateUseMaterialYou(value),
+            onToggle: (value) => settingsController.updateUseMaterialYou(value),
           ),
           MaterialBasicSettingsTile(
             prefix: const Icon(Symbols.translate_rounded),
             title: Text(localizations.settingLanguage),
             value: Text(
-              _controller.locale != null
+              settingsController.locale != null
                   ? LocaleNames.of(context)!
-                      .nameOf(_controller.locale!.languageCode)!
+                      .nameOf(settingsController.locale!.languageCode)!
                   : localizations.systemDefault,
             ),
             onTap: (context) async {
               var result = await showDialog<String?>(
                 context: context,
                 builder: (context) => LanguageDialog(
-                  currentLocale: _controller.locale?.languageCode ??
+                  currentLocale: settingsController.locale?.languageCode ??
                       localizations.localeName,
                 ),
               );
-              _controller.updateLocale(result);
+              settingsController.updateLocale(result);
             },
           ),
           MaterialBasicSettingsTile(
             prefix: const Icon(Symbols.straighten_rounded),
             title: Text(localizations.settingMeasurementUnit),
             value: Text(
-              _controller.measurementUnit != null
+              settingsController.measurementUnit != null
                   ? Translator.getTranslation(
-                      context, _controller.measurementUnit)
+                      context, settingsController.measurementUnit)
                   : localizations.notSet,
             ),
             onTap: (context) async {
               var result = await showDialog<MeasurementUnit>(
                 context: context,
                 builder: (context) => MeasurementUnitDialog(
-                  currentValue:
-                      _controller.measurementUnit ?? MeasurementUnit.metric,
+                  currentValue: settingsController.measurementUnit ??
+                      MeasurementUnit.metric,
                 ),
               );
-              _controller.updateMeasurementUnit(result);
+              settingsController.updateMeasurementUnit(result);
             },
           )
         ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:provider/provider.dart';
 
 import 'all.dart' show SettingsPage, AboutPersonalDataPage;
 import '../components/all.dart';
@@ -10,13 +11,11 @@ import '../data/all.dart';
 import '../tools/all.dart';
 
 class ProfilePage extends StatelessWidget {
-  final SettingsController _controller;
-
-  const ProfilePage({super.key, required SettingsController controller})
-      : _controller = controller;
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final settingsController = Provider.of<SettingsController>(context);
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
@@ -34,7 +33,7 @@ class ProfilePage extends StatelessWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SettingsPage(controller: _controller),
+                builder: (context) => SettingsPage(),
               ),
             ),
           ),
@@ -51,8 +50,9 @@ class ProfilePage extends StatelessWidget {
                   prefix: const Icon(Symbols.person_play_rounded),
                   title: Text(localizations.profileGender),
                   value: Text(
-                    _controller.gender != null
-                        ? Translator.getTranslation(context, _controller.gender)
+                    settingsController.gender != null
+                        ? Translator.getTranslation(
+                            context, settingsController.gender)
                         : localizations.notSet,
                   ),
                   disableSuffixPadding: true,
@@ -60,88 +60,91 @@ class ProfilePage extends StatelessWidget {
                     var result = await showDialog<Gender>(
                       context: context,
                       builder: (context) => GenderDialog(
-                        currentValue:
-                            _controller.gender ?? Gender.values.pickRandom(),
+                        currentValue: settingsController.gender ??
+                            Gender.values.pickRandom(),
                       ),
                     );
-                    _controller.updateGender(result);
+                    settingsController.updateGender(result);
                   },
                 ),
                 MaterialBasicSettingsTile(
                   prefix: const Icon(Symbols.calendar_month_rounded),
                   title: Text(localizations.profileDateOfBirth),
                   description: Text(
-                    _controller.dateOfBirth != null
+                    settingsController.dateOfBirth != null
                         ? localizations.profileDateOfBirthValue(
-                            _controller.dateOfBirth!,
-                            _controller.age!,
+                            settingsController.dateOfBirth!,
+                            settingsController.age!,
                           )
                         : localizations.notSet,
                   ),
                   onTap: (context) async {
                     var result = await showDatePicker(
                       context: context,
-                      initialDatePickerMode: _controller.dateOfBirth == null
-                          ? DatePickerMode.year
-                          : DatePickerMode.day,
+                      initialDatePickerMode:
+                          settingsController.dateOfBirth == null
+                              ? DatePickerMode.year
+                              : DatePickerMode.day,
                       firstDate: DateTime(
                           DateTime.now().year - 100, DateTime.january, 1),
                       lastDate:
                           DateTime.now().subtract(const Duration(days: 365)),
-                      initialDate: _controller.dateOfBirth,
+                      initialDate: settingsController.dateOfBirth,
                     );
-                    _controller.updateDateOfBirth(result);
+                    settingsController.updateDateOfBirth(result);
                   },
                 ),
                 MaterialBasicSettingsTile(
                   prefix: const Icon(Symbols.height_rounded),
                   title: Text(localizations.profileHeight),
-                  description:
-                      Text(_controller.heightString ?? localizations.notSet),
+                  description: Text(
+                      settingsController.heightString ?? localizations.notSet),
                   onTap: (context) async {
                     var result = await showDialog<double>(
                       context: context,
                       builder: (context) => HeightInputDialog(
-                        measurementUnit: _controller.measurementUnit ??
+                        measurementUnit: settingsController.measurementUnit ??
                             MeasurementUnit.metric,
-                        currentValue: _controller.height ?? 0,
+                        currentValue: settingsController.height ?? 0,
                       ),
                     );
-                    _controller.updateHeight(result);
+                    settingsController.updateHeight(result);
                   },
                 ),
                 MaterialBasicSettingsTile(
                   prefix: const Icon(Symbols.scale_rounded),
                   title: Text(localizations.profileWeight),
-                  description:
-                      Text(_controller.weightString ?? localizations.notSet),
+                  description: Text(
+                      settingsController.weightString ?? localizations.notSet),
                   onTap: (context) async {
                     var result = await showDialog<double>(
                       context: context,
                       builder: (context) => WeightInputDialog(
-                        measurementUnit: _controller.measurementUnit ??
+                        measurementUnit: settingsController.measurementUnit ??
                             MeasurementUnit.metric,
-                        currentValue: _controller.weight ?? 0,
+                        currentValue: settingsController.weight ?? 0,
                       ),
                     );
-                    _controller.updateWeight(result);
+                    settingsController.updateWeight(result);
                   },
                 ),
                 MaterialBasicSettingsTile(
                   prefix: const Icon(Symbols.measuring_tape_rounded),
                   title: Text(localizations.profileWaistCircumference),
-                  description: Text(_controller.waistCircumferenceString ??
-                      localizations.notSet),
+                  description: Text(
+                      settingsController.waistCircumferenceString ??
+                          localizations.notSet),
                   onTap: (context) async {
                     var result = await showDialog<double>(
                       context: context,
                       builder: (context) => WaistCircumferenceInputDialog(
-                        measurementUnit: _controller.measurementUnit ??
+                        measurementUnit: settingsController.measurementUnit ??
                             MeasurementUnit.metric,
-                        currentValue: _controller.waistCircumference ?? 0,
+                        currentValue:
+                            settingsController.waistCircumference ?? 0,
                       ),
                     );
-                    _controller.updateWaistCircumference(result);
+                    settingsController.updateWaistCircumference(result);
                   },
                 ),
               ],

@@ -319,16 +319,14 @@ class TodayPage extends StatelessWidget {
                             consumptionSnapshot.data![index],
                           ),
                         )
-                      : (consumptionSnapshot.data == null
-                          ? LinearProgressIndicator()
-                          : Text(
-                              localizations.nothingConsumedYet,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.textTheme.bodyMedium?.color
-                                    ?.useOpacity(0.9),
-                                fontStyle: FontStyle.italic,
-                              ),
-                            )),
+                      : Text(
+                          localizations.nothingConsumedYet,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.textTheme.bodyMedium?.color
+                                ?.useOpacity(0.9),
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
                 ],
               ),
             ),
