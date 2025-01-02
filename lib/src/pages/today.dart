@@ -26,6 +26,7 @@ class TodayPage extends StatelessWidget {
     final titleTheme = Theme.of(context).textTheme.titleMedium;
 
     return Scaffold(
+      restorationId: 'today_page',
       appBar: AppBar(
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.end,

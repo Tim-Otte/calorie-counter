@@ -234,18 +234,26 @@ class SettingsController with ChangeNotifier {
     }
   }
 
+  /// Calculates the daily carbohydrate intake range (45% to 65% of TDEE).
+  /// Returns the range in grams.
   ({double min, double max}) calculateMinMaxDailyCarbs() {
     return _calcMinMax(calculateTDEE(), 0.45, 0.65, 4);
   }
 
+  /// Calculates the daily fat intake range (20% to 35% of TDEE).
+  /// Returns the range in grams.
   ({double min, double max}) calculateMinMaxDailyFats() {
     return _calcMinMax(calculateTDEE(), 0.2, 0.35, 9);
   }
 
+  /// Calculates the daily protein intake range (10% to 35% of TDEE).
+  /// Returns the range in grams.
   ({double min, double max}) calculateMinMaxDailyProteins() {
     return _calcMinMax(calculateTDEE(), 0.1, 0.35, 4);
   }
 
+  /// Calculates an allowed range of any nutriment based on the user's TDEE
+  ///  and the calories per gram for that nutriment.
   ({double min, double max}) _calcMinMax(
     double caloriesPerDay,
     double minPercentage,

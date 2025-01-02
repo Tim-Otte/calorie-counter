@@ -200,7 +200,11 @@ class AppDatabase extends _$AppDatabase {
     }
 
     return (select(servingSize)
-          ..where((tbl) => tbl.forProduct.equals(productCode)))
+          ..where((tbl) => tbl.forProduct.equals(productCode))
+          ..orderBy([
+            (tbl) => OrderingTerm.asc(tbl.valueInBaseServingSize),
+            (tbl) => OrderingTerm.asc(tbl.name)
+          ]))
         .get();
   }
 
@@ -264,7 +268,8 @@ class AppDatabase extends _$AppDatabase {
       innerJoin(
           servingSize, servingSize.id.equalsExp(consumption.servingSizeId)),
     ])
-      ..where(consumption.loggedOn.isBetweenValues(startOfDay, endOfDay)));
+      ..where(consumption.loggedOn.isBetweenValues(startOfDay, endOfDay))
+      ..orderBy([OrderingTerm.asc(consumption.loggedOn)]));
 
     if (mealType != null) {
       query.where(consumption.mealType.equalsValue(mealType));
