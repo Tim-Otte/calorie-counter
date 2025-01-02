@@ -9,6 +9,7 @@ import '../components/all.dart' as c;
 import '../controllers/settings_controller.dart';
 import '../extensions/all.dart';
 import '../data/all.dart';
+import '../tools/all.dart';
 
 class AddMealPage extends StatefulWidget {
   const AddMealPage({
@@ -159,28 +160,32 @@ class _AddMealPageState extends State<AddMealPage> {
                   const Divider(),
                   _getNutrimentBox(
                     theme,
-                    Symbols.mode_heat_rounded,
+                    NutrimentIcons.calories,
+                    NutrimentColors.calories,
                     localizations.calories,
                     _product?.caloriesPer100Units ?? 0,
                     'kcal',
                   ),
                   _getNutrimentBox(
                     theme,
-                    Symbols.nutrition_rounded,
+                    NutrimentIcons.carbs,
+                    NutrimentColors.carbs,
                     localizations.carbs,
                     _product?.carbsPer100Units ?? 0,
                     'g',
                   ),
                   _getNutrimentBox(
                     theme,
-                    Symbols.water_drop_rounded,
+                    NutrimentIcons.fats,
+                    NutrimentColors.fats,
                     localizations.fats,
                     _product?.fatPer100Units ?? 0,
                     'g',
                   ),
                   _getNutrimentBox(
                     theme,
-                    Symbols.exercise_rounded,
+                    NutrimentIcons.proteins,
+                    NutrimentColors.proteins,
                     localizations.proteins,
                     _product?.proteinsPer100Units ?? 0,
                     'g',
@@ -193,8 +198,8 @@ class _AddMealPageState extends State<AddMealPage> {
               padding: const EdgeInsets.only(left: 20, right: 20, top: 25),
               child: Card.filled(
                 color: theme.colorScheme.primary.useOpacity(0.1),
-                child: FutureBuilder(
-                  future: database.calculateTotalNutrimentsForToday(
+                child: StreamBuilder(
+                  stream: database.calculateTotalNutrimentsForToday(
                     withoutConsumptionId: widget.consumption?.consumption.id,
                   ),
                   builder: (context, nutrimentSnapshot) => Padding(
@@ -209,39 +214,39 @@ class _AddMealPageState extends State<AddMealPage> {
                         ),
                         _getNutrimentBar(
                           theme,
-                          Symbols.mode_heat_rounded,
+                          NutrimentIcons.calories,
                           false,
-                          const Color(0xFFFF8C00),
+                          NutrimentColors.calories,
                           nutrimentSnapshot.data?.calories ?? 0,
                           _product?.caloriesPer100Units ?? 0,
                           settingsController.calculateMaxDailyCalories(),
                         ),
                         _getNutrimentBar(
                           theme,
-                          Symbols.nutrition_rounded,
+                          NutrimentIcons.carbs,
                           false,
-                          const Color(0xFF32CD32),
+                          NutrimentColors.carbs,
                           nutrimentSnapshot.data?.carbs ?? 0,
                           _product?.carbsPer100Units ?? 0,
-                          500,
+                          settingsController.calculateMinMaxDailyCarbs().max,
                         ),
                         _getNutrimentBar(
                           theme,
-                          Symbols.water_drop_rounded,
+                          NutrimentIcons.fats,
                           true,
-                          const Color(0xFFF5D000),
+                          NutrimentColors.fats,
                           nutrimentSnapshot.data?.fats ?? 0,
                           _product?.fatPer100Units ?? 0,
-                          50,
+                          settingsController.calculateMinMaxDailyFats().max,
                         ),
                         _getNutrimentBar(
                           theme,
-                          Symbols.exercise_rounded,
+                          NutrimentIcons.proteins,
                           false,
-                          const Color(0xFF1E90FF),
+                          NutrimentColors.proteins,
                           nutrimentSnapshot.data?.proteins ?? 0,
                           _product?.proteinsPer100Units ?? 0,
-                          50,
+                          settingsController.calculateMinMaxDailyProteins().max,
                         ),
                       ],
                     ),
@@ -347,6 +352,7 @@ class _AddMealPageState extends State<AddMealPage> {
   Widget _getNutrimentBox(
     ThemeData theme,
     IconData icon,
+    Color color,
     String label,
     double value,
     String servingShort,
@@ -364,7 +370,7 @@ class _AddMealPageState extends State<AddMealPage> {
         children: [
           Icon(
             icon,
-            color: theme.colorScheme.primary,
+            color: color,
             size: 28,
           ),
           Column(

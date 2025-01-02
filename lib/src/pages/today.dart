@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gauge_indicator/gauge_indicator.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 import 'all.dart' show AddMealPage, SearchProductPage;
 import '../components/all.dart';
+import '../controllers/settings_controller.dart';
 import '../data/all.dart' show AppDatabase, ConsumptionEntry, MealType;
 import '../extensions/all.dart';
 import '../tools/all.dart';
@@ -18,10 +21,24 @@ class TodayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<AppDatabase>(context);
+    final settingsController = Provider.of<SettingsController>(context);
+    final localizations = AppLocalizations.of(context)!;
+    final titleTheme = Theme.of(context).textTheme.titleMedium;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.todayPageTitle),
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(localizations.todayPageTitle),
+            Text(
+              localizations.todayPageSubtitle(DateTime.now()),
+              style: titleTheme?.copyWith(
+                color: titleTheme.color?.useOpacity(0.7),
+              ),
+            )
+          ],
+        ),
         forceMaterialTransparency: true,
       ),
       body: SingleChildScrollView(
@@ -29,17 +46,179 @@ class TodayPage extends StatelessWidget {
           padding: const EdgeInsets.all(15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: MealType.values
-                .map(
-                  (mealType) => _getConsumptionEntriesForMealType(
-                    context,
-                    database,
-                    mealType,
-                  ),
-                )
-                .toList(),
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 10, right: 10, bottom: 20),
+                child: StreamBuilder(
+                  stream: database.calculateTotalNutrimentsForToday(),
+                  builder: (context, snapshot) => snapshot.hasData
+                      ? Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            _getNutrimentGauge(
+                              context,
+                              NutrimentColors.calories,
+                              NutrimentIcons.calories,
+                              localizations.calories,
+                              snapshot.data?.calories ?? 0,
+                              0,
+                              settingsController.calculateMaxDailyCalories(),
+                              'kcal',
+                            ),
+                            _getNutrimentGauge(
+                              context,
+                              NutrimentColors.carbs,
+                              NutrimentIcons.carbs,
+                              localizations.carbs,
+                              snapshot.data?.carbs ?? 0,
+                              settingsController
+                                  .calculateMinMaxDailyCarbs()
+                                  .min,
+                              settingsController
+                                  .calculateMinMaxDailyCarbs()
+                                  .max,
+                              'g',
+                            ),
+                            _getNutrimentGauge(
+                              context,
+                              NutrimentColors.fats,
+                              NutrimentIcons.fats,
+                              localizations.fats,
+                              snapshot.data?.fats ?? 0,
+                              settingsController.calculateMinMaxDailyFats().min,
+                              settingsController.calculateMinMaxDailyFats().max,
+                              'g',
+                            ),
+                            _getNutrimentGauge(
+                              context,
+                              NutrimentColors.proteins,
+                              NutrimentIcons.proteins,
+                              localizations.proteins,
+                              snapshot.data?.proteins ?? 0,
+                              settingsController
+                                  .calculateMinMaxDailyProteins()
+                                  .min,
+                              settingsController
+                                  .calculateMinMaxDailyProteins()
+                                  .max,
+                              'g',
+                            ),
+                          ],
+                        )
+                      : SizedBox(
+                          height: 90,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                ),
+              ),
+              ...MealType.values.map(
+                (mealType) => _getConsumptionEntriesForMealType(
+                  context,
+                  database,
+                  mealType,
+                ),
+              )
+            ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _getNutrimentGauge(
+    BuildContext context,
+    Color color,
+    IconData icon,
+    String label,
+    double value,
+    double min,
+    double max,
+    String unit,
+  ) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        FractionallySizedBox(
+          widthFactor: 0.2,
+          child: _getGauge(
+            context,
+            color,
+            value,
+            min,
+            max,
+            icon,
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          label,
+          style: textTheme.labelSmall,
+        ),
+        Text(
+          '${value.toInt()} / ${max.toInt()} $unit',
+          style: textTheme.labelSmall?.copyWith(
+            color: textTheme.labelSmall?.color?.useOpacity(0.7),
+          ),
+          textScaler: TextScaler.linear(0.9),
+        )
+      ],
+    );
+  }
+
+  Widget _getGauge(
+    BuildContext context,
+    Color color,
+    double value,
+    double min,
+    double max,
+    IconData icon,
+  ) {
+    final theme = Theme.of(context);
+
+    return AnimatedRadialGauge(
+      duration: const Duration(seconds: 1),
+      curve: Curves.elasticOut,
+      radius: 100,
+      value: value,
+      axis: GaugeAxis(
+        min: 0,
+        max: math.max(max == 0 ? 1 : max, value),
+        degrees: 220,
+        style: GaugeAxisStyle(
+          thickness: 5,
+          background: min == 0
+              ? theme.colorScheme.surfaceContainerHighest
+              : Colors.transparent,
+          segmentSpacing: 5,
+        ),
+        segments: min == 0
+            ? []
+            : [
+                GaugeSegment(
+                  from: 0,
+                  to: min,
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  cornerRadius: Radius.circular(10),
+                ),
+                GaugeSegment(
+                  from: min,
+                  to: max,
+                  color: theme.colorScheme.surfaceContainerHigh,
+                  cornerRadius: Radius.circular(10),
+                ),
+              ],
+        progressBar: GaugeProgressBar.rounded(
+          color: color,
+        ),
+        pointer: null,
+      ),
+      builder: (context, child, value) => Icon(
+        icon,
+        color: color.useOpacity(0.8),
       ),
     );
   }
@@ -78,7 +257,7 @@ class TodayPage extends StatelessWidget {
         builder: (context, consumptionSnapshot) => Card.outlined(
           child: InkWell(
             borderRadius: BorderRadius.circular(15),
-            onTap: consumptionSnapshot.data?.isEmpty ?? true
+            onTap: consumptionSnapshot.data?.isEmpty ?? false
                 ? () => _addMealForMealType(context, mealType)
                 : null,
             child: Padding(
@@ -140,14 +319,16 @@ class TodayPage extends StatelessWidget {
                             consumptionSnapshot.data![index],
                           ),
                         )
-                      : Text(
-                          localizations.nothingConsumedYet,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.textTheme.bodyMedium?.color
-                                ?.useOpacity(0.9),
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
+                      : (consumptionSnapshot.data == null
+                          ? LinearProgressIndicator()
+                          : Text(
+                              localizations.nothingConsumedYet,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.textTheme.bodyMedium?.color
+                                    ?.useOpacity(0.9),
+                                fontStyle: FontStyle.italic,
+                              ),
+                            )),
                 ],
               ),
             ),

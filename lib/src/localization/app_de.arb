@@ -22,6 +22,15 @@
   "appTitle": "Kalorienzähler",
 
   "todayPageTitle": "Heute",
+  "todayPageSubtitle": ", {date}",
+  "@todayPageSubtitle": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "MMMMd"
+      }
+    }
+  },
   "nothingConsumedYet": "Noch nichts eingetragen...",
 
   "monthlyOverviewPageTitle": "Kalender",

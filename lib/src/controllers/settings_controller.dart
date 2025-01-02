@@ -193,9 +193,8 @@ class SettingsController with ChangeNotifier {
   ///
   /// Returns the calculated maximum daily calories as a double.
   double calculateMaxDailyCalories() {
-    double calories = (9.99 * (weight ?? 0)) +
-        (6.25 * (height ?? 0)) -
-        (4.92 * (DateTime.now().year - (dateOfBirth?.year ?? 0)));
+    double calories =
+        (9.99 * (weight ?? 0)) + (6.25 * (height ?? 0)) - (4.92 * (age ?? 0));
 
     if (gender == Gender.male) {
       return calories + 5;
@@ -204,5 +203,29 @@ class SettingsController with ChangeNotifier {
     } else {
       return calories;
     }
+  }
+
+  ({double min, double max}) calculateMinMaxDailyCarbs() {
+    return _calcMinMax(calculateMaxDailyCalories(), 0.45, 0.65, 4);
+  }
+
+  ({double min, double max}) calculateMinMaxDailyFats() {
+    return _calcMinMax(calculateMaxDailyCalories(), 0.2, 0.35, 9);
+  }
+
+  ({double min, double max}) calculateMinMaxDailyProteins() {
+    return _calcMinMax(calculateMaxDailyCalories(), 0.1, 0.35, 4);
+  }
+
+  ({double min, double max}) _calcMinMax(
+    double caloriesPerDay,
+    double minPercentage,
+    double maxPercentage,
+    double caloriesPerGram,
+  ) {
+    return (
+      min: caloriesPerDay * minPercentage / caloriesPerGram,
+      max: caloriesPerDay * maxPercentage / caloriesPerGram
+    );
   }
 }

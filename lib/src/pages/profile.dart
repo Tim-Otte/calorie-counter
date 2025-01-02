@@ -81,7 +81,9 @@ class ProfilePage extends StatelessWidget {
                   onTap: (context) async {
                     var result = await showDatePicker(
                       context: context,
-                      initialDatePickerMode: DatePickerMode.year,
+                      initialDatePickerMode: _controller.dateOfBirth == null
+                          ? DatePickerMode.year
+                          : DatePickerMode.day,
                       firstDate: DateTime(
                           DateTime.now().year - 100, DateTime.january, 1),
                       lastDate:

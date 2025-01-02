@@ -22,6 +22,15 @@
   "appTitle": "Colorie Counter",
 
   "todayPageTitle": "Today",
+  "todayPageSubtitle": ", {date}",
+  "@todayPageSubtitle": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "MMMMd"
+      }
+    }
+  },
   "nothingConsumedYet": "Nothing logged yet...",
 
   "monthlyOverviewPageTitle": "Calendar",

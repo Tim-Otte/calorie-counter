@@ -284,9 +284,9 @@ class AppDatabase extends _$AppDatabase {
   /// This method retrieves the consumption data for the current day and computes
   /// the total amount of calories, carbs, fats, and proteins consumed.
   ///
-  /// Returns a [Future] that completes with a [Nutriments] object containing
+  /// Returns a [Stream] that emits a [Nutriments] object containing
   /// the total calories, carbs, fats, and proteins consumed for today.
-  Future<Nutriments> calculateTotalNutrimentsForToday({
+  Stream<Nutriments> calculateTotalNutrimentsForToday({
     int? withoutConsumptionId,
   }) {
     final today = DateTime.now();
@@ -331,7 +331,7 @@ class AppDatabase extends _$AppDatabase {
       query = query.filter((f) => f.id.equals(withoutConsumptionId).not());
     }
 
-    return query.get().then(
+    return query.watch().map(
           (data) => data.fold<Nutriments>(
             Nutriments.empty,
             (a, b) => Nutriments(
