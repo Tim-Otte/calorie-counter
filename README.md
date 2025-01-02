@@ -15,6 +15,16 @@ A Flutter-based application for tracking daily calorie intake.
 |       :---:      |       :---:      |       :---:      |
 |  **Today page**  | **Profile page** | **Settings page**|
 
+<details>
+
+<summary>More screenshots...</summary>
+
+| <img src="imgs/product_search.png" height="300" /> | <img src="imgs/product_edit_1.png" height="300" /> | <img src="imgs/product_edit_2.png" height="300" /> | <img src="imgs/add_meal.png" height="300" /> |
+|       :---:      |       :---:      |       :---:      |       :---:      |
+|**Product search**|**Product edit 1**|**Product edit 2**|   **Add meal**   |
+
+</details>
+
 ## Getting Started
 
 1. **Clone the repository:**
@@ -45,5 +55,12 @@ A Flutter-based application for tracking daily calorie intake.
 ## Localization
 Supports multiple languages. To add more, modify the ARB files in `lib/src/localization/`.
 
+Currently supporting:
+- English
+- German
+
 ## Contributing
 Contributions are welcome. Please fork the repository and create a pull request.
+
+## Acknowledgements
+This app uses the [OpenFoodFacts](https://world.openfoodfacts.org/) food database to provide detailed nutritional information. I am very grateful for their service and the valuable data they provide.
