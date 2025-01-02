@@ -27,7 +27,12 @@ A Flutter-based application for tracking daily calorie intake.
    flutter pub get
    ```
 
-4. **Install dependencies:**
+4. **Generate the app icons:**
+   ```bash
+   flutter pub run flutter_launcher_icons
+   ```
+
+5. **Run the app:**
    ```bash
    flutter run
    ```

@@ -4,7 +4,7 @@ description: A new Flutter project.
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: '>=3.0.1 <4.0.0'
@@ -41,6 +41,7 @@ dev_dependencies:
   drift_dev: ^2.20.3
   build_runner: ^2.4.12
   shared_preferences_platform_interface: ^2.4.1
+  flutter_launcher_icons: ^0.14.2
 
 flutter:
   uses-material-design: true
