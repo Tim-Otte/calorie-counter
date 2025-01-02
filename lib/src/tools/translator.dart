@@ -67,6 +67,22 @@ class Translator {
           throw UnsupportedError(
               'There is no translation for the given meal type');
       }
+    } else if (enumValue is ActivityLevel) {
+      switch (enumValue) {
+        case ActivityLevel.sedentary:
+          return AppLocalizations.of(context)!.activityLevelSedentary;
+        case ActivityLevel.lightlyActive:
+          return AppLocalizations.of(context)!.activityLevelLightlyActive;
+        case ActivityLevel.moderatelyActive:
+          return AppLocalizations.of(context)!.activityLevelModeratelyActive;
+        case ActivityLevel.active:
+          return AppLocalizations.of(context)!.activityLevelActive;
+        case ActivityLevel.veryActive:
+          return AppLocalizations.of(context)!.activityLevelVeryActive;
+        default:
+          throw UnsupportedError(
+              'There is no translation for the given activity level');
+      }
     } else {
       throw UnsupportedError('Unsupported enum type');
     }

@@ -10,6 +10,11 @@ A Flutter-based application for tracking daily calorie intake.
 - View historical data and trends
 - Set and monitor calorie goals
 
+## Screenshots
+| <img src="imgs/today.png" height="300" /> | <img src="imgs/profile.png" height="300" /> | <img src="imgs/settings.png" height="300" /> |
+|       :---:      |       :---:      |       :---:      |
+|  **Today page**  | **Profile page** | **Settings page**|
+
 ## Getting Started
 
 1. **Clone the repository:**

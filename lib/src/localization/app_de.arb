@@ -122,6 +122,7 @@
   "profileHeight": "Körpergröße",
   "profileWeight": "Gewicht",
   "profileWaistCircumference": "Taillenumfang",
+  "profileActivityLevel": "Aktivitätslevel",
   "profileDataUsageTitle": "Warum wir Daten abfragen...",
   "profileDataUsageSubtitle": "...und wofür sie genutzt werden",
 
@@ -161,6 +162,12 @@
   "mealTypeSnack": "Snack",
   "mealTypeDrink": "Getränk",
   "mealTypeOther": "Sonstiges",
+
+  "activityLevelSedentary": "Sitzende Tätigkeit",
+  "activityLevelLightlyActive": "Leicht aktiv",
+  "activityLevelModeratelyActive": "Mäßig aktiv",
+  "activityLevelActive": "Aktiv",
+  "activityLevelVeryActive": "Sehr aktiv",
 
   "validationErrorInvalidInput": "Ungültige Eingabe"
 }

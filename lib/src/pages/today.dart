@@ -62,7 +62,7 @@ class TodayPage extends StatelessWidget {
                               localizations.calories,
                               snapshot.data?.calories ?? 0,
                               0,
-                              settingsController.calculateMaxDailyCalories(),
+                              settingsController.calculateTDEE(),
                               'kcal',
                             ),
                             _getNutrimentGauge(

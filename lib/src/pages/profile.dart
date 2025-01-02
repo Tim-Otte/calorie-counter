@@ -55,7 +55,6 @@ class ProfilePage extends StatelessWidget {
                             context, settingsController.gender)
                         : localizations.notSet,
                   ),
-                  disableSuffixPadding: true,
                   onTap: (context) async {
                     var result = await showDialog<Gender>(
                       context: context,
@@ -145,6 +144,28 @@ class ProfilePage extends StatelessWidget {
                       ),
                     );
                     settingsController.updateWaistCircumference(result);
+                  },
+                ),
+                MaterialBasicSettingsTile(
+                  prefix: const Icon(Symbols.directions_run_rounded),
+                  title: Text(localizations.profileActivityLevel),
+                  value: Text(
+                    settingsController.activityLevel != null
+                        ? Translator.getTranslation(
+                            context,
+                            settingsController.activityLevel,
+                          )
+                        : localizations.notSet,
+                  ),
+                  onTap: (context) async {
+                    var result = await showDialog<ActivityLevel>(
+                      context: context,
+                      builder: (context) => ActivityLevelDialog(
+                        currentValue: settingsController.activityLevel ??
+                            ActivityLevel.values.pickRandom(),
+                      ),
+                    );
+                    settingsController.updateActivityLevel(result);
                   },
                 ),
               ],

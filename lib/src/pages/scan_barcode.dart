@@ -31,6 +31,7 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
 
   bool _hasCameraPermissions = false;
   bool _hasNeverCameraPermissions = false;
+  bool _isLoading = false;
 
   Future _handleBarcode(BarcodeCapture capture) async {
     // If no barcodes are captured or the first barcode has no value, return early.
@@ -39,6 +40,8 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
         !mounted) {
       return;
     }
+
+    setState(() => _isLoading = true);
 
     // Stop the scanner and provide haptic feedback.
     unawaited(_controller.stop());
@@ -107,6 +110,8 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
     if (mounted && context.mounted) {
       Navigator.pop(context);
     }
+
+    setState(() => _isLoading = false);
   }
 
   void _startScanning() {
@@ -180,7 +185,7 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
     return PopScope(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.scanBarcodePageTitle),
+          title: Text(localizations.scanBarcodePageTitle),
           forceMaterialTransparency: true,
           actions: [
             IconButton(
@@ -200,24 +205,28 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
           ],
         ),
         body: _hasCameraPermissions
-            ? MobileScanner(
-                controller: _controller,
-                errorBuilder: (p0, p1, p2) => IconWithText.andButton(
-                  context,
-                  icon: Symbols.error,
-                  text: localizations.errorWhileLoadingCamera,
-                  buttonIcon: Symbols.loop,
-                  buttonText: localizations.tryAgain,
-                  onButtonPressed: () {
-                    Navigator.pushReplacement(
+            ? (_isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : MobileScanner(
+                    controller: _controller,
+                    errorBuilder: (p0, p1, p2) => IconWithText.andButton(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const ScanBarcodePage(),
-                      ),
-                    );
-                  },
-                ),
-              )
+                      icon: Symbols.error,
+                      text: localizations.errorWhileLoadingCamera,
+                      buttonIcon: Symbols.loop,
+                      buttonText: localizations.tryAgain,
+                      onButtonPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ScanBarcodePage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ))
             : ColumnWithRefreshIndicator(
                 onRefresh: _requestPermissions,
                 mainAxisAlignment: MainAxisAlignment.center,

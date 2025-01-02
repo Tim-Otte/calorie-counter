@@ -26,6 +26,7 @@ class SettingsController with ChangeNotifier {
   double? _height;
   double? _weight;
   double? _waistCircumference;
+  ActivityLevel? _activityLevel;
 
   ThemeMode get themeMode => _themeMode;
   bool get useMaterialYou => _useMaterialYou;
@@ -80,6 +81,8 @@ class SettingsController with ChangeNotifier {
     }
   }
 
+  ActivityLevel? get activityLevel => _activityLevel;
+
   /// Load the user's settings from the SettingsService
   Future<void> loadSettings() async {
     _themeMode = await _settingsService.getThemeMode();
@@ -91,6 +94,7 @@ class SettingsController with ChangeNotifier {
     _height = await _settingsService.getHeight();
     _weight = await _settingsService.getWeight();
     _waistCircumference = await _settingsService.getWaistCircumference();
+    _activityLevel = await _settingsService.getActivityLevel();
 
     // Important! Inform listeners a change has occurred.
     notifyListeners();
@@ -181,40 +185,65 @@ class SettingsController with ChangeNotifier {
     await _settingsService.updateWaistCircumference(value);
   }
 
-  /// Calculates the maximum daily calorie intake based on the user's weight, height,
+  /// Update and persist the activity level
+  Future<void> updateActivityLevel(ActivityLevel? value) async {
+    if (value == null || value == _activityLevel) return;
+
+    _activityLevel = value;
+    notifyListeners();
+    await _settingsService.updateActivityLevel(value);
+  }
+
+  /// Calculate the Total Daily Energy Expenditure (TDEE) based on the user's settings.
+  /// The TDEE is the number of calories the user needs to consume daily to maintain
+  /// their current weight.
+  double calculateTDEE() {
+    double bmr = _calculateBMR();
+
+    return bmr *
+        switch (activityLevel) {
+          ActivityLevel.sedentary => 1.2,
+          ActivityLevel.lightlyActive => 1.375,
+          ActivityLevel.moderatelyActive => 1.55,
+          ActivityLevel.active => 1.725,
+          ActivityLevel.veryActive => 1.9,
+          _ => 1.0,
+        };
+  }
+
+  /// Calculates the Basal Metabolic Rate (BMR) based on the user's weight, height,
   /// date of birth, and gender.
   ///
-  /// The formula used is a variation of the Mifflin-St Jeor Equation:
+  /// The formula used is a variation of the
+  /// [Mifflin-St Jeor Equation](https://en.wikipedia.org/wiki/Harris–Benedict_equation):
   /// - For males: `calories = (9.99 * weight) + (6.25 * height) - (4.92 * age) + 5`
   /// - For females: `calories = (9.99 * weight) + (6.25 * height) - (4.92 * age) - 161`
   ///
   /// If the gender is not specified, the base calorie calculation is returned without
   /// the gender adjustment.
-  ///
-  /// Returns the calculated maximum daily calories as a double.
-  double calculateMaxDailyCalories() {
-    double calories =
+  double _calculateBMR() {
+    double bmr =
         (9.99 * (weight ?? 0)) + (6.25 * (height ?? 0)) - (4.92 * (age ?? 0));
 
     if (gender == Gender.male) {
-      return calories + 5;
+      return bmr + 5;
     } else if (gender == Gender.female) {
-      return calories - 161;
+      return bmr - 161;
     } else {
-      return calories;
+      return bmr;
     }
   }
 
   ({double min, double max}) calculateMinMaxDailyCarbs() {
-    return _calcMinMax(calculateMaxDailyCalories(), 0.45, 0.65, 4);
+    return _calcMinMax(calculateTDEE(), 0.45, 0.65, 4);
   }
 
   ({double min, double max}) calculateMinMaxDailyFats() {
-    return _calcMinMax(calculateMaxDailyCalories(), 0.2, 0.35, 9);
+    return _calcMinMax(calculateTDEE(), 0.2, 0.35, 9);
   }
 
   ({double min, double max}) calculateMinMaxDailyProteins() {
-    return _calcMinMax(calculateMaxDailyCalories(), 0.1, 0.35, 4);
+    return _calcMinMax(calculateTDEE(), 0.1, 0.35, 4);
   }
 
   ({double min, double max}) _calcMinMax(

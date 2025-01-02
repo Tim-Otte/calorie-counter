@@ -95,11 +95,23 @@ class SettingsService {
 
   /// Loads the user's hip circumference.
   Future<double?> getWaistCircumference() {
-    return asyncPrefs.getDouble('WaistCircumference');
+    return asyncPrefs.getDouble('waistCircumference');
   }
 
   /// Saves the user's hip circumference.
   Future<void> updateWaistCircumference(double value) {
-    return asyncPrefs.setDouble('WaistCircumference', value);
+    return asyncPrefs.setDouble('waistCircumference', value);
+  }
+
+  /// Loads the user's activity level.
+  Future<ActivityLevel?> getActivityLevel() {
+    return asyncPrefs
+        .getInt('activityLevel')
+        .then((value) => value != null ? ActivityLevel.values[value] : null);
+  }
+
+  /// Saves the user's activity level.
+  Future<void> updateActivityLevel(ActivityLevel value) {
+    return asyncPrefs.setInt('activityLevel', value.index);
   }
 }

@@ -219,7 +219,7 @@ class _AddMealPageState extends State<AddMealPage> {
                           NutrimentColors.calories,
                           nutrimentSnapshot.data?.calories ?? 0,
                           _product?.caloriesPer100Units ?? 0,
-                          settingsController.calculateMaxDailyCalories(),
+                          settingsController.calculateTDEE(),
                         ),
                         _getNutrimentBar(
                           theme,
