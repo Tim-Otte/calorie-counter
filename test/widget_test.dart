@@ -14,28 +14,29 @@ void main() {
   group('MainLayout', () {
     late FoodFactService foodFactService;
     late SettingsController settingsController;
-    late AppDatabase database;
 
-    setUp(() {
+    setUp(() async {
       SharedPreferencesAsyncPlatform.instance =
           InMemorySharedPreferencesAsync.empty();
 
       foodFactService = FoodFactService();
-      database = AppDatabase(forTesting: true);
       settingsController = SettingsController(
         SettingsService(),
         foodFactService,
       );
 
       foodFactService.setupApiConfig();
-      settingsController.loadSettings();
+      await settingsController.loadSettings();
     });
 
-    testWidgets('should display initial page', (WidgetTester tester) async {
+    Future<void> pumpAppAndSettle(WidgetTester tester) async {
       await tester.pumpWidget(
         MultiProvider(
           providers: [
-            Provider(create: (_) => database),
+            Provider(
+              create: (_) => AppDatabase(forTesting: true),
+              dispose: (_, db) => db.close(),
+            ),
             Provider(create: (_) => foodFactService),
             ChangeNotifierProvider(create: (_) => settingsController),
           ],
@@ -44,24 +45,18 @@ void main() {
       );
 
       await tester.pumpAndSettle();
+    }
+
+    testWidgets('should display initial page', (WidgetTester tester) async {
+      await pumpAppAndSettle(tester);
 
       expect(find.byType(TodayPage), findsOneWidget);
     });
 
     testWidgets('should navigate to MonthlyOverviewPage',
         (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MultiProvider(
-          providers: [
-            Provider(create: (_) => database),
-            Provider(create: (_) => foodFactService),
-            ChangeNotifierProvider(create: (_) => settingsController),
-          ],
-          child: MyApp(),
-        ),
-      );
+      await pumpAppAndSettle(tester);
 
-      await tester.pumpAndSettle();
       await tester.tap(find.byKey(ValueKey('bottom_nav_1')));
       await tester.pumpAndSettle();
 
@@ -69,18 +64,8 @@ void main() {
     });
 
     testWidgets('should navigate to ProfilePage', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MultiProvider(
-          providers: [
-            Provider(create: (_) => database),
-            Provider(create: (_) => foodFactService),
-            ChangeNotifierProvider(create: (_) => settingsController),
-          ],
-          child: MyApp(),
-        ),
-      );
+      await pumpAppAndSettle(tester);
 
-      await tester.pumpAndSettle();
       await tester.tap(find.byKey(ValueKey('bottom_nav_2')));
       await tester.pumpAndSettle();
 
@@ -89,18 +74,8 @@ void main() {
 
     testWidgets('should open ScanBarcodePage on FAB press',
         (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MultiProvider(
-          providers: [
-            Provider(create: (_) => database),
-            Provider(create: (_) => foodFactService),
-            ChangeNotifierProvider(create: (_) => settingsController),
-          ],
-          child: MyApp(),
-        ),
-      );
+      await pumpAppAndSettle(tester);
 
-      await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Symbols.barcode_scanner_rounded));
       await tester.pumpAndSettle();
 
@@ -109,18 +84,8 @@ void main() {
 
     testWidgets('should open SearchProductPage on search button press',
         (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MultiProvider(
-          providers: [
-            Provider(create: (_) => database),
-            Provider(create: (_) => foodFactService),
-            ChangeNotifierProvider(create: (_) => settingsController),
-          ],
-          child: MyApp(),
-        ),
-      );
+      await pumpAppAndSettle(tester);
 
-      await tester.pumpAndSettle();
       await tester.tap(find.byKey(ValueKey('btn_add_any_meal')));
 
       // pumpAndSettle does not work with CircularProgressIndicator
