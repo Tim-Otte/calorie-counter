@@ -209,7 +209,7 @@ class FoodFactService {
     var unit = isLiquid ? 'ml' : 'g';
 
     return servingSizes
-        .where((element) => element.short?.toLowerCase() == unit.toLowerCase())
+        .where((element) => element.name.toLowerCase() == unit.toLowerCase())
         .first;
   }
 }

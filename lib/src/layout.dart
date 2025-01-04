@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:provider/provider.dart';
 
-import 'data/all.dart' show AppDatabase;
 import 'pages/all.dart';
 
 class MainLayout extends StatefulWidget {
@@ -23,10 +21,6 @@ class _MainLayoutState extends State<MainLayout> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final database = Provider.of<AppDatabase>(context);
-
-    // Database updates
-    database.createDefaultServingSizes(localizations);
 
     return Scaffold(
       body: Padding(

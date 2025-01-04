@@ -144,11 +144,6 @@
   "servingSizeFilterLiquid": "Flüssig",
   "servingSizeFilterSolid": "Fest",
 
-  "serving_size_gram": "Gramm",
-  "serving_size_milliliter": "Milliliter",
-  "serving_size_ounces": "Unzen",
-  "serving_size_liquid_ounces": "Unzen (Flüssigkeit)",
-
   "themeModeLight": "Hell",
   "themeModeDark": "Dunkel",
   "themeModeSystem": "System",

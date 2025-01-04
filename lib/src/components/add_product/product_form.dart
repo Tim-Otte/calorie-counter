@@ -249,7 +249,7 @@ class _ProductFormState extends State<ProductForm> {
                             leading: Icon(Symbols.restaurant_rounded),
                             title: Text(item.name),
                             subtitle: Text(
-                                "${item.amount} ${widget.baseServingSizes.where((el) => el.id == item.baseServingSize).first.short}"),
+                                "${item.amount} ${widget.baseServingSizes.where((el) => el.id == item.baseServingSize).first.name}"),
                             trailing: Wrap(
                               children: [
                                 IconButton(
@@ -312,11 +312,19 @@ class _ProductFormState extends State<ProductForm> {
   }
 
   Future<void> _editServingSize(ServingSizeTemplate servingSize) async {
+    final settingsController = context.read<SettingsController>();
+
     var result = await showModalBottomSheet<ServingSizeTemplate>(
       context: context,
       builder: (context) => c.ServingSizeBtmSheet(
         isEditMode: false,
-        baseServingSizes: widget.baseServingSizes,
+        baseServingSizes: widget.baseServingSizes
+            .where((x) =>
+                x.isLiquid == _product.isLiquid &&
+                x.measuringUnit ==
+                    (settingsController.measurementUnit ??
+                        MeasurementUnit.metric))
+            .toList(),
         initialValue: servingSize,
       ),
       isScrollControlled: true,

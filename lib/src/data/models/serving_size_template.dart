@@ -14,7 +14,6 @@ class ServingSizeTemplate {
   ) {
     return ServingSizeCompanion.insert(
       name: name,
-      short: Value.absentIfNull(short),
       measuringUnit: baseServingSizeData.measuringUnit,
       valueInBaseServingSize: amount,
       baseServingSizeId: Value(baseServingSizeData.id),

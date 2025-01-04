@@ -26,11 +26,11 @@ class _SearchProductPageState extends State<SearchProductPage>
   late TabController _tabController;
   final _favoritesFocusNode = FocusNode();
   final _onlineFocusNode = FocusNode();
-  var _baseServingSizes = <ServingSizeData>[];
 
   @override
   void initState() {
     super.initState();
+
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_onTabControllerChanged);
   }
@@ -39,13 +39,6 @@ class _SearchProductPageState extends State<SearchProductPage>
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final database = Provider.of<AppDatabase>(context);
-
-    if (_baseServingSizes.isEmpty) {
-      database
-          .select(database.servingSize)
-          .get()
-          .then((value) => setState(() => _baseServingSizes = value));
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -81,31 +74,39 @@ class _SearchProductPageState extends State<SearchProductPage>
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          ProductSearch(
-            focusNode: _favoritesFocusNode,
-            enableOnlineSearch: false,
-            baseServingSizes: _baseServingSizes,
-            onlyLiquids: widget.onlyLiquids,
-            onSelect: widget.onSelect,
-          ),
-          ProductSearch(
-            focusNode: _onlineFocusNode,
-            enableOnlineSearch: true,
-            baseServingSizes: _baseServingSizes,
-            trailing: IconButton.filled(
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const AddProductPage()),
+      body: FutureBuilder(
+        future: database.getBaseServingSizes(),
+        builder: (context, snapshot) => snapshot.hasData
+            ? TabBarView(
+                controller: _tabController,
+                children: [
+                  ProductSearch(
+                    focusNode: _favoritesFocusNode,
+                    enableOnlineSearch: false,
+                    baseServingSizes: snapshot.data!,
+                    onlyLiquids: widget.onlyLiquids,
+                    onSelect: widget.onSelect,
+                  ),
+                  ProductSearch(
+                    focusNode: _onlineFocusNode,
+                    enableOnlineSearch: true,
+                    baseServingSizes: snapshot.data!,
+                    trailing: IconButton.filled(
+                      onPressed: () => Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AddProductPage()),
+                      ),
+                      icon: Icon(Symbols.edit_note_rounded),
+                      tooltip: localizations.switchToEditModeTooltip,
+                    ),
+                    onSelect: widget.onSelect,
+                  )
+                ],
+              )
+            : Center(
+                child: CircularProgressIndicator(),
               ),
-              icon: Icon(Symbols.edit_note_rounded),
-              tooltip: localizations.switchToEditModeTooltip,
-            ),
-            onSelect: widget.onSelect,
-          )
-        ],
       ),
     );
   }

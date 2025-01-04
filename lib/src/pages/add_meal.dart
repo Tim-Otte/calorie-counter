@@ -38,15 +38,26 @@ class _AddMealPageState extends State<AddMealPage> {
   void initState() {
     super.initState();
 
+    final database = context.read<AppDatabase>();
+    final settingsController = context.read<SettingsController>();
+
     if (widget.product != null) {
-      _product = widget.product;
+      _setProduct(
+        database,
+        settingsController,
+        widget.product,
+      ).whenComplete(() => setState(() {}));
       _mealType =
           widget.mealType ?? MealType.suggest(_product?.isLiquid ?? false);
     } else if (widget.consumption != null) {
-      _product = widget.consumption!.product;
+      _setProduct(
+        database,
+        settingsController,
+        widget.consumption!.product,
+        selectedServingSize: widget.consumption!.servingSize,
+      ).whenComplete(() => setState(() {}));
       _mealType = widget.consumption!.consumption.mealType;
       _amount = widget.consumption!.consumption.quantity;
-      _selectedServingSize = widget.consumption!.servingSize;
     } else {
       throw ArgumentError('Provide at least one parameter');
     }
@@ -58,17 +69,6 @@ class _AddMealPageState extends State<AddMealPage> {
     final theme = Theme.of(context);
     final database = Provider.of<AppDatabase>(context);
     final settingsController = Provider.of<SettingsController>(context);
-
-    if (_product != null &&
-        !_servingSizes.any((x) => x.forProduct == _product!.productCode)) {
-      database
-          .getServingSizesForProduct(_product!.productCode)
-          .then((items) => setState(() => _servingSizes = items));
-    }
-
-    if (!_servingSizes.any((x) => x.id == _selectedServingSize?.id)) {
-      setState(() => _selectedServingSize = _servingSizes.firstOrNull);
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -107,7 +107,11 @@ class _AddMealPageState extends State<AddMealPage> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: c.ProductSelector(
                 initialValue: _product,
-                onChanged: (value) => setState(() => _product = value),
+                onChanged: (value) => _setProduct(
+                  database,
+                  settingsController,
+                  value,
+                ).whenComplete(() => setState(() {})),
               ),
             ),
             // Serving size and amount
@@ -122,7 +126,6 @@ class _AddMealPageState extends State<AddMealPage> {
                     child: c.FormField(
                       label: Text(localizations.servingSizeAmount),
                       icon: Symbols.numbers_rounded,
-                      suffixText: _selectedServingSize?.short,
                       initialValue: _amount?.toString(),
                       onlyNumbers: true,
                       onChanged: (value) => setState(() {
@@ -141,7 +144,8 @@ class _AddMealPageState extends State<AddMealPage> {
                               ))
                           .toList(),
                       expandedInsets: EdgeInsets.zero,
-                      initialSelection: _servingSizes.firstOrNull?.id,
+                      initialSelection: _selectedServingSize?.id ??
+                          _servingSizes.firstOrNull?.id,
                       onSelected: (id) => setState(() {
                         _selectedServingSize =
                             _servingSizes.where((x) => x.id == id).firstOrNull;
@@ -258,6 +262,37 @@ class _AddMealPageState extends State<AddMealPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _setProduct(
+    AppDatabase database,
+    SettingsController settingsController,
+    ProductData? product, {
+    ServingSizeData? selectedServingSize,
+  }) async {
+    if (product == null) {
+      _product = null;
+      _servingSizes = [];
+      _selectedServingSize = null;
+    } else {
+      _product = product;
+      _servingSizes = await database.getServingSizesForProduct(
+        product.productCode,
+        product.isLiquid,
+        settingsController.measurementUnit ?? MeasurementUnit.metric,
+      );
+
+      if (selectedServingSize != null) {
+        _selectedServingSize = selectedServingSize;
+      } else {
+        if (_selectedServingSize != null &&
+            !_servingSizes.any((x) => x.id == _selectedServingSize!.id)) {
+          _selectedServingSize = _servingSizes
+              .where((x) => x.baseServingSizeId != null)
+              .firstOrNull;
+        }
+      }
+    }
   }
 
   Future<void> _saveConsumption(

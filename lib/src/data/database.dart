@@ -1,7 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'all.dart';
 
@@ -14,6 +13,16 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (m) async {
+        await m.createAll();
+        await _createDefaultServingSizes();
+      },
+    );
+  }
+
   static QueryExecutor _openConnection(bool forTesting) {
     if (forTesting) {
       return DatabaseConnection(
@@ -25,37 +34,37 @@ class AppDatabase extends _$AppDatabase {
     }
   }
 
-  /// Creates default serving sizes in the database.
+  /// Inserts default serving sizes into the database.
   ///
-  /// This method inserts a list of default serving sizes into the database.
-  /// The serving sizes include grams, milliliters, ounces, and fluid ounces.
+  /// This method adds a set of predefined serving sizes to the database if they
+  /// do not already exist. The serving sizes include:
   ///
-  /// Parameters:
-  /// - [localizations]: An instance of `AppLocalizations` used to get localized names for the serving sizes.
+  /// - Gram (g): A metric unit for measuring non-liquid items, with a base value of 1.
+  /// - Milliliter (ml): A metric unit for measuring liquid items, with a base value of 1.
+  /// - Ounce (oz): An imperial unit for measuring non-liquid items, with a base value of 28.3495 grams.
+  /// - Fluid Ounce (fl oz): An imperial unit for measuring liquid items, with a base value of 29.5735 milliliters.
   ///
-  /// Returns a [Future] that completes when the serving sizes have been inserted.
-  Future<void> createDefaultServingSizes(AppLocalizations localizations) async {
+  /// The method uses the `insertOrIgnore` mode to ensure that existing entries
+  /// are not duplicated.
+  Future<void> _createDefaultServingSizes() async {
     await servingSize.insertAll([
       ServingSizeCompanion.insert(
         id: const Value(1),
-        name: localizations.serving_size_gram,
-        short: const Value('g'),
+        name: 'g',
         measuringUnit: MeasurementUnit.metric,
         isLiquid: const Value(false),
         valueInBaseServingSize: 1,
       ),
       ServingSizeCompanion.insert(
         id: const Value(2),
-        name: localizations.serving_size_milliliter,
-        short: const Value('ml'),
+        name: 'ml',
         measuringUnit: MeasurementUnit.metric,
         isLiquid: const Value(true),
         valueInBaseServingSize: 1,
       ),
       ServingSizeCompanion.insert(
         id: const Value(3),
-        name: localizations.serving_size_ounces,
-        short: const Value('oz'),
+        name: 'oz',
         measuringUnit: MeasurementUnit.imperial,
         isLiquid: const Value(false),
         valueInBaseServingSize: 28.3495,
@@ -63,14 +72,17 @@ class AppDatabase extends _$AppDatabase {
       ),
       ServingSizeCompanion.insert(
         id: const Value(4),
-        name: localizations.serving_size_liquid_ounces,
-        short: const Value('fl oz'),
+        name: 'fl oz',
         measuringUnit: MeasurementUnit.imperial,
         isLiquid: const Value(true),
         valueInBaseServingSize: 29.5735,
         baseServingSizeId: const Value(2),
       ),
     ], mode: InsertMode.insertOrIgnore);
+  }
+
+  Future<List<ServingSizeData>> getBaseServingSizes() async {
+    return (select(servingSize)..where((tbl) => tbl.forProduct.isNull())).get();
   }
 
   /// Retrieves a list of serving sizes filtered by the specified measurement unit,
@@ -194,13 +206,21 @@ class AppDatabase extends _$AppDatabase {
   ///  If the [productCode] is `null`, an empty list is returned.
   ///
   /// Returns a [Future] that completes with a list of [ServingSizeData] objects.
-  Future<List<ServingSizeData>> getServingSizesForProduct(String? productCode) {
+  Future<List<ServingSizeData>> getServingSizesForProduct(
+    String? productCode,
+    bool isLiquid,
+    MeasurementUnit measurementUnit,
+  ) {
     if (productCode == null) {
       return Future.value([]);
     }
 
     return (select(servingSize)
-          ..where((tbl) => tbl.forProduct.equals(productCode))
+          ..where((tbl) =>
+              tbl.forProduct.equals(productCode) |
+              (tbl.forProduct.isNull() &
+                  tbl.isLiquid.equals(isLiquid) &
+                  tbl.measuringUnit.equalsValue(measurementUnit)))
           ..orderBy([
             (tbl) => OrderingTerm.asc(tbl.valueInBaseServingSize),
             (tbl) => OrderingTerm.asc(tbl.name)

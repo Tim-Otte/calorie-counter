@@ -488,11 +488,6 @@ class $ServingSizeTable extends ServingSize
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _shortMeta = const VerificationMeta('short');
-  @override
-  late final GeneratedColumn<String> short = GeneratedColumn<String>(
-      'short', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _isLiquidMeta =
       const VerificationMeta('isLiquid');
   @override
@@ -539,7 +534,6 @@ class $ServingSizeTable extends ServingSize
   List<GeneratedColumn> get $columns => [
         id,
         name,
-        short,
         isLiquid,
         measuringUnit,
         valueInBaseServingSize,
@@ -564,10 +558,6 @@ class $ServingSizeTable extends ServingSize
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
-    }
-    if (data.containsKey('short')) {
-      context.handle(
-          _shortMeta, short.isAcceptableOrUnknown(data['short']!, _shortMeta));
     }
     if (data.containsKey('is_liquid')) {
       context.handle(_isLiquidMeta,
@@ -602,7 +592,7 @@ class $ServingSizeTable extends ServingSize
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   List<Set<GeneratedColumn>> get uniqueKeys => [
-        {name, short, forProduct},
+        {name, forProduct},
       ];
   @override
   ServingSizeData map(Map<String, dynamic> data, {String? tablePrefix}) {
@@ -612,8 +602,6 @@ class $ServingSizeTable extends ServingSize
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      short: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}short']),
       isLiquid: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_liquid'])!,
       measuringUnit: $ServingSizeTable.$convertermeasuringUnit.fromSql(
@@ -641,7 +629,6 @@ class $ServingSizeTable extends ServingSize
 class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
   final int id;
   final String name;
-  final String? short;
   final bool isLiquid;
   final MeasurementUnit measuringUnit;
   final double valueInBaseServingSize;
@@ -650,7 +637,6 @@ class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
   const ServingSizeData(
       {required this.id,
       required this.name,
-      this.short,
       required this.isLiquid,
       required this.measuringUnit,
       required this.valueInBaseServingSize,
@@ -661,9 +647,6 @@ class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    if (!nullToAbsent || short != null) {
-      map['short'] = Variable<String>(short);
-    }
     map['is_liquid'] = Variable<bool>(isLiquid);
     {
       map['measuring_unit'] = Variable<int>(
@@ -684,8 +667,6 @@ class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
     return ServingSizeCompanion(
       id: Value(id),
       name: Value(name),
-      short:
-          short == null && nullToAbsent ? const Value.absent() : Value(short),
       isLiquid: Value(isLiquid),
       measuringUnit: Value(measuringUnit),
       valueInBaseServingSize: Value(valueInBaseServingSize),
@@ -704,7 +685,6 @@ class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
     return ServingSizeData(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      short: serializer.fromJson<String?>(json['short']),
       isLiquid: serializer.fromJson<bool>(json['isLiquid']),
       measuringUnit: $ServingSizeTable.$convertermeasuringUnit
           .fromJson(serializer.fromJson<int>(json['measuringUnit'])),
@@ -720,7 +700,6 @@ class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'short': serializer.toJson<String?>(short),
       'isLiquid': serializer.toJson<bool>(isLiquid),
       'measuringUnit': serializer.toJson<int>(
           $ServingSizeTable.$convertermeasuringUnit.toJson(measuringUnit)),
@@ -734,7 +713,6 @@ class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
   ServingSizeData copyWith(
           {int? id,
           String? name,
-          Value<String?> short = const Value.absent(),
           bool? isLiquid,
           MeasurementUnit? measuringUnit,
           double? valueInBaseServingSize,
@@ -743,7 +721,6 @@ class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
       ServingSizeData(
         id: id ?? this.id,
         name: name ?? this.name,
-        short: short.present ? short.value : this.short,
         isLiquid: isLiquid ?? this.isLiquid,
         measuringUnit: measuringUnit ?? this.measuringUnit,
         valueInBaseServingSize:
@@ -757,7 +734,6 @@ class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
     return ServingSizeData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      short: data.short.present ? data.short.value : this.short,
       isLiquid: data.isLiquid.present ? data.isLiquid.value : this.isLiquid,
       measuringUnit: data.measuringUnit.present
           ? data.measuringUnit.value
@@ -778,7 +754,6 @@ class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
     return (StringBuffer('ServingSizeData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('short: $short, ')
           ..write('isLiquid: $isLiquid, ')
           ..write('measuringUnit: $measuringUnit, ')
           ..write('valueInBaseServingSize: $valueInBaseServingSize, ')
@@ -789,7 +764,7 @@ class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
   }
 
   @override
-  int get hashCode => Object.hash(id, name, short, isLiquid, measuringUnit,
+  int get hashCode => Object.hash(id, name, isLiquid, measuringUnit,
       valueInBaseServingSize, baseServingSizeId, forProduct);
   @override
   bool operator ==(Object other) =>
@@ -797,7 +772,6 @@ class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
       (other is ServingSizeData &&
           other.id == this.id &&
           other.name == this.name &&
-          other.short == this.short &&
           other.isLiquid == this.isLiquid &&
           other.measuringUnit == this.measuringUnit &&
           other.valueInBaseServingSize == this.valueInBaseServingSize &&
@@ -808,7 +782,6 @@ class ServingSizeData extends DataClass implements Insertable<ServingSizeData> {
 class ServingSizeCompanion extends UpdateCompanion<ServingSizeData> {
   final Value<int> id;
   final Value<String> name;
-  final Value<String?> short;
   final Value<bool> isLiquid;
   final Value<MeasurementUnit> measuringUnit;
   final Value<double> valueInBaseServingSize;
@@ -817,7 +790,6 @@ class ServingSizeCompanion extends UpdateCompanion<ServingSizeData> {
   const ServingSizeCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.short = const Value.absent(),
     this.isLiquid = const Value.absent(),
     this.measuringUnit = const Value.absent(),
     this.valueInBaseServingSize = const Value.absent(),
@@ -827,7 +799,6 @@ class ServingSizeCompanion extends UpdateCompanion<ServingSizeData> {
   ServingSizeCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    this.short = const Value.absent(),
     this.isLiquid = const Value.absent(),
     required MeasurementUnit measuringUnit,
     required double valueInBaseServingSize,
@@ -839,7 +810,6 @@ class ServingSizeCompanion extends UpdateCompanion<ServingSizeData> {
   static Insertable<ServingSizeData> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<String>? short,
     Expression<bool>? isLiquid,
     Expression<int>? measuringUnit,
     Expression<double>? valueInBaseServingSize,
@@ -849,7 +819,6 @@ class ServingSizeCompanion extends UpdateCompanion<ServingSizeData> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (short != null) 'short': short,
       if (isLiquid != null) 'is_liquid': isLiquid,
       if (measuringUnit != null) 'measuring_unit': measuringUnit,
       if (valueInBaseServingSize != null)
@@ -862,7 +831,6 @@ class ServingSizeCompanion extends UpdateCompanion<ServingSizeData> {
   ServingSizeCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
-      Value<String?>? short,
       Value<bool>? isLiquid,
       Value<MeasurementUnit>? measuringUnit,
       Value<double>? valueInBaseServingSize,
@@ -871,7 +839,6 @@ class ServingSizeCompanion extends UpdateCompanion<ServingSizeData> {
     return ServingSizeCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      short: short ?? this.short,
       isLiquid: isLiquid ?? this.isLiquid,
       measuringUnit: measuringUnit ?? this.measuringUnit,
       valueInBaseServingSize:
@@ -889,9 +856,6 @@ class ServingSizeCompanion extends UpdateCompanion<ServingSizeData> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
-    }
-    if (short.present) {
-      map['short'] = Variable<String>(short.value);
     }
     if (isLiquid.present) {
       map['is_liquid'] = Variable<bool>(isLiquid.value);
@@ -918,7 +882,6 @@ class ServingSizeCompanion extends UpdateCompanion<ServingSizeData> {
     return (StringBuffer('ServingSizeCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('short: $short, ')
           ..write('isLiquid: $isLiquid, ')
           ..write('measuringUnit: $measuringUnit, ')
           ..write('valueInBaseServingSize: $valueInBaseServingSize, ')
@@ -1679,7 +1642,6 @@ typedef $$ServingSizeTableCreateCompanionBuilder = ServingSizeCompanion
     Function({
   Value<int> id,
   required String name,
-  Value<String?> short,
   Value<bool> isLiquid,
   required MeasurementUnit measuringUnit,
   required double valueInBaseServingSize,
@@ -1690,7 +1652,6 @@ typedef $$ServingSizeTableUpdateCompanionBuilder = ServingSizeCompanion
     Function({
   Value<int> id,
   Value<String> name,
-  Value<String?> short,
   Value<bool> isLiquid,
   Value<MeasurementUnit> measuringUnit,
   Value<double> valueInBaseServingSize,
@@ -1760,9 +1721,6 @@ class $$ServingSizeTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get short => $composableBuilder(
-      column: $table.short, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<bool> get isLiquid => $composableBuilder(
       column: $table.isLiquid, builder: (column) => ColumnFilters(column));
@@ -1853,9 +1811,6 @@ class $$ServingSizeTableOrderingComposer
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get short => $composableBuilder(
-      column: $table.short, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<bool> get isLiquid => $composableBuilder(
       column: $table.isLiquid, builder: (column) => ColumnOrderings(column));
 
@@ -1922,9 +1877,6 @@ class $$ServingSizeTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get short =>
-      $composableBuilder(column: $table.short, builder: (column) => column);
 
   GeneratedColumn<bool> get isLiquid =>
       $composableBuilder(column: $table.isLiquid, builder: (column) => column);
@@ -2024,7 +1976,6 @@ class $$ServingSizeTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
-            Value<String?> short = const Value.absent(),
             Value<bool> isLiquid = const Value.absent(),
             Value<MeasurementUnit> measuringUnit = const Value.absent(),
             Value<double> valueInBaseServingSize = const Value.absent(),
@@ -2034,7 +1985,6 @@ class $$ServingSizeTableTableManager extends RootTableManager<
               ServingSizeCompanion(
             id: id,
             name: name,
-            short: short,
             isLiquid: isLiquid,
             measuringUnit: measuringUnit,
             valueInBaseServingSize: valueInBaseServingSize,
@@ -2044,7 +1994,6 @@ class $$ServingSizeTableTableManager extends RootTableManager<
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String name,
-            Value<String?> short = const Value.absent(),
             Value<bool> isLiquid = const Value.absent(),
             required MeasurementUnit measuringUnit,
             required double valueInBaseServingSize,
@@ -2054,7 +2003,6 @@ class $$ServingSizeTableTableManager extends RootTableManager<
               ServingSizeCompanion.insert(
             id: id,
             name: name,
-            short: short,
             isLiquid: isLiquid,
             measuringUnit: measuringUnit,
             valueInBaseServingSize: valueInBaseServingSize,
