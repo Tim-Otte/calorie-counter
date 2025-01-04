@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
@@ -8,7 +8,7 @@ class Segment {
 
   const Segment({required this.fractionalValue, required this.color});
 
-  double get value => min(max(fractionalValue, 0.0), 1);
+  double get value => math.min(math.max(fractionalValue, 0.0), 1);
 }
 
 class SegmentedBarChart extends StatelessWidget {
@@ -33,21 +33,34 @@ class SegmentedBarChart extends StatelessWidget {
 
   Iterable<MapEntry<int, Segment>> get _dataAsMap => data.asMap().entries;
 
-  AnimatedFractionallySizedBox _getSegment(double width, bool isLast) {
+  AnimatedFractionallySizedBox _getSegment(
+      double width, bool isFirst, bool isLast) {
     return AnimatedFractionallySizedBox(
       heightFactor: 1,
       widthFactor: width,
       duration: Duration(milliseconds: 250),
-      child: isLast || gap == 0
-          ? null
-          : Align(
+      child: Stack(
+        children: [
+          if (!isLast && gap > 0)
+            Align(
               alignment: Alignment.centerRight,
               child: SizedBox(
                 height: height,
-                width: gap,
+                width: gap / 2,
                 child: ColoredBox(color: gapColor),
               ),
             ),
+          if (!isFirst && gap > 0)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                height: height,
+                width: gap / 2,
+                child: ColoredBox(color: gapColor),
+              ),
+            )
+        ],
+      ),
     );
   }
 
@@ -76,9 +89,9 @@ class SegmentedBarChart extends StatelessWidget {
                 ? Tooltip(
                     message: tooltipBuilder!(e.value.value),
                     triggerMode: TooltipTriggerMode.tap,
-                    child: _getSegment(e.value.value, isLast),
+                    child: _getSegment(e.value.value, isFirst, isLast),
                   )
-                : _getSegment(e.value.value, isLast),
+                : _getSegment(e.value.value, isFirst, isLast),
           );
         },
       ).toList(),

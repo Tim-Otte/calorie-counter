@@ -202,59 +202,89 @@ class _AddMealPageState extends State<AddMealPage> {
               padding: const EdgeInsets.only(left: 20, right: 20, top: 25),
               child: Card.filled(
                 color: theme.colorScheme.primary.useOpacity(0.1),
-                child: StreamBuilder(
-                  stream: database.calculateTotalNutrimentsForToday(
-                    withoutConsumptionId: widget.consumption?.consumption.id,
-                  ),
-                  builder: (context, nutrimentSnapshot) => Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Wrap(
-                      runSpacing: 10,
-                      children: [
-                        Text(
-                          localizations.dailyNutrimentDiagramTitle,
-                          style: theme.textTheme.bodyMedium!
-                              .copyWith(fontWeight: FontWeight.bold),
+                child: Stack(
+                  children: [
+                    StreamBuilder(
+                      stream: database.calculateTotalNutrimentsForToday(
+                        withoutConsumptionId:
+                            widget.consumption?.consumption.id,
+                      ),
+                      builder: (context, nutrimentSnapshot) => Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Wrap(
+                          runSpacing: 10,
+                          children: [
+                            Text(
+                              localizations.dailyNutrimentDiagramTitle,
+                              style: theme.textTheme.bodyMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            _getNutrimentBar(
+                              theme,
+                              NutrimentIcons.calories,
+                              false,
+                              NutrimentColors.calories,
+                              nutrimentSnapshot.data?.calories ?? 0,
+                              _product?.caloriesPer100Units ?? 0,
+                              settingsController.calculateTDEE(),
+                            ),
+                            _getNutrimentBar(
+                              theme,
+                              NutrimentIcons.carbs,
+                              false,
+                              NutrimentColors.carbs,
+                              nutrimentSnapshot.data?.carbs ?? 0,
+                              _product?.carbsPer100Units ?? 0,
+                              settingsController
+                                  .calculateMinMaxDailyCarbs()
+                                  .max,
+                            ),
+                            _getNutrimentBar(
+                              theme,
+                              NutrimentIcons.fats,
+                              true,
+                              NutrimentColors.fats,
+                              nutrimentSnapshot.data?.fats ?? 0,
+                              _product?.fatPer100Units ?? 0,
+                              settingsController.calculateMinMaxDailyFats().max,
+                            ),
+                            _getNutrimentBar(
+                              theme,
+                              NutrimentIcons.proteins,
+                              false,
+                              NutrimentColors.proteins,
+                              nutrimentSnapshot.data?.proteins ?? 0,
+                              _product?.proteinsPer100Units ?? 0,
+                              settingsController
+                                  .calculateMinMaxDailyProteins()
+                                  .max,
+                            ),
+                          ],
                         ),
-                        _getNutrimentBar(
-                          theme,
-                          NutrimentIcons.calories,
-                          false,
-                          NutrimentColors.calories,
-                          nutrimentSnapshot.data?.calories ?? 0,
-                          _product?.caloriesPer100Units ?? 0,
-                          settingsController.calculateTDEE(),
-                        ),
-                        _getNutrimentBar(
-                          theme,
-                          NutrimentIcons.carbs,
-                          false,
-                          NutrimentColors.carbs,
-                          nutrimentSnapshot.data?.carbs ?? 0,
-                          _product?.carbsPer100Units ?? 0,
-                          settingsController.calculateMinMaxDailyCarbs().max,
-                        ),
-                        _getNutrimentBar(
-                          theme,
-                          NutrimentIcons.fats,
-                          true,
-                          NutrimentColors.fats,
-                          nutrimentSnapshot.data?.fats ?? 0,
-                          _product?.fatPer100Units ?? 0,
-                          settingsController.calculateMinMaxDailyFats().max,
-                        ),
-                        _getNutrimentBar(
-                          theme,
-                          NutrimentIcons.proteins,
-                          false,
-                          NutrimentColors.proteins,
-                          nutrimentSnapshot.data?.proteins ?? 0,
-                          _product?.proteinsPer100Units ?? 0,
-                          settingsController.calculateMinMaxDailyProteins().max,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    Positioned(
+                      right: 5,
+                      top: 0,
+                      child: IconButton(
+                        constraints: BoxConstraints(
+                          maxHeight: 30,
+                          maxWidth: 30,
+                        ),
+                        iconSize: 15,
+                        style: IconButton.styleFrom(
+                          backgroundColor:
+                              theme.colorScheme.surfaceContainerHigh,
+                          foregroundColor: theme.colorScheme.primary,
+                        ),
+                        onPressed: () async => showModalBottomSheet(
+                          context: context,
+                          builder: (context) => c.NutrimentBarLegend(),
+                        ),
+                        icon: Icon(Symbols.info_i_rounded),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
@@ -285,7 +315,7 @@ class _AddMealPageState extends State<AddMealPage> {
       if (selectedServingSize != null) {
         _selectedServingSize = selectedServingSize;
       } else {
-        if (_selectedServingSize != null &&
+        if (_selectedServingSize == null ||
             !_servingSizes.any((x) => x.id == _selectedServingSize!.id)) {
           _selectedServingSize = _servingSizes
               .where((x) => x.baseServingSizeId != null)

@@ -228,6 +228,18 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 
+  /// Deletes a product from the database based on the provided product code.
+  ///
+  /// Parameters:
+  /// - [productCode]: The code of the product to be deleted.
+  ///
+  /// Returns a [Future] that completes when the delete operation is finished.
+  Future deleteProduct(String productCode) {
+    return (delete(product)
+          ..where((tbl) => tbl.productCode.equals(productCode)))
+        .go();
+  }
+
   /// Adds a new consumption record to the database.
   ///
   /// Parameters:

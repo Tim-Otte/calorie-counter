@@ -345,15 +345,19 @@ class TodayPage extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => SearchProductPage(
           onlyLiquids: mealType == MealType.drink,
-          onSelect: (product) => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
+          onSelect: (product, isNewProduct) {
+            final route = MaterialPageRoute(
               builder: (context) => AddMealPage(
                 product: product,
                 mealType: mealType,
               ),
-            ),
-          ),
+            );
+            if (isNewProduct) {
+              Navigator.pushReplacement(context, route);
+            } else {
+              Navigator.push(context, route);
+            }
+          },
         ),
       ),
     );

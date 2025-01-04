@@ -38,7 +38,7 @@ class _ProductSelectorState extends State<ProductSelector> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => SearchProductPage(
-                    onSelect: (product) => Navigator.pop(context, product),
+                    onSelect: (product, _) => Navigator.pop(context, product),
                   ),
                 ),
               );
