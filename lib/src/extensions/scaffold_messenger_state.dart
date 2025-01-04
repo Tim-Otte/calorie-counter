@@ -10,8 +10,10 @@ extension ScaffoldMessengerStateExtensions on ScaffoldMessengerState {
           children: [
             Padding(
               padding: EdgeInsets.only(right: 20),
-              child: Icon(Symbols.warning_rounded,
-                  color: Theme.of(context).colorScheme.onError),
+              child: Icon(
+                Symbols.warning_rounded,
+                color: Theme.of(context).colorScheme.error,
+              ),
             ),
             Flexible(
               child: Text(errorText),

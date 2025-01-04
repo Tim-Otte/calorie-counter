@@ -51,6 +51,10 @@
   "searchProductPageTitle": "Produkt suchen",
   "favourites": "Favoriten",
   "dailyNutrimentDiagramTitle": "Tägliche Nährstoffübersicht",
+  "legend": "Legende",
+  "alreadyConsumed": "Bereits konsumiert",
+  "consumptionByThisMeal": "Verbrauch durch diese Mahlzeit",
+  "availableForConsumption": "Kann noch konsumiert werden",
 
   "addProductPageTitle": "Produkt hinzufügen",
   "switchToEditModeTooltip": "Produktdaten manuell bearbeiten",

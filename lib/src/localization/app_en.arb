@@ -51,6 +51,10 @@
   "searchProductPageTitle": "Find product",
   "favourites": "Favourites",
   "dailyNutrimentDiagramTitle": "Daily nutrient breakdown",
+  "legend": "Legende",
+  "alreadyConsumed": "Already consumed",
+  "consumptionByThisMeal": "Consumption by this meal",
+  "availableForConsumption": "Available for consumption",
 
   "addProductPageTitle": "Add product",
   "switchToEditModeTooltip": "Manually edit product",

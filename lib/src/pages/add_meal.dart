@@ -274,7 +274,7 @@ class _AddMealPageState extends State<AddMealPage> {
                         iconSize: 15,
                         style: IconButton.styleFrom(
                           backgroundColor:
-                              theme.colorScheme.surfaceContainerHigh,
+                              theme.colorScheme.surfaceContainerLow,
                           foregroundColor: theme.colorScheme.primary,
                         ),
                         onPressed: () async => showModalBottomSheet(

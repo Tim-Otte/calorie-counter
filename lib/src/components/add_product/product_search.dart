@@ -132,11 +132,11 @@ class ProductSearch extends StatelessWidget {
         ),
       );
     } else {
-      return FutureBuilder(
-        future: database.filteredProducts(onlyLiquids: onlyLiquids),
+      return StreamBuilder(
+        stream: database.getFilteredProductsAsStream(onlyLiquids: onlyLiquids),
         builder: (context, snapshot) => SearchableListView(
           initialData: snapshot.hasData ? snapshot.data : null,
-          searchFunction: (search) => database.filteredProducts(
+          searchFunction: (search) => database.getFilteredProducts(
             text: search,
             onlyLiquids: onlyLiquids,
           ),
@@ -168,8 +168,15 @@ class ProductSearch extends StatelessWidget {
                     Symbols.delete_rounded,
                     color: theme.colorScheme.error,
                   ),
-                  onPressed: () {
-                    database.deleteProduct(item.productCode);
+                  onPressed: () async {
+                    var result = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => ConfirmDeleteDialog(),
+                    );
+
+                    if (result == true) {
+                      database.deleteProduct(item.productCode);
+                    }
                   },
                   child: Text(localizations.delete),
                 ),

@@ -158,16 +158,7 @@ class AppDatabase extends _$AppDatabase {
     await batch((batch) => batch.insertAll(servingSize, servingSizeData));
   }
 
-  /// Retrieves a list of products filtered by the specified search text.
-  ///
-  /// Parameters:
-  /// - [text]: The text to search for in the product name, brand, or code.
-  ///  If `null`, all products are returned.
-  /// - [onlyLiquids]: If `true`, only liquid products are returned.
-  ///  If `false`, both liquid and solid products are returned.
-  ///
-  /// Returns a [Future] that completes with a list of [ProductData] objects that match
-  Future<List<ProductData>> filteredProducts({
+  SimpleSelectStatement<$ProductTable, ProductData> _filterProducts({
     String? text,
     bool? onlyLiquids,
   }) {
@@ -184,7 +175,47 @@ class AppDatabase extends _$AppDatabase {
       query.where((tbl) => tbl.isLiquid.equals(true));
     }
 
-    return query.get();
+    return query;
+  }
+
+  /// Retrieves a list of products filtered by the specified search text.
+  ///
+  /// Parameters:
+  /// - [text]: The text to search for in the product name, brand, or code.
+  ///  If `null`, all products are returned.
+  /// - [onlyLiquids]: If `true`, only liquid products are returned.
+  ///  If `false`, both liquid and solid products are returned.
+  ///
+  /// Returns a [Stream] that emits a list of [ProductData] objects that match
+  /// the specified criteria.
+  Stream<List<ProductData>> getFilteredProductsAsStream({
+    bool? onlyLiquids,
+  }) {
+    return _filterProducts(onlyLiquids: onlyLiquids).watch();
+  }
+
+  /// Retrieves a list of products filtered by the specified search text.
+  ///
+  /// Parameters:
+  /// - [text]: The text to search for in the product name, brand, or code.
+  ///  If `null`, all products are returned.
+  /// - [onlyLiquids]: If `true`, only liquid products are returned.
+  ///  If `false`, both liquid and solid products are returned.
+  ///
+  /// Returns a [Future] that completes with a list of [ProductData] objects that match
+  /// the specified criteria.
+  Future<List<ProductData>> getFilteredProducts({
+    String? text,
+    bool? onlyLiquids,
+  }) {
+    return _filterProducts(text: text, onlyLiquids: onlyLiquids).get();
+  }
+
+  /// Retrieves the count of products from the database.
+  ///
+  /// Returns a [Future] that completes with the number of products.
+  Future<int> getProductCount() {
+    return product.count().getSingle();
   }
 
   /// Retrieves a product by its code.
@@ -234,9 +265,19 @@ class AppDatabase extends _$AppDatabase {
   /// - [productCode]: The code of the product to be deleted.
   ///
   /// Returns a [Future] that completes when the delete operation is finished.
-  Future deleteProduct(String productCode) {
-    return (delete(product)
+  Future deleteProduct(String productCode) async {
+    // Delete related consumption records
+    await (delete(consumption)
           ..where((tbl) => tbl.productCode.equals(productCode)))
+        .go();
+
+    // Delete related serving sizes
+    await (delete(servingSize)
+          ..where((tbl) => tbl.forProduct.equals(productCode)))
+        .go();
+
+    // Delete the product
+    await (delete(product)..where((tbl) => tbl.productCode.equals(productCode)))
         .go();
   }
 

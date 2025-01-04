@@ -23,7 +23,10 @@ void main() async {
   // SettingsView.
   runApp(MultiProvider(
     providers: [
-      Provider(create: (_) => AppDatabase()),
+      Provider(
+        create: (_) => AppDatabase(),
+        dispose: (_, database) => database.close(),
+      ),
       Provider(create: (_) => foodFactService),
       ChangeNotifierProvider(create: (_) => settingsController),
     ],

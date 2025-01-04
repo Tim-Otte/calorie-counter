@@ -31,6 +31,13 @@ class _SearchProductPageState extends State<SearchProductPage>
   void initState() {
     super.initState();
 
+    final database = context.read<AppDatabase>();
+    database.getProductCount().then((count) {
+      if (count == 0) {
+        _tabController.animateTo(1);
+      }
+    });
+
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_onTabControllerChanged);
   }

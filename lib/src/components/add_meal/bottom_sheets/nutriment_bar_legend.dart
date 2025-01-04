@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../all.dart';
+import '../../../extensions/all.dart';
 
 class NutrimentBarLegend extends StatelessWidget {
   const NutrimentBarLegend({super.key});
@@ -8,9 +10,10 @@ class NutrimentBarLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final localizations = AppLocalizations.of(context)!;
 
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(20).copyWith(bottom: 40),
       child: Wrap(
         runSpacing: 10,
         children: [
@@ -18,7 +21,7 @@ class NutrimentBarLegend extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Legende',
+                localizations.legend,
                 style: theme.textTheme.bodyLarge
                     ?.copyWith(fontWeight: FontWeight.bold),
               ),
@@ -32,7 +35,7 @@ class NutrimentBarLegend extends StatelessWidget {
               data: [
                 Segment(
                   fractionalValue: 1 / 3,
-                  color: theme.colorScheme.primary.withOpacity(0.5),
+                  color: theme.colorScheme.primary.useOpacity(0.5),
                 ),
                 Segment(
                   fractionalValue: 1 / 3,
@@ -47,18 +50,18 @@ class NutrimentBarLegend extends StatelessWidget {
           ),
           _getLegend(
             theme,
-            theme.colorScheme.primary.withOpacity(0.5),
-            'Bereits verbraucht',
+            theme.colorScheme.primary.useOpacity(0.5),
+            localizations.alreadyConsumed,
           ),
           _getLegend(
             theme,
             theme.colorScheme.primary,
-            'Verbrauch durch diese Mahlzeit',
+            localizations.consumptionByThisMeal,
           ),
           _getLegend(
             theme,
             theme.colorScheme.surfaceDim,
-            'Kann noch verbraucht werden',
+            localizations.availableForConsumption,
           ),
         ],
       ),
