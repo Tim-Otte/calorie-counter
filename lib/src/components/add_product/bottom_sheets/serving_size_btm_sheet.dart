@@ -30,6 +30,10 @@ class _ServingSizeBtmSheetState extends State<ServingSizeBtmSheet> {
     super.initState();
     if (widget.initialValue != null) {
       _data = widget.initialValue!;
+
+      if (!widget.baseServingSizes.any((x) => x.id == _data.baseServingSize)) {
+        _data.baseServingSize = widget.baseServingSizes.first.id;
+      }
     } else {
       _data.baseServingSize = widget.baseServingSizes.first.id;
     }
@@ -83,7 +87,7 @@ class _ServingSizeBtmSheetState extends State<ServingSizeBtmSheet> {
                   dropdownMenuEntries: widget.baseServingSizes
                       .map((el) => DropdownMenuEntry(
                             value: el.id,
-                            label: el.short ?? el.name,
+                            label: el.name,
                           ))
                       .toList(),
                   label: Text(localizations.servingSize),

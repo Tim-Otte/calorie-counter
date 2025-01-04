@@ -13,6 +13,7 @@ import '../../services/all.dart';
 class ProductSearch extends StatelessWidget {
   final bool enableOnlineSearch;
   final List<ServingSizeData> baseServingSizes;
+  final bool? onlyLiquids;
   final Widget? trailing;
   final FocusNode? focusNode;
   final Function(ProductData product) onSelect;
@@ -21,6 +22,7 @@ class ProductSearch extends StatelessWidget {
     super.key,
     required this.enableOnlineSearch,
     required this.baseServingSizes,
+    this.onlyLiquids,
     this.trailing,
     this.focusNode,
     required this.onSelect,
@@ -40,28 +42,48 @@ class ProductSearch extends StatelessWidget {
         searchMode: SearchMode.onPause,
         trailing: trailing,
         itemBuilder: (context, item) => ListTile(
-          title: Text(item.getBestProductName(foodFactService.language)),
-          subtitle: Text(item.getFirstBrand() ?? ''),
+          title: Text(
+            item.getBestProductName(foodFactService.language),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Text(
+            item.getFirstBrand() ?? '',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           onTap: () async {
-            var result = await Navigator.push<ProductData>(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AddProductPage(
-                  product: foodFactService.getProductDataFromProduct(
-                      item, baseServingSizes),
-                  servingSizes: foodFactService.getServingSizesFromProduct(
-                    item,
-                    baseServingSizes,
-                    localizations.serving,
-                    localizations.container,
+            final dbProduct = item.barcode != null
+                ? await database.getProduct(item.barcode!)
+                : null;
+
+            if (dbProduct == null) {
+              ProductData? result;
+
+              if (context.mounted) {
+                result = await Navigator.push<ProductData>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddProductPage(
+                      product: foodFactService.getProductDataFromProduct(item),
+                      servingSizes: foodFactService.getServingSizesFromProduct(
+                        item,
+                        baseServingSizes,
+                        localizations.serving,
+                        localizations.container,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            );
-            if (result != null) {
-              onSelect(result);
-            } else if (context.mounted) {
-              Navigator.pop(context);
+                );
+              }
+
+              if (result != null) {
+                onSelect(result);
+              } else if (context.mounted) {
+                Navigator.pop(context);
+              }
+            } else {
+              onSelect(dbProduct);
             }
           },
           leading: (item.imageFrontSmallUrl?.isNotEmpty ?? false)
@@ -76,11 +98,27 @@ class ProductSearch extends StatelessWidget {
                   ),
                   placeholder: (context, url) =>
                       CircularProgressIndicator(color: theme.disabledColor),
-                  errorWidget: (context, url, error) =>
-                      const Icon(Symbols.broken_image_rounded),
+                  errorWidget: (context, url, error) => const SizedBox(
+                    width: 50,
+                    child: Center(
+                      child: Icon(Symbols.broken_image_rounded),
+                    ),
+                  ),
                 )
-              : const Icon(Symbols.image_not_supported_rounded),
-          trailing: Text(item.servingSize ?? ''),
+              : const SizedBox(
+                  width: 50,
+                  child: Center(
+                    child: Icon(Symbols.image_not_supported_rounded),
+                  ),
+                ),
+          trailing: SizedBox(
+            width: 75,
+            child: Text(
+              item.servingSize ?? '',
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+            ),
+          ),
         ),
         errorBuilder: (context, error, searchFunction) => Expanded(
           child: IconWithText.andButton(
@@ -95,10 +133,13 @@ class ProductSearch extends StatelessWidget {
       );
     } else {
       return FutureBuilder(
-        future: database.filteredProducts(),
+        future: database.filteredProducts(onlyLiquids: onlyLiquids),
         builder: (context, snapshot) => SearchableListView(
           initialData: snapshot.hasData ? snapshot.data : null,
-          searchFunction: (search) => database.filteredProducts(text: search),
+          searchFunction: (search) => database.filteredProducts(
+            text: search,
+            onlyLiquids: onlyLiquids,
+          ),
           trailing: trailing,
           itemBuilder: (context, item) => ListTile(
             title: Text(

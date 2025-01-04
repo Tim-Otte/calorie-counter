@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../extensions/all.dart';
 import 'tile_type.dart';
 
 class MaterialSettingsTile extends StatelessWidget {
@@ -33,7 +34,7 @@ class MaterialSettingsTile extends StatelessWidget {
     final theme = Theme.of(context);
     final textScaler = MediaQuery.of(context).textScaler;
     final secondaryBodyColor =
-        theme.textTheme.bodyMedium!.color!.withOpacity(0.75);
+        theme.textTheme.bodyMedium!.color!.useOpacity(0.75);
 
     return IgnorePointer(
       ignoring: !enabled,

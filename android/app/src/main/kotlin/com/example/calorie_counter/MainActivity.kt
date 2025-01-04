@@ -1,4 +1,4 @@
-package com.example.calorie_counter
+package dev.tim_otte.calorie_counter
 
 import io.flutter.embedding.android.FlutterActivity
 

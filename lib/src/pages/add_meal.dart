@@ -1,19 +1,27 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 import '../components/all.dart' as c;
-import '../data/database.dart';
+import '../controllers/settings_controller.dart';
+import '../extensions/all.dart';
+import '../data/all.dart';
+import '../tools/all.dart';
 
 class AddMealPage extends StatefulWidget {
   const AddMealPage({
     super.key,
+    this.mealType,
     this.product,
+    this.consumption,
   });
 
+  final MealType? mealType;
   final ProductData? product;
+  final ConsumptionEntry? consumption;
 
   @override
   State<StatefulWidget> createState() => _AddMealPageState();
@@ -21,14 +29,38 @@ class AddMealPage extends StatefulWidget {
 
 class _AddMealPageState extends State<AddMealPage> {
   var _servingSizes = <ServingSizeData>[];
-  ServingSizeData? _selectedServingSize;
+  late MealType _mealType;
   ProductData? _product;
   double? _amount = 1;
+  ServingSizeData? _selectedServingSize;
 
   @override
   void initState() {
     super.initState();
-    _product = widget.product;
+
+    final database = context.read<AppDatabase>();
+    final settingsController = context.read<SettingsController>();
+
+    if (widget.product != null) {
+      _setProduct(
+        database,
+        settingsController,
+        widget.product,
+      ).whenComplete(() => setState(() {}));
+      _mealType =
+          widget.mealType ?? MealType.suggest(_product?.isLiquid ?? false);
+    } else if (widget.consumption != null) {
+      _setProduct(
+        database,
+        settingsController,
+        widget.consumption!.product,
+        selectedServingSize: widget.consumption!.servingSize,
+      ).whenComplete(() => setState(() {}));
+      _mealType = widget.consumption!.consumption.mealType;
+      _amount = widget.consumption!.consumption.quantity;
+    } else {
+      throw ArgumentError('Provide at least one parameter');
+    }
   }
 
   @override
@@ -36,25 +68,23 @@ class _AddMealPageState extends State<AddMealPage> {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final database = Provider.of<AppDatabase>(context);
-
-    if (_product != null &&
-        !_servingSizes.any((x) => x.forProduct == _product!.productCode)) {
-      database
-          .getServingSizesForProduct(_product!.productCode)
-          .then((items) => setState(() => _servingSizes = items));
-    }
-
-    if (!_servingSizes.any((x) => x.id == _selectedServingSize?.id)) {
-      setState(() => _selectedServingSize = _servingSizes.firstOrNull);
-    }
+    final settingsController = Provider.of<SettingsController>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations.addMealPageTitle),
+        title: Text(widget.consumption == null
+            ? localizations.addMealPageTitle
+            : localizations.editMealPageTitle),
         forceMaterialTransparency: true,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: _product == null ||
+                    _selectedServingSize == null ||
+                    (_amount ?? 0) <= 0
+                ? null
+                : () async {
+                    await _saveConsumption(database, context, theme);
+                  },
             icon: const Icon(Symbols.check),
           ),
           const SizedBox(width: 10)
@@ -63,15 +93,30 @@ class _AddMealPageState extends State<AddMealPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Meal type selector
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: c.MealTypeSelector(
+                initialValue: _mealType,
+                onChanged: (value) => setState(() => _mealType =
+                    value ?? MealType.suggest(_product?.isLiquid ?? false)),
+              ),
+            ),
+            // Product selector
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: c.ProductSelector(
                 initialValue: _product,
-                onChanged: (value) => setState(() => _product = value),
+                onChanged: (value) => _setProduct(
+                  database,
+                  settingsController,
+                  value,
+                ).whenComplete(() => setState(() {})),
               ),
             ),
+            // Serving size and amount
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               child: Wrap(
                 alignment: WrapAlignment.spaceBetween,
                 spacing: 18,
@@ -81,7 +126,6 @@ class _AddMealPageState extends State<AddMealPage> {
                     child: c.FormField(
                       label: Text(localizations.servingSizeAmount),
                       icon: Symbols.numbers_rounded,
-                      suffixText: _selectedServingSize?.short,
                       initialValue: _amount?.toString(),
                       onlyNumbers: true,
                       onChanged: (value) => setState(() {
@@ -100,7 +144,8 @@ class _AddMealPageState extends State<AddMealPage> {
                               ))
                           .toList(),
                       expandedInsets: EdgeInsets.zero,
-                      initialSelection: _servingSizes.firstOrNull?.id,
+                      initialSelection: _selectedServingSize?.id ??
+                          _servingSizes.firstOrNull?.id,
                       onSelected: (id) => setState(() {
                         _selectedServingSize =
                             _servingSizes.where((x) => x.id == id).firstOrNull;
@@ -110,6 +155,7 @@ class _AddMealPageState extends State<AddMealPage> {
                 ],
               ),
             ),
+            // Nutriment information (stats)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               child: Wrap(
@@ -118,103 +164,128 @@ class _AddMealPageState extends State<AddMealPage> {
                   const Divider(),
                   _getNutrimentBox(
                     theme,
-                    Symbols.mode_heat_rounded,
+                    NutrimentIcons.calories,
+                    NutrimentColors.calories,
                     localizations.calories,
                     _product?.caloriesPer100Units ?? 0,
                     'kcal',
                   ),
                   _getNutrimentBox(
                     theme,
-                    Symbols.nutrition_rounded,
+                    NutrimentIcons.carbs,
+                    NutrimentColors.carbs,
                     localizations.carbs,
                     _product?.carbsPer100Units ?? 0,
                     'g',
                   ),
                   _getNutrimentBox(
                     theme,
-                    Symbols.water_drop_rounded,
+                    NutrimentIcons.fats,
+                    NutrimentColors.fats,
                     localizations.fats,
                     _product?.fatPer100Units ?? 0,
                     'g',
                   ),
                   _getNutrimentBox(
                     theme,
-                    Symbols.exercise_rounded,
+                    NutrimentIcons.proteins,
+                    NutrimentColors.proteins,
                     localizations.proteins,
                     _product?.proteinsPer100Units ?? 0,
                     'g',
                   ),
-                  Card.filled(
-                    color: theme.colorScheme.surfaceContainer,
-                    child: Stack(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(15),
-                          child: Wrap(
-                            runSpacing: 10,
-                            children: [
-                              Text(
-                                'Anteil Tagesbedarf',
-                                style: theme.textTheme.bodyMedium!
-                                    .copyWith(fontWeight: FontWeight.bold),
-                              ),
-                              _getNutrimentBar(
-                                theme: theme,
-                                icon: Symbols.mode_heat_rounded,
-                                color: const Color(0xFFFF8C00),
-                                value: _product?.caloriesPer100Units ?? 0,
-                                max: 2700,
-                              ),
-                              _getNutrimentBar(
-                                theme: theme,
-                                icon: Symbols.nutrition_rounded,
-                                color: const Color(0xFF32CD32),
-                                value: _product?.caloriesPer100Units ?? 0,
-                                max: 500,
-                              ),
-                              _getNutrimentBar(
-                                theme: theme,
-                                icon: Symbols.water_drop_rounded,
-                                fillIcon: true,
-                                color: const Color.fromARGB(255, 255, 200, 0),
-                                value: _product?.fatPer100Units ?? 0,
-                                max: 50,
-                              ),
-                              _getNutrimentBar(
-                                theme: theme,
-                                icon: Symbols.exercise_rounded,
-                                color: const Color(0xFF1E90FF),
-                                value: _product?.proteinsPer100Units ?? 0,
-                                max: 50,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          right: 5,
-                          top: 0,
-                          child: IconButton(
-                            constraints: BoxConstraints(
-                              maxHeight: 30,
-                              maxWidth: 30,
-                            ),
-                            iconSize: 15,
-                            style: IconButton.styleFrom(
-                              backgroundColor:
-                                  theme.colorScheme.surfaceContainerHigh,
-                              foregroundColor: theme.colorScheme.primary,
-                            ),
-                            onPressed: () async => showModalBottomSheet(
-                              context: context,
-                              builder: (context) => c.NutrimentBarLegend(),
-                            ),
-                            icon: Icon(Symbols.info_i_rounded),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
                 ],
+              ),
+            ),
+            // Nutriment information (bars)
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 25),
+              child: Card.filled(
+                color: theme.colorScheme.primary.useOpacity(0.1),
+                child: Stack(
+                  children: [
+                    StreamBuilder(
+                      stream: database.calculateTotalNutrimentsForToday(
+                        withoutConsumptionId:
+                            widget.consumption?.consumption.id,
+                      ),
+                      builder: (context, nutrimentSnapshot) => Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Wrap(
+                          runSpacing: 10,
+                          children: [
+                            Text(
+                              localizations.dailyNutrimentDiagramTitle,
+                              style: theme.textTheme.bodyMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            _getNutrimentBar(
+                              theme,
+                              NutrimentIcons.calories,
+                              false,
+                              NutrimentColors.calories,
+                              nutrimentSnapshot.data?.calories ?? 0,
+                              _product?.caloriesPer100Units ?? 0,
+                              settingsController.calculateTDEE(),
+                            ),
+                            _getNutrimentBar(
+                              theme,
+                              NutrimentIcons.carbs,
+                              false,
+                              NutrimentColors.carbs,
+                              nutrimentSnapshot.data?.carbs ?? 0,
+                              _product?.carbsPer100Units ?? 0,
+                              settingsController
+                                  .calculateMinMaxDailyCarbs()
+                                  .max,
+                            ),
+                            _getNutrimentBar(
+                              theme,
+                              NutrimentIcons.fats,
+                              true,
+                              NutrimentColors.fats,
+                              nutrimentSnapshot.data?.fats ?? 0,
+                              _product?.fatPer100Units ?? 0,
+                              settingsController.calculateMinMaxDailyFats().max,
+                            ),
+                            _getNutrimentBar(
+                              theme,
+                              NutrimentIcons.proteins,
+                              false,
+                              NutrimentColors.proteins,
+                              nutrimentSnapshot.data?.proteins ?? 0,
+                              _product?.proteinsPer100Units ?? 0,
+                              settingsController
+                                  .calculateMinMaxDailyProteins()
+                                  .max,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 5,
+                      top: 0,
+                      child: IconButton(
+                        constraints: BoxConstraints(
+                          maxHeight: 30,
+                          maxWidth: 30,
+                        ),
+                        iconSize: 15,
+                        style: IconButton.styleFrom(
+                          backgroundColor:
+                              theme.colorScheme.surfaceContainerHigh,
+                          foregroundColor: theme.colorScheme.primary,
+                        ),
+                        onPressed: () async => showModalBottomSheet(
+                          context: context,
+                          builder: (context) => c.NutrimentBarLegend(),
+                        ),
+                        icon: Icon(Symbols.info_i_rounded),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ],
@@ -223,22 +294,90 @@ class _AddMealPageState extends State<AddMealPage> {
     );
   }
 
-  Widget _getNutrimentBar({
-    required ThemeData theme,
-    required IconData icon,
-    bool fillIcon = false,
-    required Color color,
-    required double value,
-    required double max,
-  }) {
-    var willConsume = value /
+  Future<void> _setProduct(
+    AppDatabase database,
+    SettingsController settingsController,
+    ProductData? product, {
+    ServingSizeData? selectedServingSize,
+  }) async {
+    if (product == null) {
+      _product = null;
+      _servingSizes = [];
+      _selectedServingSize = null;
+    } else {
+      _product = product;
+      _servingSizes = await database.getServingSizesForProduct(
+        product.productCode,
+        product.isLiquid,
+        settingsController.measurementUnit ?? MeasurementUnit.metric,
+      );
+
+      if (selectedServingSize != null) {
+        _selectedServingSize = selectedServingSize;
+      } else {
+        if (_selectedServingSize == null ||
+            !_servingSizes.any((x) => x.id == _selectedServingSize!.id)) {
+          _selectedServingSize = _servingSizes
+              .where((x) => x.baseServingSizeId != null)
+              .firstOrNull;
+        }
+      }
+    }
+  }
+
+  Future<void> _saveConsumption(
+    AppDatabase database,
+    BuildContext context,
+    ThemeData theme,
+  ) async {
+    try {
+      final consumption = ConsumptionTemplate.fromValues(
+        mealType: _mealType,
+        productCode: _product!.productCode,
+        quantity: _amount!,
+        servingSizeId: _selectedServingSize!.id,
+      );
+
+      if (widget.consumption != null) {
+        await database.updateConsumption(
+          widget.consumption!.consumption.id,
+          consumption.getForInsert(),
+        );
+      } else {
+        await database.insertConsumption(consumption.getForInsert());
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showError('Mahlzeit konnte nicht hinzugefügt werden');
+      }
+    }
+
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Widget _getNutrimentBar(
+    ThemeData theme,
+    IconData icon,
+    bool fillIcon,
+    Color color,
+    double alreadyConsumed,
+    double value,
+    double max,
+  ) {
+    double consumption = value /
         100 *
-        (_selectedServingSize?.valueInBaseServingSize ?? 0) *
-        (_amount ?? 0) /
-        max;
-    var available = math.max(0.0, 1 - willConsume);
-    var alreadyConsumed = math.Random().nextDouble() * available;
-    available -= alreadyConsumed;
+        (_amount ?? 0) *
+        (_selectedServingSize?.valueInBaseServingSize ?? 0);
+
+    double total = math.max(max, consumption + alreadyConsumed);
+
+    double alreadyConsumedPercent = alreadyConsumed / total;
+    double currentConsumptionPercent = consumption / total;
+    double availablePercent =
+        math.max(0, 1 - (alreadyConsumedPercent + currentConsumptionPercent));
 
     return Row(
       children: [
@@ -257,15 +396,15 @@ class _AddMealPageState extends State<AddMealPage> {
             tooltipBuilder: (value) => "${(value * 100).toInt()} %",
             data: [
               c.Segment(
-                fractionalValue: alreadyConsumed,
-                color: color.withOpacity(0.5),
+                fractionalValue: alreadyConsumedPercent,
+                color: color.useOpacity(0.5),
               ),
               c.Segment(
-                fractionalValue: willConsume,
+                fractionalValue: currentConsumptionPercent,
                 color: color,
               ),
               c.Segment(
-                fractionalValue: available,
+                fractionalValue: availablePercent,
                 color: theme.colorScheme.surfaceDim,
               )
             ],
@@ -278,6 +417,7 @@ class _AddMealPageState extends State<AddMealPage> {
   Widget _getNutrimentBox(
     ThemeData theme,
     IconData icon,
+    Color color,
     String label,
     double value,
     String servingShort,
@@ -295,7 +435,7 @@ class _AddMealPageState extends State<AddMealPage> {
         children: [
           Icon(
             icon,
-            color: theme.colorScheme.primary,
+            color: color,
             size: 28,
           ),
           Column(
@@ -310,7 +450,7 @@ class _AddMealPageState extends State<AddMealPage> {
               Text(
                 "${valPerServing.toStringAsFixed(2)} $servingShort",
                 style: theme.textTheme.bodyMedium!.copyWith(
-                  color: theme.textTheme.bodyMedium!.color!.withOpacity(0.75),
+                  color: theme.textTheme.bodyMedium!.color!.useOpacity(0.75),
                 ),
               )
             ],

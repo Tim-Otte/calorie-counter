@@ -1,190 +1,101 @@
+import 'package:calorie_counter/src/extensions/android_device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:flutter_localized_locales/flutter_localized_locales.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../components/all.dart';
 import '../controllers/settings_controller.dart';
-import '../extensions/enumerable.dart';
 import '../data/all.dart';
 import '../services/all.dart';
 import '../tools/all.dart';
 
 class SettingsPage extends StatelessWidget {
-  final SettingsController _controller;
-
-  const SettingsPage({super.key, required SettingsController controller})
-      : _controller = controller;
+  const SettingsPage({super.key});
 
   /// Get the settings section for the general settings
   Widget _getGeneralSettingsSection(
-      BuildContext context, AppLocalizations localizations) {
-    return MaterialSettingsSection(
-      margin: const EdgeInsetsDirectional.all(10),
-      title: Text(localizations.settingsGeneralSection),
-      tiles: [
-        MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.palette),
-          title: Text(localizations.settingTheme),
-          value: Text(
-            Translator.getTranslation(context, _controller.themeMode),
-          ),
-          onTap: (context) async {
-            var result = await showDialog<ThemeMode>(
-              context: context,
-              builder: (context) => ThemeModeDialog(
-                currentValue: _controller.themeMode,
-              ),
-            );
-            _controller.updateThemeMode(result);
-          },
-        ),
-        MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.translate),
-          title: Text(localizations.settingLanguage),
-          value: Text(
-            _controller.locale != null
-                ? LocaleNames.of(context)!
-                    .nameOf(_controller.locale!.languageCode)!
-                : localizations.systemDefault,
-          ),
-          onTap: (context) async {
-            var result = await showDialog<String?>(
-              context: context,
-              builder: (context) => LanguageDialog(
-                currentLocale: _controller.locale?.languageCode ??
-                    localizations.localeName,
-              ),
-            );
-            _controller.updateLocale(result);
-          },
-        ),
-        MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.straighten),
-          title: Text(localizations.settingMeasurementUnit),
-          value: Text(
-            _controller.measurementUnit != null
-                ? Translator.getTranslation(
-                    context, _controller.measurementUnit)
-                : localizations.notSet,
-          ),
-          onTap: (context) async {
-            var result = await showDialog<MeasurementUnit>(
-              context: context,
-              builder: (context) => MeasurementUnitDialog(
-                currentValue:
-                    _controller.measurementUnit ?? MeasurementUnit.metric,
-              ),
-            );
-            _controller.updateMeasurementUnit(result);
-          },
-        )
-      ],
-    );
-  }
-
-  /// Get the settings section for the personal information
-  Widget _getPersonalSettingsSection(
     BuildContext context,
     AppLocalizations localizations,
   ) {
-    return MaterialSettingsSection(
-      margin: const EdgeInsetsDirectional.all(10),
-      title: Text(localizations.settingsPersonalInformationSection),
-      tiles: [
-        MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.person_play),
-          title: Text(localizations.settingGender),
-          value: Text(
-            _controller.gender != null
-                ? Translator.getTranslation(context, _controller.gender)
-                : localizations.notSet,
-          ),
-          suffix: IconButton(
-            onPressed: () => showModalBottomSheet(
-              context: context,
-              builder: (context) => const AboutPersonalDataBtmSheet(),
-              isScrollControlled: true,
-              useSafeArea: true,
-              showDragHandle: true,
-              enableDrag: true,
+    final settingsController = Provider.of<SettingsController>(context);
+
+    return FutureBuilder(
+      future: DeviceInfoPlugin().androidInfo,
+      builder: (context, androidInfoSnapshot) => MaterialSettingsSection(
+        title: Text(localizations.settingsGeneralSection),
+        tiles: [
+          MaterialBasicSettingsTile(
+            prefix: const Icon(Symbols.palette_rounded),
+            title: Text(localizations.settingTheme),
+            value: Text(
+              Translator.getTranslation(context, settingsController.themeMode),
             ),
-            icon: const Icon(Symbols.info_rounded),
-            color: Theme.of(context).colorScheme.primary,
+            onTap: (context) async {
+              var result = await showDialog<ThemeMode>(
+                context: context,
+                builder: (context) => ThemeModeDialog(
+                  currentValue: settingsController.themeMode,
+                ),
+              );
+              settingsController.updateThemeMode(result);
+            },
           ),
-          disableSuffixPadding: true,
-          onTap: (context) async {
-            var result = await showDialog<Gender>(
-              context: context,
-              builder: (context) => GenderDialog(
-                currentValue: _controller.gender ?? Gender.values.pickRandom(),
-              ),
-            );
-            _controller.updateGender(result);
-          },
-        ),
-        MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.calendar_month),
-          title: Text(localizations.settingDateOfBirth),
-          description: Text(
-            _controller.dateOfBirth != null
-                ? localizations.settingDateOfBirthValue(
-                    _controller.dateOfBirth!,
-                    (DateTime.now()
-                                .difference(_controller.dateOfBirth!)
-                                .inDays /
-                            365.0)
-                        .round(),
-                  )
-                : localizations.notSet,
+          MaterialSwitchSettingsTile(
+            prefix: const Icon(Symbols.format_paint_rounded),
+            title: Text(localizations.settingMaterialYou),
+            description: Text(localizations.settingMaterialYouSubtitle),
+            value: settingsController.useMaterialYou,
+            enabled: androidInfoSnapshot.hasData &&
+                androidInfoSnapshot.data!.getMajorVersion() >= 12,
+            onToggle: (value) => settingsController.updateUseMaterialYou(value),
           ),
-          onTap: (context) async {
-            var result = await showDatePicker(
-              context: context,
-              initialDatePickerMode: DatePickerMode.year,
-              firstDate:
-                  DateTime(DateTime.now().year - 100, DateTime.january, 1),
-              lastDate: DateTime.now().subtract(const Duration(days: 365)),
-              initialDate: _controller.dateOfBirth,
-            );
-            _controller.updateDateOfBirth(result);
-          },
-        ),
-        MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.height),
-          title: Text(localizations.settingHeight),
-          description: Text(_controller.heightString ?? localizations.notSet),
-          onTap: (context) async {
-            var result = await showDialog<double>(
-              context: context,
-              builder: (context) => HeightInputDialog(
-                measurementUnit:
-                    _controller.measurementUnit ?? MeasurementUnit.metric,
-                currentValue: _controller.height ?? 0,
-              ),
-            );
-            _controller.updateHeight(result);
-          },
-        ),
-        MaterialBasicSettingsTile(
-          prefix: const Icon(Symbols.scale),
-          title: Text(localizations.settingWeight),
-          description: Text(_controller.weightString ?? localizations.notSet),
-          onTap: (context) async {
-            var result = await showDialog<double>(
-              context: context,
-              builder: (context) => WeightInputDialog(
-                measurementUnit:
-                    _controller.measurementUnit ?? MeasurementUnit.metric,
-                currentValue: _controller.weight ?? 0,
-              ),
-            );
-            _controller.updateWeight(result);
-          },
-        ),
-      ],
+          MaterialBasicSettingsTile(
+            prefix: const Icon(Symbols.translate_rounded),
+            title: Text(localizations.settingLanguage),
+            value: Text(
+              settingsController.locale != null
+                  ? LocaleNames.of(context)!
+                      .nameOf(settingsController.locale!.languageCode)!
+                  : localizations.systemDefault,
+            ),
+            onTap: (context) async {
+              var result = await showDialog<String?>(
+                context: context,
+                builder: (context) => LanguageDialog(
+                  currentLocale: settingsController.locale?.languageCode ??
+                      localizations.localeName,
+                ),
+              );
+              settingsController.updateLocale(result);
+            },
+          ),
+          MaterialBasicSettingsTile(
+            prefix: const Icon(Symbols.straighten_rounded),
+            title: Text(localizations.settingMeasurementUnit),
+            value: Text(
+              settingsController.measurementUnit != null
+                  ? Translator.getTranslation(
+                      context, settingsController.measurementUnit)
+                  : localizations.notSet,
+            ),
+            onTap: (context) async {
+              var result = await showDialog<MeasurementUnit>(
+                context: context,
+                builder: (context) => MeasurementUnitDialog(
+                  currentValue: settingsController.measurementUnit ??
+                      MeasurementUnit.metric,
+                ),
+              );
+              settingsController.updateMeasurementUnit(result);
+            },
+          )
+        ],
+      ),
     );
   }
 
@@ -195,7 +106,6 @@ class SettingsPage extends StatelessWidget {
       future: PackageInfo.fromPlatform(),
       builder: (context, packageInfoSnapshot) => MaterialSettingsSection(
         title: Text(localizations.settingsAboutSection),
-        margin: const EdgeInsetsDirectional.all(10),
         tiles: [
           MaterialBasicSettingsTile(
             prefix: const Icon(Symbols.tag_rounded),
@@ -256,7 +166,6 @@ class SettingsPage extends StatelessWidget {
           child: Column(
             children: [
               _getGeneralSettingsSection(context, localizations),
-              _getPersonalSettingsSection(context, localizations),
               _getAboutSection(context, localizations),
             ],
           ),

@@ -27,6 +27,6 @@ void main() async {
       Provider(create: (_) => foodFactService),
       ChangeNotifierProvider(create: (_) => settingsController),
     ],
-    child: MyApp(settingsController: settingsController),
+    child: MyApp(),
   ));
 }

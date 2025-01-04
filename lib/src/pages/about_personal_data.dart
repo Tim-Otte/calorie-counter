@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class AboutPersonalDataBtmSheet extends StatelessWidget {
-  const AboutPersonalDataBtmSheet({super.key});
+class AboutPersonalDataPage extends StatelessWidget {
+  const AboutPersonalDataPage({super.key});
 
   Widget getParagraph(
     ThemeData theme,
@@ -35,29 +35,16 @@ class AboutPersonalDataBtmSheet extends StatelessWidget {
     final theme = Theme.of(context);
     final localizations = AppLocalizations.of(context)!;
 
-    return DraggableScrollableSheet(
-      expand: false,
-      snap: true,
-      initialChildSize: 0.3,
-      minChildSize: 0.3,
-      maxChildSize: 0.75,
-      builder: (context, controller) => SingleChildScrollView(
-        controller: controller,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(localizations.aboutPersonalDataTitle),
+      ),
+      body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+          padding: const EdgeInsets.all(20),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Text(
-                  localizations.aboutPersonalDataTitle,
-                  style: theme.textTheme.headlineSmall!.copyWith(
-                    color: theme.colorScheme.primary,
-                  ),
-                ),
-              ),
               getParagraph(
                 theme,
                 localizations,
@@ -73,8 +60,8 @@ class AboutPersonalDataBtmSheet extends StatelessWidget {
               getParagraph(
                 theme,
                 localizations,
-                localizations.aboutPersonalDataWeightHeightTitle,
-                localizations.aboutPersonalDataWeightHeightBody,
+                localizations.aboutPersonalDataWeightHeightWaistTitle,
+                localizations.aboutPersonalDataWeightHeightWaistBody,
                 showPadding: false,
               ),
             ],

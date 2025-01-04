@@ -49,6 +49,40 @@ class Translator {
           throw UnsupportedError(
               'There is no translation for the given serving size filter');
       }
+    } else if (enumValue is MealType) {
+      switch (enumValue) {
+        case MealType.breakfast:
+          return AppLocalizations.of(context)!.mealTypeBreakfast;
+        case MealType.lunch:
+          return AppLocalizations.of(context)!.mealTypeLunch;
+        case MealType.dinner:
+          return AppLocalizations.of(context)!.mealTypeDinner;
+        case MealType.snack:
+          return AppLocalizations.of(context)!.mealTypeSnack;
+        case MealType.drink:
+          return AppLocalizations.of(context)!.mealTypeDrink;
+        case MealType.other:
+          return AppLocalizations.of(context)!.mealTypeOther;
+        default:
+          throw UnsupportedError(
+              'There is no translation for the given meal type');
+      }
+    } else if (enumValue is ActivityLevel) {
+      switch (enumValue) {
+        case ActivityLevel.sedentary:
+          return AppLocalizations.of(context)!.activityLevelSedentary;
+        case ActivityLevel.lightlyActive:
+          return AppLocalizations.of(context)!.activityLevelLightlyActive;
+        case ActivityLevel.moderatelyActive:
+          return AppLocalizations.of(context)!.activityLevelModeratelyActive;
+        case ActivityLevel.active:
+          return AppLocalizations.of(context)!.activityLevelActive;
+        case ActivityLevel.veryActive:
+          return AppLocalizations.of(context)!.activityLevelVeryActive;
+        default:
+          throw UnsupportedError(
+              'There is no translation for the given activity level');
+      }
     } else {
       throw UnsupportedError('Unsupported enum type');
     }

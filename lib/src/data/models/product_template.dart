@@ -24,6 +24,7 @@ class ProductTemplate {
       productCode: productCode,
       name: name,
       brand: brand,
+      isLiquid: isLiquid,
       caloriesPer100Units: caloriesPer100 ?? 0,
       carbsPer100Units: carbsPer100 ?? 0,
       fatPer100Units: fatsPer100 ?? 0,

@@ -12,7 +12,7 @@ class GenderDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EnumRadioDialog<Gender>(
-      title: AppLocalizations.of(context)!.settingGender,
+      title: AppLocalizations.of(context)!.profileGender,
       initialValue: currentValue,
       values: Gender.values,
       showSubtitles: false,

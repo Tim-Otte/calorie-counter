@@ -4,32 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:provider/provider.dart';
 
-import 'data/all.dart' show AppDatabase;
 import 'pages/all.dart';
-import 'controllers/settings_controller.dart';
 
 class MainLayout extends StatefulWidget {
-  const MainLayout({super.key, required this.settingsController});
-
-  final SettingsController settingsController;
+  const MainLayout({super.key});
 
   @override
   State<MainLayout> createState() => _MainLayoutState();
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  int currentPage = 0;
+  int _currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
-    final database = Provider.of<AppDatabase>(context);
-
-    // Database updates
-    database.createDefaultServingSizes(localizations);
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: Padding(
@@ -37,79 +28,165 @@ class _MainLayoutState extends State<MainLayout> {
         child: <Widget>[
           const TodayPage(),
           const MonthlyOverviewPage(),
-          SettingsPage(controller: widget.settingsController),
-        ].elementAt(currentPage),
+          const ProfilePage(),
+        ].elementAt(_currentPage),
       ),
-      floatingActionButton: currentPage == 0
-          ? Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  child: FloatingActionButton(
-                    heroTag: 'add_consumable_manually',
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SearchProductPage(
-                          onSelect: (product, isNewProduct) {
-                            final route = MaterialPageRoute(
-                              builder: (_) => AddMealPage(product: product),
-                            );
-                            if (isNewProduct) {
-                              Navigator.pushReplacement(context, route);
-                            } else {
-                              Navigator.push(context, route);
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                    mini: true,
-                    backgroundColor: colorScheme.tertiary,
-                    child: Icon(
-                      Symbols.add,
-                      color: colorScheme.onTertiary,
-                      weight: 800,
-                    ),
-                  ),
+      bottomNavigationBar: BottomAppBar(
+        notchMargin: 6,
+        padding: EdgeInsets.zero,
+        shape: const CircularNotchedRectangle(),
+        child: Stack(
+          alignment: AlignmentDirectional.centerStart,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                // Today page
+                _getNavigationItem(
+                  context: context,
+                  index: 0,
+                  icon: Symbols.today_rounded,
+                  label: localizations.todayPageTitle,
                 ),
-                FloatingActionButton(
-                  heroTag: 'scan_consumable',
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (colorScheme) => const ScanBarcodePage()),
-                  ),
-                  child: const Icon(Symbols.barcode_scanner),
-                )
+                // Monthly overview page
+                _getNavigationItem(
+                  context: context,
+                  index: 1,
+                  icon: Symbols.calendar_month_rounded,
+                  label: localizations.monthlyOverviewPageTitle,
+                ),
+                // Profile page
+                _getNavigationItem(
+                  context: context,
+                  index: 2,
+                  icon: Symbols.account_circle_rounded,
+                  label: localizations.profilePageTitle,
+                ),
+                SizedBox(width: 10),
               ],
+            ),
+            Positioned(
+              right: 22,
+              bottom: 6,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: theme.colorScheme.surface,
+                    width: 2,
+                  ),
+                  color: theme.colorScheme.surface,
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  key: ValueKey('btn_add_any_meal'),
+                  style: IconButton.styleFrom(
+                    backgroundColor: theme.colorScheme.secondaryContainer,
+                    foregroundColor: theme.colorScheme.onSecondaryContainer,
+                    padding: EdgeInsets.all(4),
+                    visualDensity: VisualDensity.compact,
+                    elevation: 3,
+                    shadowColor: theme.shadowColor,
+                  ),
+                  icon: Icon(
+                    Symbols.add_rounded,
+                  ),
+                  onPressed: () => _showProductSearch(context),
+                ),
+              ),
             )
-          : null,
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-      bottomNavigationBar: NavigationBar(
-        backgroundColor: colorScheme.primary.withOpacity(0.1),
-        indicatorColor: colorScheme.primary.withOpacity(0.69),
-        onDestinationSelected: (value) {
-          setState(() => currentPage = value);
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'scan_consumable',
+        shape: const CircleBorder(),
+        onPressed: () {
           unawaited(HapticFeedback.selectionClick());
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ScanBarcodePage(),
+            ),
+          );
         },
-        selectedIndex: currentPage,
-        destinations: <Widget>[
-          NavigationDestination(
-            icon: const Icon(Symbols.today),
-            selectedIcon: const Icon(Symbols.today, fill: 1),
-            label: localizations.todayPageTitle,
+        child: const Icon(Symbols.barcode_scanner_rounded),
+      ),
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+    );
+  }
+
+  void _showProductSearch(BuildContext context) {
+    unawaited(HapticFeedback.selectionClick());
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchProductPage(
+          onSelect: (product, isNewProduct) {
+            final route = MaterialPageRoute(
+              builder: (_) => AddMealPage(product: product),
+            );
+            if (isNewProduct) {
+              Navigator.pushReplacement(context, route);
+            } else {
+              Navigator.push(context, route);
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _getNavigationItem({
+    required BuildContext context,
+    required int index,
+    required IconData icon,
+    required String label,
+  }) {
+    final theme = Theme.of(context);
+    final isSelected = _currentPage == index;
+
+    return InkWell(
+      onTap: () {
+        unawaited(HapticFeedback.selectionClick());
+        setState(() => _currentPage = index);
+      },
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      splashFactory: NoSplash.splashFactory,
+      child: Wrap(
+        spacing: 4,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        direction: Axis.vertical,
+        children: [
+          AnimatedCrossFade(
+            duration: Duration(milliseconds: 300),
+            firstChild: IconButton.filledTonal(
+              key: ValueKey('bottom_nav_${index}_active'),
+              icon: Icon(icon, fill: 1),
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+              visualDensity: VisualDensity.compact,
+              isSelected: isSelected,
+              onPressed: () => setState(() => _currentPage = index),
+            ),
+            secondChild: IconButton(
+              key: ValueKey('bottom_nav_$index'),
+              icon: Icon(icon),
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+              visualDensity: VisualDensity.compact,
+              isSelected: isSelected,
+              onPressed: () => setState(() => _currentPage = index),
+            ),
+            crossFadeState: isSelected
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
           ),
-          NavigationDestination(
-            icon: const Icon(Symbols.calendar_month),
-            selectedIcon: const Icon(Symbols.calendar_month, fill: 1),
-            label: localizations.monthlyOverviewPageTitle,
-          ),
-          NavigationDestination(
-            icon: const Icon(Symbols.settings),
-            selectedIcon: const Icon(Symbols.settings, fill: 1),
-            label: localizations.settingsPageTitle,
+          Text(
+            label,
+            style: isSelected
+                ? theme.bottomNavigationBarTheme.selectedLabelStyle
+                : theme.bottomNavigationBarTheme.unselectedLabelStyle,
           ),
         ],
       ),

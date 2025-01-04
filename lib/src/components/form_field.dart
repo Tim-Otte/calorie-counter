@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../extensions/all.dart';
 import '../tools/all.dart';
 
 class FormField extends StatelessWidget {
@@ -44,8 +45,7 @@ class FormField extends StatelessWidget {
                   child: Text(
                     " $hintText ",
                     style: theme.textTheme.bodySmall!.copyWith(
-                      color:
-                          theme.textTheme.bodySmall!.color!.withOpacity(0.75),
+                      color: theme.textTheme.bodySmall!.color!.useOpacity(0.75),
                     ),
                   ),
                 ),

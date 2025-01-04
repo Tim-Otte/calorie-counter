@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../../data/database.dart';
+import '../../extensions/all.dart';
 import '../../pages/all.dart';
 
 class ProductSelector extends StatefulWidget {
@@ -73,7 +74,10 @@ class _ProductSelectorState extends State<ProductSelector> {
                       _product != null
                           ? "${_product!.name} (${_product!.brand})"
                           : localizations.notSet,
-                      style: theme.textTheme.bodyMedium,
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        color:
+                            theme.textTheme.bodyMedium!.color!.useOpacity(0.7),
+                      ),
                     )
                   ],
                 ),
