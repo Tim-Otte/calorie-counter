@@ -129,4 +129,10 @@ class AppDatabase extends _$AppDatabase {
           ..where((tbl) => tbl.forProduct.equals(productCode)))
         .get();
   }
+
+  Future deleteProduct(String productCode) {
+    return (delete(product)
+          ..where((tbl) => tbl.productCode.equals(productCode)))
+        .go();
+  }
 }

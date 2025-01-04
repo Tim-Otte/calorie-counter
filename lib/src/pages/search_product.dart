@@ -8,7 +8,7 @@ import '../data/all.dart';
 import 'all.dart' show AddProductPage;
 
 class SearchProductPage extends StatefulWidget {
-  final Function(ProductData product) onSelect;
+  final Function(ProductData product, bool isNewProduct) onSelect;
 
   const SearchProductPage({
     super.key,
@@ -86,7 +86,7 @@ class _SearchProductPageState extends State<SearchProductPage>
             focusNode: _favoritesFocusNode,
             enableOnlineSearch: false,
             baseServingSizes: _baseServingSizes,
-            onSelect: widget.onSelect,
+            onSelect: (p) => widget.onSelect(p, false),
           ),
           ProductSearch(
             focusNode: _onlineFocusNode,
@@ -100,7 +100,7 @@ class _SearchProductPageState extends State<SearchProductPage>
               icon: Icon(Symbols.edit_note_rounded),
               tooltip: localizations.switchToEditModeTooltip,
             ),
-            onSelect: widget.onSelect,
+            onSelect: (p) => widget.onSelect(p, true),
           )
         ],
       ),

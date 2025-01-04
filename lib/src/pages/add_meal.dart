@@ -1,4 +1,4 @@
-import 'package:fl_chart/fl_chart.dart';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -146,46 +146,72 @@ class _AddMealPageState extends State<AddMealPage> {
                   ),
                   Card.filled(
                     color: theme.colorScheme.surfaceContainer,
-                    child: Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Wrap(
-                        runSpacing: 10,
-                        children: [
-                          Text(
-                            'Anteil Tagesbedarf',
-                            style: theme.textTheme.bodyMedium!
-                                .copyWith(fontWeight: FontWeight.bold),
+                    child: Stack(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Wrap(
+                            runSpacing: 10,
+                            children: [
+                              Text(
+                                'Anteil Tagesbedarf',
+                                style: theme.textTheme.bodyMedium!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              _getNutrimentBar(
+                                theme: theme,
+                                icon: Symbols.mode_heat_rounded,
+                                color: const Color(0xFFFF8C00),
+                                value: _product?.caloriesPer100Units ?? 0,
+                                max: 2700,
+                              ),
+                              _getNutrimentBar(
+                                theme: theme,
+                                icon: Symbols.nutrition_rounded,
+                                color: const Color(0xFF32CD32),
+                                value: _product?.caloriesPer100Units ?? 0,
+                                max: 500,
+                              ),
+                              _getNutrimentBar(
+                                theme: theme,
+                                icon: Symbols.water_drop_rounded,
+                                fillIcon: true,
+                                color: const Color.fromARGB(255, 255, 200, 0),
+                                value: _product?.fatPer100Units ?? 0,
+                                max: 50,
+                              ),
+                              _getNutrimentBar(
+                                theme: theme,
+                                icon: Symbols.exercise_rounded,
+                                color: const Color(0xFF1E90FF),
+                                value: _product?.proteinsPer100Units ?? 0,
+                                max: 50,
+                              ),
+                            ],
                           ),
-                          _getNutrimentBar(
-                            theme,
-                            Symbols.mode_heat_rounded,
-                            const Color(0xFFFFD700),
-                            _product?.caloriesPer100Units ?? 0,
-                            2700,
+                        ),
+                        Positioned(
+                          right: 5,
+                          top: 0,
+                          child: IconButton(
+                            constraints: BoxConstraints(
+                              maxHeight: 30,
+                              maxWidth: 30,
+                            ),
+                            iconSize: 15,
+                            style: IconButton.styleFrom(
+                              backgroundColor:
+                                  theme.colorScheme.surfaceContainerHigh,
+                              foregroundColor: theme.colorScheme.primary,
+                            ),
+                            onPressed: () async => showModalBottomSheet(
+                              context: context,
+                              builder: (context) => c.NutrimentBarLegend(),
+                            ),
+                            icon: Icon(Symbols.info_i_rounded),
                           ),
-                          _getNutrimentBar(
-                            theme,
-                            Symbols.nutrition_rounded,
-                            const Color(0xFF1E90FF),
-                            _product?.caloriesPer100Units ?? 0,
-                            500,
-                          ),
-                          _getNutrimentBar(
-                            theme,
-                            Symbols.water_drop_rounded,
-                            const Color(0xFFFF8C00),
-                            _product?.fatPer100Units ?? 0,
-                            50,
-                          ),
-                          _getNutrimentBar(
-                            theme,
-                            Symbols.exercise_rounded,
-                            const Color(0xFF32CD32),
-                            _product?.proteinsPer100Units ?? 0,
-                            50,
-                          ),
-                        ],
-                      ),
+                        )
+                      ],
                     ),
                   ),
                 ],
@@ -197,13 +223,23 @@ class _AddMealPageState extends State<AddMealPage> {
     );
   }
 
-  Widget _getNutrimentBar(
-    ThemeData theme,
-    IconData icon,
-    Color color,
-    double value,
-    double max,
-  ) {
+  Widget _getNutrimentBar({
+    required ThemeData theme,
+    required IconData icon,
+    bool fillIcon = false,
+    required Color color,
+    required double value,
+    required double max,
+  }) {
+    var willConsume = value /
+        100 *
+        (_selectedServingSize?.valueInBaseServingSize ?? 0) *
+        (_amount ?? 0) /
+        max;
+    var available = math.max(0.0, 1 - willConsume);
+    var alreadyConsumed = math.Random().nextDouble() * available;
+    available -= alreadyConsumed;
+
     return Row(
       children: [
         Padding(
@@ -211,41 +247,30 @@ class _AddMealPageState extends State<AddMealPage> {
           child: Icon(
             icon,
             color: color,
+            fill: fillIcon ? 1 : 0,
           ),
         ),
         Expanded(
           child: c.SegmentedBarChart(
-            gap: 4,
+            gap: 2,
             gapColor: theme.colorScheme.surfaceContainer,
             tooltipBuilder: (value) => "${(value * 100).toInt()} %",
             data: [
               c.Segment(
-                fractionalValue: value /
-                    100 *
-                    (_selectedServingSize?.valueInBaseServingSize ?? 0) *
-                    (_amount ?? 0) /
-                    max,
+                fractionalValue: alreadyConsumed,
+                color: color.withOpacity(0.5),
+              ),
+              c.Segment(
+                fractionalValue: willConsume,
                 color: color,
               ),
               c.Segment(
-                fractionalValue: 1 -
-                    (value /
-                        100 *
-                        (_selectedServingSize?.valueInBaseServingSize ?? 0) *
-                        (_amount ?? 0) /
-                        max),
+                fractionalValue: available,
                 color: theme.colorScheme.surfaceDim,
               )
             ],
           ),
         ),
-        /* Padding(
-          padding: EdgeInsets.only(left: 10),
-          child: Text(
-            "${value.toInt()} / ${max.toInt()}",
-            style: theme.textTheme.bodySmall,
-          ),
-        ), */
       ],
     );
   }

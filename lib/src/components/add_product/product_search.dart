@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:calorie_counter/src/extensions/menu_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -100,13 +101,44 @@ class ProductSearch extends StatelessWidget {
           searchFunction: (search) => database.filteredProducts(text: search),
           trailing: trailing,
           itemBuilder: (context, item) => ListTile(
-            title: Text(item.name),
+            title: Text(
+              item.name,
+              overflow: TextOverflow.ellipsis,
+            ),
             subtitle: Text(item.brand),
             onTap: () => onSelect(item),
             leading: Icon(
               Symbols.favorite_rounded,
               color: const Color(0xff8a1200),
             ),
+            trailing: MenuAnchor(
+              alignmentOffset: Offset(-100, 0),
+              menuChildren: [
+                MenuItemButton(
+                  leadingIcon: Icon(
+                    Symbols.edit_rounded,
+                    color: theme.colorScheme.primary,
+                  ),
+                  onPressed: () {},
+                  child: Text(localizations.edit),
+                ),
+                MenuItemButton(
+                  leadingIcon: Icon(
+                    Symbols.delete_rounded,
+                    color: theme.colorScheme.error,
+                  ),
+                  onPressed: () {
+                    database.deleteProduct(item.productCode);
+                  },
+                  child: Text(localizations.delete),
+                ),
+              ],
+              builder: (_, controller, __) => IconButton(
+                onPressed: controller.toggle,
+                icon: Icon(Symbols.more_vert_rounded),
+              ),
+            ),
+            contentPadding: EdgeInsets.only(left: 16, right: 10),
           ),
           errorBuilder: (context, error, searchFunction) => Expanded(
             child: IconWithText.andButton(
