@@ -93,7 +93,7 @@ void main() {
         await tester.pump(Duration(seconds: 10));
       }
 
-      expect(find.byType(SearchProductPage), findsOneWidget);
+      expect(find.byType(SearchProductOrRecipePage), findsOneWidget);
     });
   });
 }

@@ -354,7 +354,7 @@ class _AddMealPageState extends State<AddMealPage> {
     }
 
     if (context.mounted) {
-      Navigator.of(context).pop();
+      Navigator.popUntil(context, (route) => route.isFirst);
     }
   }
 
@@ -374,8 +374,8 @@ class _AddMealPageState extends State<AddMealPage> {
 
     double total = math.max(max, consumption + alreadyConsumed);
 
-    double alreadyConsumedPercent = alreadyConsumed / total;
-    double currentConsumptionPercent = consumption / total;
+    double alreadyConsumedPercent = alreadyConsumed / math.max(total, 1);
+    double currentConsumptionPercent = consumption / math.max(total, 1);
     double availablePercent =
         math.max(0, 1 - (alreadyConsumedPercent + currentConsumptionPercent));
 

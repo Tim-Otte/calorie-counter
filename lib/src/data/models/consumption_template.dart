@@ -10,9 +10,9 @@ class ConsumptionTemplate {
   ConsumptionCompanion getForInsert() {
     return ConsumptionCompanion.insert(
       mealType: mealType,
-      productCode: productCode,
+      product: productCode,
       quantity: quantity,
-      servingSizeId: servingSizeId,
+      servingSize: servingSizeId,
       loggedOn: DateTime.now(),
     );
   }

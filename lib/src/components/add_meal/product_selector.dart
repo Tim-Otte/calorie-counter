@@ -37,9 +37,7 @@ class _ProductSelectorState extends State<ProductSelector> {
               final result = await Navigator.push<ProductData>(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SearchProductPage(
-                    onSelect: (product, _) => Navigator.pop(context, product),
-                  ),
+                  builder: (_) => SearchProductOrRecipePage(),
                 ),
               );
               setState(() => _product = result);

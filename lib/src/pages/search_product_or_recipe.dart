@@ -3,40 +3,34 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-import '../components/all.dart' show ProductSearch;
+import 'all.dart' show AddProductPage, AddRecipePage;
+import '../components/all.dart' show SearchProduct, SearchRecipes;
 import '../data/all.dart';
-import 'all.dart' show AddProductPage;
+import '../extensions/all.dart';
 
-class SearchProductPage extends StatefulWidget {
-  final Function(ProductData product, bool isNewProduct) onSelect;
+class SearchProductOrRecipePage extends StatefulWidget {
   final bool? onlyLiquids;
 
-  const SearchProductPage({
+  const SearchProductOrRecipePage({
     super.key,
-    required this.onSelect,
     this.onlyLiquids,
   });
 
   @override
-  State<SearchProductPage> createState() => _SearchProductPageState();
+  State<SearchProductOrRecipePage> createState() =>
+      _SearchProductOrRecipePageState();
 }
 
-class _SearchProductPageState extends State<SearchProductPage>
+class _SearchProductOrRecipePageState extends State<SearchProductOrRecipePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final _favoritesFocusNode = FocusNode();
-  final _onlineFocusNode = FocusNode();
+  final _productFocusNode = FocusNode();
+  final _recipeFocusNode = FocusNode();
+  int _currentTabIndex = 0;
 
   @override
   void initState() {
     super.initState();
-
-    final database = context.read<AppDatabase>();
-    database.getProductCount().then((count) {
-      if (count == 0) {
-        _tabController.animateTo(1);
-      }
-    });
 
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_onTabControllerChanged);
@@ -49,7 +43,7 @@ class _SearchProductPageState extends State<SearchProductPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations.searchProductPageTitle),
+        title: Text(localizations.searchProductOrRecipePageTitle),
         bottom: TabBar(
           controller: _tabController,
           labelPadding: EdgeInsets.zero,
@@ -60,9 +54,12 @@ class _SearchProductPageState extends State<SearchProductPage>
                 children: [
                   Padding(
                     padding: EdgeInsets.only(right: 7.5),
-                    child: Icon(Symbols.favorite_rounded),
+                    child: Icon(
+                      Symbols.nutrition_rounded,
+                      fill: _currentTabIndex == 0 ? 1 : 0,
+                    ),
                   ),
-                  Text(localizations.favourites),
+                  Text(localizations.products),
                 ],
               ),
             ),
@@ -72,13 +69,29 @@ class _SearchProductPageState extends State<SearchProductPage>
                 children: [
                   Padding(
                     padding: EdgeInsets.only(right: 7.5),
-                    child: Icon(Symbols.search_rounded),
+                    child: Icon(
+                      Symbols.menu_book_rounded,
+                      fill: _currentTabIndex == 1 ? 1 : 0,
+                    ),
                   ),
-                  Text(localizations.search),
+                  Text(localizations.recipes),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: AnimatedCrossFade(
+          firstChild: Icon(Symbols.checkbook_rounded),
+          secondChild: Icon(Symbols.add_2_rounded),
+          crossFadeState: CrossFadeState.values[_currentTabIndex],
+          duration: Durations.medium1,
+        ),
+        onPressed: () => context.navigateTo(
+          _currentTabIndex == 0
+              ? (_) => AddProductPage()
+              : (_) => AddRecipePage(),
         ),
       ),
       body: FutureBuilder(
@@ -87,28 +100,8 @@ class _SearchProductPageState extends State<SearchProductPage>
             ? TabBarView(
                 controller: _tabController,
                 children: [
-                  ProductSearch(
-                    focusNode: _favoritesFocusNode,
-                    enableOnlineSearch: false,
-                    baseServingSizes: snapshot.data!,
-                    onlyLiquids: widget.onlyLiquids,
-                    onSelect: (p) => widget.onSelect(p, false),
-                  ),
-                  ProductSearch(
-                    focusNode: _onlineFocusNode,
-                    enableOnlineSearch: true,
-                    baseServingSizes: snapshot.data!,
-                    trailing: IconButton.filled(
-                      onPressed: () => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AddProductPage()),
-                      ),
-                      icon: Icon(Symbols.edit_note_rounded),
-                      tooltip: localizations.switchToEditModeTooltip,
-                    ),
-                    onSelect: (p) => widget.onSelect(p, true),
-                  )
+                  SearchProduct(searchFocusNode: _productFocusNode),
+                  SearchRecipes(searchFocusNode: _recipeFocusNode),
                 ],
               )
             : Center(
@@ -126,12 +119,15 @@ class _SearchProductPageState extends State<SearchProductPage>
   }
 
   void _onTabControllerChanged() {
+    // Announce change to switch FAB icon
+    if (_currentTabIndex != _tabController.index) {
+      setState(() => _currentTabIndex = _tabController.index);
+    }
+
     if (_tabController.index == 1) {
-      _favoritesFocusNode.unfocus();
-      _onlineFocusNode.requestFocus();
+      _recipeFocusNode.requestFocus();
     } else {
-      _onlineFocusNode.unfocus();
-      _favoritesFocusNode.requestFocus();
+      _productFocusNode.requestFocus();
     }
   }
 }

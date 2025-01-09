@@ -6,7 +6,13 @@ import 'all.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [Product, ServingSize, Consumption])
+@DriftDatabase(tables: [
+  Consumption,
+  Product,
+  Recipe,
+  RecipeIngredient,
+  ServingSize,
+])
 class AppDatabase extends _$AppDatabase {
   AppDatabase({bool? forTesting}) : super(_openConnection(forTesting ?? false));
 
@@ -158,7 +164,17 @@ class AppDatabase extends _$AppDatabase {
     await batch((batch) => batch.insertAll(servingSize, servingSizeData));
   }
 
-  SimpleSelectStatement<$ProductTable, ProductData> _filterProducts({
+  /// Retrieves a list of products filtered by the specified search text.
+  ///
+  /// Parameters:
+  /// - [text]: The text to search for in the product name, brand, or code.
+  ///  If `null`, all products are returned.
+  /// - [onlyLiquids]: If `true`, only liquid products are returned.
+  ///  If `false`, both liquid and solid products are returned.
+  ///
+  /// Returns a [Future] that completes with a list of [ProductData] objects that match
+  /// the specified criteria.
+  Stream<List<ProductData>> getFilteredProducts({
     String? text,
     bool? onlyLiquids,
   }) {
@@ -175,40 +191,7 @@ class AppDatabase extends _$AppDatabase {
       query.where((tbl) => tbl.isLiquid.equals(true));
     }
 
-    return query;
-  }
-
-  /// Retrieves a list of products filtered by the specified search text.
-  ///
-  /// Parameters:
-  /// - [text]: The text to search for in the product name, brand, or code.
-  ///  If `null`, all products are returned.
-  /// - [onlyLiquids]: If `true`, only liquid products are returned.
-  ///  If `false`, both liquid and solid products are returned.
-  ///
-  /// Returns a [Stream] that emits a list of [ProductData] objects that match
-  /// the specified criteria.
-  Stream<List<ProductData>> getFilteredProductsAsStream({
-    bool? onlyLiquids,
-  }) {
-    return _filterProducts(onlyLiquids: onlyLiquids).watch();
-  }
-
-  /// Retrieves a list of products filtered by the specified search text.
-  ///
-  /// Parameters:
-  /// - [text]: The text to search for in the product name, brand, or code.
-  ///  If `null`, all products are returned.
-  /// - [onlyLiquids]: If `true`, only liquid products are returned.
-  ///  If `false`, both liquid and solid products are returned.
-  ///
-  /// Returns a [Future] that completes with a list of [ProductData] objects that match
-  /// the specified criteria.
-  Future<List<ProductData>> getFilteredProducts({
-    String? text,
-    bool? onlyLiquids,
-  }) {
-    return _filterProducts(text: text, onlyLiquids: onlyLiquids).get();
+    return query.watch();
   }
 
   /// Retrieves the count of products from the database.
@@ -267,8 +250,7 @@ class AppDatabase extends _$AppDatabase {
   /// Returns a [Future] that completes when the delete operation is finished.
   Future deleteProduct(String productCode) async {
     // Delete related consumption records
-    await (delete(consumption)
-          ..where((tbl) => tbl.productCode.equals(productCode)))
+    await (delete(consumption)..where((tbl) => tbl.product.equals(productCode)))
         .go();
 
     // Delete related serving sizes
@@ -336,10 +318,8 @@ class AppDatabase extends _$AppDatabase {
     final endOfDay = startOfDay.add(Duration(days: 1));
 
     var query = (select(consumption).join([
-      innerJoin(
-          product, product.productCode.equalsExp(consumption.productCode)),
-      innerJoin(
-          servingSize, servingSize.id.equalsExp(consumption.servingSizeId)),
+      innerJoin(product, product.productCode.equalsExp(consumption.product)),
+      innerJoin(servingSize, servingSize.id.equalsExp(consumption.servingSize)),
     ])
       ..where(consumption.loggedOn.isBetweenValues(startOfDay, endOfDay))
       ..orderBy([OrderingTerm.asc(consumption.loggedOn)]));
@@ -373,27 +353,27 @@ class AppDatabase extends _$AppDatabase {
 
     final caloriesInConsumption = managers.consumption.computedField((c) =>
         c.quantity *
-        c.productCode.caloriesPer100Units /
+        c.product.caloriesPer100Units /
         Constant(100.0) *
-        c.servingSizeId.valueInBaseServingSize);
+        c.servingSize.valueInBaseServingSize);
 
     final carbsInConsumption = managers.consumption.computedField((c) =>
         c.quantity *
-        c.productCode.carbsPer100Units /
+        c.product.carbsPer100Units /
         Constant(100.0) *
-        c.servingSizeId.valueInBaseServingSize);
+        c.servingSize.valueInBaseServingSize);
 
     final fatsInConsumption = managers.consumption.computedField((c) =>
         c.quantity *
-        c.productCode.fatPer100Units /
+        c.product.fatPer100Units /
         Constant(100.0) *
-        c.servingSizeId.valueInBaseServingSize);
+        c.servingSize.valueInBaseServingSize);
 
     final proteinsInConsumption = managers.consumption.computedField((c) =>
         c.quantity *
-        c.productCode.proteinsPer100Units /
+        c.product.proteinsPer100Units /
         Constant(100.0) *
-        c.servingSizeId.valueInBaseServingSize);
+        c.servingSize.valueInBaseServingSize);
 
     final manager = managers.consumption.withFields([
       caloriesInConsumption,
@@ -422,5 +402,19 @@ class AppDatabase extends _$AppDatabase {
             ),
           ),
         );
+  }
+
+  Stream<List<RecipeData>> getRecipes({String? text}) {
+    var query = select(recipe);
+
+    if (text != null) {
+      query.where((tbl) => tbl.name.like(text));
+    }
+
+    return (query
+          ..orderBy([
+            (tbl) => OrderingTerm.asc(tbl.name),
+          ]))
+        .watch();
   }
 }

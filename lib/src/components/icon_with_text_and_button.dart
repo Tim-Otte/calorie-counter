@@ -20,27 +20,31 @@ class IconWithText extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(50),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15),
-            child: Icon(
-              icon,
-              size: 75,
-              color: iconColor ?? theme.colorScheme.secondary.useOpacity(0.75),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: Icon(
+                icon,
+                size: 75,
+                color:
+                    iconColor ?? theme.colorScheme.secondary.useOpacity(0.75),
+              ),
             ),
-          ),
-          Text(
-            text,
-            style: theme.textTheme.bodyLarge!.copyWith(
-              fontStyle: FontStyle.italic,
-              color: theme.textTheme.bodyLarge!.color!.useOpacity(0.75),
-            ),
-            textAlign: TextAlign.center,
-          )
-        ],
+            Text(
+              text,
+              style: theme.textTheme.bodyLarge!.copyWith(
+                fontStyle: FontStyle.italic,
+                color: theme.textTheme.bodyLarge!.color!.useOpacity(0.75),
+              ),
+              textAlign: TextAlign.center,
+            )
+          ],
+        ),
       ),
     );
   }

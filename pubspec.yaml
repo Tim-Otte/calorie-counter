@@ -43,23 +43,6 @@ dev_dependencies:
   shared_preferences_platform_interface: ^2.4.1
   flutter_launcher_icons: ^0.14.2
 
-dependency_overrides:
-  drift:
-    git:
-      url: https://github.com/simolus3/drift.git
-      ref: develop
-      path: drift
-  drift_dev:
-    git:
-      url: https://github.com/simolus3/drift.git
-      ref: develop
-      path: drift_dev
-  sqlparser:
-    git:
-      url: https://github.com/simolus3/drift.git
-      ref: develop
-      path: sqlparser
-
 flutter:
   uses-material-design: true
 

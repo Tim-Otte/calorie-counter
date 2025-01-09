@@ -2,6 +2,7 @@ export 'add_meal/all.dart';
 export 'add_product/all.dart';
 export 'dialogs/all.dart';
 export 'profile/dialogs/all.dart';
+export 'search_product_or_recipe/all.dart';
 export 'settings/all.dart';
 export 'column_with_refresh_indicator.dart';
 export 'form_field.dart';

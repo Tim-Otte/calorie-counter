@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+import 'extensions/all.dart';
 import 'pages/all.dart';
 
 class MainLayout extends StatefulWidget {
@@ -102,12 +103,7 @@ class _MainLayoutState extends State<MainLayout> {
         shape: const CircleBorder(),
         onPressed: () {
           unawaited(HapticFeedback.selectionClick());
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ScanBarcodePage(),
-            ),
-          );
+          context.navigateTo((_) => ScanBarcodePage());
         },
         child: const Icon(Symbols.barcode_scanner_rounded),
       ),
@@ -119,23 +115,7 @@ class _MainLayoutState extends State<MainLayout> {
   void _showProductSearch(BuildContext context) {
     unawaited(HapticFeedback.selectionClick());
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchProductPage(
-          onSelect: (product, isNewProduct) {
-            final route = MaterialPageRoute(
-              builder: (_) => AddMealPage(product: product),
-            );
-            if (isNewProduct) {
-              Navigator.pushReplacement(context, route);
-            } else {
-              Navigator.push(context, route);
-            }
-          },
-        ),
-      ),
-    );
+    context.navigateTo((_) => SearchProductOrRecipePage());
   }
 
   Widget _getNavigationItem({

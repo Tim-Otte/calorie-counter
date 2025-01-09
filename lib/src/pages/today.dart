@@ -8,7 +8,7 @@ import 'package:gauge_indicator/gauge_indicator.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-import 'all.dart' show AddMealPage, SearchProductPage;
+import 'all.dart' show AddMealPage, SearchProductOrRecipePage;
 import '../components/all.dart';
 import '../controllers/settings_controller.dart';
 import '../data/all.dart' show AppDatabase, ConsumptionEntry, MealType;
@@ -343,21 +343,8 @@ class TodayPage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SearchProductPage(
+        builder: (context) => SearchProductOrRecipePage(
           onlyLiquids: mealType == MealType.drink,
-          onSelect: (product, isNewProduct) {
-            final route = MaterialPageRoute(
-              builder: (context) => AddMealPage(
-                product: product,
-                mealType: mealType,
-              ),
-            );
-            if (isNewProduct) {
-              Navigator.pushReplacement(context, route);
-            } else {
-              Navigator.push(context, route);
-            }
-          },
         ),
       ),
     );

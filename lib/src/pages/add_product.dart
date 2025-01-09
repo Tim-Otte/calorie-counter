@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+import 'all.dart' show AddMealPage;
 import '../components/all.dart' as c;
 import '../controllers/settings_controller.dart';
 import '../data/all.dart';
@@ -63,7 +64,7 @@ class _AddProductPageState extends State<AddProductPage> {
                   onPressed: snapshot.hasData
                       ? () async => await _addServingSize(snapshot.data!)
                       : null,
-                  icon: Icon(Symbols.add_notes_rounded),
+                  icon: Icon(Symbols.format_list_bulleted_add_rounded),
                   tooltip: localizations.addCustomServingSizeTooltip,
                 ),
               ],
@@ -92,6 +93,13 @@ class _AddProductPageState extends State<AddProductPage> {
                       servingSizes.toList(),
                     );
                     product = await database.getProduct(_product.productCode);
+
+                    if (context.mounted) {
+                      context.navigateTo((_) => AddMealPage(product: product),
+                          replace: true);
+                    }
+
+                    return;
                   } catch (ex) {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context)

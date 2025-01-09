@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import 'all.dart' show AddMealPage, AddProductPage;
 import '../data/all.dart';
+import '../extensions/all.dart';
 import '../services/all.dart';
 import '../components/all.dart';
 
@@ -82,13 +83,10 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
 
       // Navigate to the AddProductPage to add the new product.
       if (mounted && context.mounted) {
-        dbProduct = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AddProductPage(
-              product: product,
-              servingSizes: servingSizes,
-            ),
+        dbProduct = await context.navigateTo(
+          (_) => AddProductPage(
+            product: product,
+            servingSizes: servingSizes,
           ),
         );
       }
@@ -97,16 +95,16 @@ class _ScanBarcodePageState extends State<ScanBarcodePage>
     // If the product is found or added, navigate to the AddMealPage.
     if (dbProduct != null) {
       if (mounted && context.mounted) {
-        await Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AddMealPage(product: dbProduct),
-          ),
+        context.navigateTo(
+          (_) => AddMealPage(product: dbProduct),
+          replace: true,
         );
+
+        return;
       }
     }
 
-    // Return to the previous page.
+    // Return to the previous page if something went wrong.
     if (mounted && context.mounted) {
       Navigator.pop(context);
     }

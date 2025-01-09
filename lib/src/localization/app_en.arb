@@ -44,17 +44,20 @@
   "editMealPageTitle": "Edit meal",
   "mealType": "Type of meal",
   "product": "Product",
+  "products": "Products",
   "servingSize": "Serving size",
   "servingSizeName": "Name",
   "servingSizeShort": "Serving",
   "servingSizeAmount": "Amount",
-  "searchProductPageTitle": "Find product",
-  "favourites": "Favourites",
   "dailyNutrimentDiagramTitle": "Daily nutrient breakdown",
   "legend": "Legende",
   "alreadyConsumed": "Already consumed",
   "consumptionByThisMeal": "Consumption by this meal",
   "availableForConsumption": "Available for consumption",
+
+  "searchProductOrRecipePageTitle": "Find product / recipe",
+  "favourites": "Favourites",
+  "recipes": "Recipes",
 
   "addProductPageTitle": "Add product",
   "switchToEditModeTooltip": "Manually edit product",
@@ -81,6 +84,11 @@
       }
     }
   },
+
+  "addRecipePageTitle": "Add recipe",
+  "recipeInformationTitle": "Recipe information",
+  "recipeName": "Name of the recipe",
+  "totalServingQty": "Total servings",
 
   "customServingSizesTitle": "Custom serving sizes",
   "addCustomServingSizeTooltip": "Add custom serving size",

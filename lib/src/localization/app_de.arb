@@ -44,17 +44,20 @@
   "editMealPageTitle": "Mahlzeit bearbeiten",
   "mealType": "Art der Mahlzeit",
   "product": "Produkt",
+  "products": "Produkte",
   "servingSize": "Portionsgröße",
   "servingSizeName": "Name",
   "servingSizeShort": "Einheit",
   "servingSizeAmount": "Menge",
-  "searchProductPageTitle": "Produkt suchen",
-  "favourites": "Favoriten",
   "dailyNutrimentDiagramTitle": "Tägliche Nährstoffübersicht",
   "legend": "Legende",
   "alreadyConsumed": "Bereits konsumiert",
   "consumptionByThisMeal": "Verbrauch durch diese Mahlzeit",
   "availableForConsumption": "Kann noch konsumiert werden",
+
+  "searchProductOrRecipePageTitle": "Produkt / Rezept suchen",
+  "favourites": "Favoriten",
+  "recipes": "Rezepte",
 
   "addProductPageTitle": "Produkt hinzufügen",
   "switchToEditModeTooltip": "Produktdaten manuell bearbeiten",
@@ -81,6 +84,11 @@
       }
     }
   },
+
+  "addRecipePageTitle": "Rezept hinzufügen",
+  "recipeInformationTitle": "Rezeptinformationen",
+  "recipeName": "Name des Rezepts",
+  "totalServingQty": "Anzahl Portionen",
 
   "customServingSizesTitle": "Individuelle Portionsgrößen",
   "addCustomServingSizeTooltip": "Individuelle Portionsgröße hinzufügen",
