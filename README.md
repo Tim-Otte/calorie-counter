@@ -64,3 +64,5 @@ Contributions are welcome. Please fork the repository and create a pull request.
 
 ## Acknowledgements
 This app uses the [OpenFoodFacts](https://world.openfoodfacts.org/) food database to provide detailed nutritional information. I am very grateful for their service and the valuable data they provide.
+
+Also, many thanks to [@simolus3](https://github.com/simolus3) for his help with [Drift](https://github.com/simolus3/drift) and optimising my code ❤️.
