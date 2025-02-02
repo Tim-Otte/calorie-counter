@@ -11,6 +11,7 @@ class FormField extends StatelessWidget {
   final String? suffixText;
   final String? hintText;
   final bool? onlyNumbers;
+  final bool? onlyWholeNumbers;
   final bool? enableNextButton;
   final Function(String value)? onChanged;
 
@@ -22,6 +23,7 @@ class FormField extends StatelessWidget {
     this.suffixText,
     this.hintText,
     this.onlyNumbers,
+    this.onlyWholeNumbers,
     this.enableNextButton,
     this.onChanged,
   });
@@ -63,14 +65,17 @@ class FormField extends StatelessWidget {
         icon: icon == null ? null : Icon(icon),
         iconColor: icon == null ? null : Theme.of(context).colorScheme.primary,
         suffixText: suffixText,
+        enabled: onChanged != null,
       ),
       keyboardType: allowOnlyNumbers
-          ? const TextInputType.numberWithOptions(decimal: true)
+          ? TextInputType.numberWithOptions(
+              decimal: !(onlyWholeNumbers ?? false))
           : null,
       inputFormatters: allowOnlyNumbers
           ? [
-              FilteringTextInputFormatter.allow(
-                  RegularExpressions.decimalAllowedCharacters),
+              FilteringTextInputFormatter.allow((onlyWholeNumbers ?? false)
+                  ? RegularExpressions.intAllowedCharacters
+                  : RegularExpressions.decimalAllowedCharacters),
             ]
           : null,
       textInputAction: (enableNextButton ?? false)

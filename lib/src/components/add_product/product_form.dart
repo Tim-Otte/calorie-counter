@@ -321,9 +321,7 @@ class _ProductFormState extends State<ProductForm> {
         baseServingSizes: widget.baseServingSizes
             .where((x) =>
                 x.isLiquid == _product.isLiquid &&
-                x.measuringUnit ==
-                    (settingsController.measurementUnit ??
-                        MeasurementUnit.metric))
+                x.measuringUnit == settingsController.measurementUnit)
             .toList(),
         initialValue: servingSize,
       ),

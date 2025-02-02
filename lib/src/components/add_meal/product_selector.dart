@@ -10,7 +10,11 @@ class ProductSelector extends StatefulWidget {
   final ProductData? initialValue;
   final Function(ProductData? value)? onChanged;
 
-  const ProductSelector({super.key, this.initialValue, this.onChanged});
+  const ProductSelector({
+    super.key,
+    this.initialValue,
+    this.onChanged,
+  });
 
   @override
   State<ProductSelector> createState() => _ProductSelectorState();
@@ -34,11 +38,8 @@ class _ProductSelectorState extends State<ProductSelector> {
       onTap: widget.onChanged == null
           ? null
           : () async {
-              final result = await Navigator.push<ProductData>(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => SearchProductOrRecipePage(),
-                ),
+              ProductData? result = await context.navigateTo(
+                (_) => SearchProductOrRecipePage(),
               );
               setState(() => _product = result);
               if (widget.onChanged != null) {

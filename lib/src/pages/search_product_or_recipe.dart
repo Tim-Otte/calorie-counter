@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-import 'all.dart' show AddProductPage, AddRecipePage;
+import 'all.dart' show AddProductPage, AddRecipePage, AddMealPage;
 import '../components/all.dart' show SearchProduct, SearchRecipes;
 import '../data/all.dart';
 import '../extensions/all.dart';
@@ -100,7 +100,12 @@ class _SearchProductOrRecipePageState extends State<SearchProductOrRecipePage>
             ? TabBarView(
                 controller: _tabController,
                 children: [
-                  SearchProduct(searchFocusNode: _productFocusNode),
+                  SearchProduct(
+                    searchFocusNode: _productFocusNode,
+                    onSelect: (product) => context.navigateTo(
+                      (_) => AddMealPage(product: product),
+                    ),
+                  ),
                   SearchRecipes(searchFocusNode: _recipeFocusNode),
                 ],
               )

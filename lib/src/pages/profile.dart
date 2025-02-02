@@ -102,8 +102,7 @@ class ProfilePage extends StatelessWidget {
                     var result = await showDialog<double>(
                       context: context,
                       builder: (context) => HeightInputDialog(
-                        measurementUnit: settingsController.measurementUnit ??
-                            MeasurementUnit.metric,
+                        measurementUnit: settingsController.measurementUnit,
                         currentValue: settingsController.height ?? 0,
                       ),
                     );
@@ -119,8 +118,7 @@ class ProfilePage extends StatelessWidget {
                     var result = await showDialog<double>(
                       context: context,
                       builder: (context) => WeightInputDialog(
-                        measurementUnit: settingsController.measurementUnit ??
-                            MeasurementUnit.metric,
+                        measurementUnit: settingsController.measurementUnit,
                         currentValue: settingsController.weight ?? 0,
                       ),
                     );
@@ -137,8 +135,7 @@ class ProfilePage extends StatelessWidget {
                     var result = await showDialog<double>(
                       context: context,
                       builder: (context) => WaistCircumferenceInputDialog(
-                        measurementUnit: settingsController.measurementUnit ??
-                            MeasurementUnit.metric,
+                        measurementUnit: settingsController.measurementUnit,
                         currentValue:
                             settingsController.waistCircumference ?? 0,
                       ),

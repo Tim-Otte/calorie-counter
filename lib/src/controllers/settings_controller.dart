@@ -32,7 +32,9 @@ class SettingsController with ChangeNotifier {
   bool get useMaterialYou => _useMaterialYou;
   Locale? get locale =>
       _locale != null ? Locale.fromSubtags(languageCode: _locale!) : null;
-  MeasurementUnit? get measurementUnit => _measurementUnit;
+  MeasurementUnit get measurementUnit =>
+      _measurementUnit ?? MeasurementUnit.metric;
+  bool get isMeasurementUnitSet => _measurementUnit != null;
   Gender? get gender => _gender;
   DateTime? get dateOfBirth => _dateOfBirth;
 
@@ -49,7 +51,7 @@ class SettingsController with ChangeNotifier {
   String? get heightString {
     if (height == null) return null;
 
-    if (measurementUnit == null || measurementUnit == MeasurementUnit.metric) {
+    if (measurementUnit == MeasurementUnit.metric) {
       return "${height!.round()} cm";
     } else {
       var imperial = UnitConverter.heightToImperial(height!);
@@ -61,7 +63,7 @@ class SettingsController with ChangeNotifier {
   String? get weightString {
     if (weight == null) return null;
 
-    if (measurementUnit == null || measurementUnit == MeasurementUnit.metric) {
+    if (measurementUnit == MeasurementUnit.metric) {
       return "${weight!.toStringAsFixed(1)} kg";
     } else {
       var imperial = UnitConverter.kilogrammesToPounds(weight!);
@@ -73,7 +75,7 @@ class SettingsController with ChangeNotifier {
   String? get waistCircumferenceString {
     if (waistCircumference == null) return null;
 
-    if (measurementUnit == null || measurementUnit == MeasurementUnit.metric) {
+    if (measurementUnit == MeasurementUnit.metric) {
       return "${waistCircumference!.toStringAsFixed(1)} cm";
     } else {
       var imperial = UnitConverter.centimetersToInches(waistCircumference!);

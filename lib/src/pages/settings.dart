@@ -78,7 +78,7 @@ class SettingsPage extends StatelessWidget {
             prefix: const Icon(Symbols.straighten_rounded),
             title: Text(localizations.settingMeasurementUnit),
             value: Text(
-              settingsController.measurementUnit != null
+              settingsController.isMeasurementUnitSet
                   ? Translator.getTranslation(
                       context, settingsController.measurementUnit)
                   : localizations.notSet,
@@ -87,8 +87,7 @@ class SettingsPage extends StatelessWidget {
               var result = await showDialog<MeasurementUnit>(
                 context: context,
                 builder: (context) => MeasurementUnitDialog(
-                  currentValue: settingsController.measurementUnit ??
-                      MeasurementUnit.metric,
+                  currentValue: settingsController.measurementUnit,
                 ),
               );
               settingsController.updateMeasurementUnit(result);

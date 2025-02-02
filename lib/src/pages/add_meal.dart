@@ -309,7 +309,7 @@ class _AddMealPageState extends State<AddMealPage> {
       _servingSizes = await database.getServingSizesForProduct(
         product.productCode,
         product.isLiquid,
-        settingsController.measurementUnit ?? MeasurementUnit.metric,
+        settingsController.measurementUnit,
       );
 
       if (selectedServingSize != null) {

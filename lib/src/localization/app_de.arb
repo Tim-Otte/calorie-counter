@@ -89,6 +89,13 @@
   "recipeInformationTitle": "Rezeptinformationen",
   "recipeName": "Name des Rezepts",
   "totalServingQty": "Anzahl Portionen",
+  "ingredient": "Zutat",
+  "ingredients": "Zutaten",
+  "ingredientsEmpty": "Noch keine Zutaten hinterlegt...",
+  "addIngredientTooltip": "Zutat hinzufügen",
+  "addIngredientTitle": "Zutat hinzufügen",
+  "editIngredientTitle": "Zutat bearbeiten",
+  "selectIngredientTitle": "Zutat auswählen",
 
   "customServingSizesTitle": "Individuelle Portionsgrößen",
   "addCustomServingSizeTooltip": "Individuelle Portionsgröße hinzufügen",

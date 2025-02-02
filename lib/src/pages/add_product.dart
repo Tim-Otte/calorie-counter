@@ -150,8 +150,7 @@ class _AddProductPageState extends State<AddProductPage> {
     baseServingSizes = baseServingSizes
         .where((x) =>
             x.isLiquid == _product.isLiquid &&
-            x.measuringUnit ==
-                (settingsController.measurementUnit ?? MeasurementUnit.metric))
+            x.measuringUnit == settingsController.measurementUnit)
         .toList();
 
     await _scrollController.animateTo(

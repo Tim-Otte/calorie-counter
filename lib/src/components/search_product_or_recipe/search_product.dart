@@ -8,19 +8,22 @@ import 'package:provider/provider.dart';
 
 import '../../data/all.dart';
 import '../../extensions/all.dart';
-import '../../pages/all.dart' show AddMealPage;
 import '../../services/all.dart' show FoodFactService;
 import 'favourites_list.dart';
 import 'openfoodfacts_list.dart';
 
 class SearchProduct extends StatefulWidget {
-  final FocusNode searchFocusNode;
+  final FocusNode? searchFocusNode;
   final bool? onlyLiquids;
+  final bool? onlyFavourites;
+  final Function(ProductData product) onSelect;
 
   const SearchProduct({
     super.key,
-    required this.searchFocusNode,
+    this.searchFocusNode,
     this.onlyLiquids,
+    this.onlyFavourites,
+    required this.onSelect,
   });
 
   @override
@@ -51,11 +54,15 @@ class _SearchProductState extends State<SearchProduct> {
       return;
     }
 
-    _debounceTimer?.cancel();
-    _debounceTimer = Timer(
-      const Duration(milliseconds: 750),
-      () => setState(() => _searchText = _controller.text),
-    );
+    if (widget.onlyFavourites == true) {
+      setState(() => _searchText = _controller.text);
+    } else {
+      _debounceTimer?.cancel();
+      _debounceTimer = Timer(
+        const Duration(milliseconds: 750),
+        () => setState(() => _searchText = _controller.text),
+      );
+    }
   }
 
   @override
@@ -91,13 +98,14 @@ class _SearchProductState extends State<SearchProduct> {
                   ),
                   builder: _getFavouritesSection,
                 ),
-                FutureBuilder(
-                  initialData: <openfoodfacts.Product>[],
-                  future: (_searchText ?? '').isEmpty
-                      ? null
-                      : foodFactService.search(_searchText!),
-                  builder: _getOpenFoodFactsSection,
-                ),
+                if (widget.onlyFavourites != true)
+                  FutureBuilder(
+                    initialData: <openfoodfacts.Product>[],
+                    future: (_searchText ?? '').isEmpty
+                        ? null
+                        : foodFactService.search(_searchText!),
+                    builder: _getOpenFoodFactsSection,
+                  ),
               ],
             ),
           ),
@@ -127,9 +135,7 @@ class _SearchProductState extends State<SearchProduct> {
           ),
           FavouritesList(
             items: snapshot.data!,
-            onSelect: (product) => context.navigateTo(
-              (_) => AddMealPage(product: product),
-            ),
+            onSelect: widget.onSelect,
           )
         ],
       );
@@ -188,9 +194,7 @@ class _SearchProductState extends State<SearchProduct> {
                         ? baseServingSizeSnapshot.data!
                         : [],
                     items: snapshot.data!,
-                    onSelect: (product) => context.navigateTo(
-                      (_) => AddMealPage(product: product),
-                    ),
+                    onSelect: widget.onSelect,
                   ),
                 )
         ],

@@ -34,4 +34,7 @@ class RegularExpressions {
   /// A [RegExp] that defines which characters are allowed in a decimal input
   static RegExp decimalAllowedCharacters =
       RegExp("[0-9${allowComma ? ',.' : '.'}]");
+
+  /// A [RegExp] that defines which characters are allowed in a int input
+  static RegExp intAllowedCharacters = RegExp("[0-9]");
 }

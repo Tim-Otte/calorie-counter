@@ -58,7 +58,7 @@ class _ServingSizeBtmSheetState extends State<ServingSizeBtmSheet> {
                 widget.isEditMode
                     ? localizations.editCustomServingSizeTitle
                     : localizations.addCustomServingSizeTitle,
-                style: theme.textTheme.headlineMedium,
+                style: theme.textTheme.headlineSmall,
               ),
               c.FormField(
                 label: Text(localizations.servingSizeName),

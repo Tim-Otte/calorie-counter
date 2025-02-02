@@ -164,20 +164,17 @@ class AppDatabase extends _$AppDatabase {
     await batch((batch) => batch.insertAll(servingSize, servingSizeData));
   }
 
-  /// Retrieves a list of products filtered by the specified search text.
+  /// Creates a query to select products from the database based on the provided filters.
   ///
   /// Parameters:
-  /// - [text]: The text to search for in the product name, brand, or code.
-  ///  If `null`, all products are returned.
-  /// - [onlyLiquids]: If `true`, only liquid products are returned.
-  ///  If `false`, both liquid and solid products are returned.
+  /// - [text]: The text to filter products by name, brand, or product code.
+  /// - [onlyLiquids]: A boolean indicating whether to filter only liquid products.
   ///
-  /// Returns a [Future] that completes with a list of [ProductData] objects that match
-  /// the specified criteria.
-  Stream<List<ProductData>> getFilteredProducts({
+  /// Returns a [SimpleSelectStatement] that can be used to execute the query and retrieve the filtered products.
+  SimpleSelectStatement<$ProductTable, ProductData> _getFilteredProducts(
     String? text,
-    bool? onlyLiquids,
-  }) {
+    bool onlyLiquids,
+  ) {
     var query = select(product);
 
     if (text != null) {
@@ -191,7 +188,41 @@ class AppDatabase extends _$AppDatabase {
       query.where((tbl) => tbl.isLiquid.equals(true));
     }
 
-    return query.watch();
+    return query;
+  }
+
+  /// Retrieves a list of products filtered by the specified search text.
+  ///
+  /// Parameters:
+  /// - [text]: The text to search for in the product name, brand, or code.
+  ///  If `null`, all products are returned.
+  /// - [onlyLiquids]: If `true`, only liquid products are returned.
+  ///  If `false`, both liquid and solid products are returned.
+  ///
+  /// Returns a [Stream] that completes with a list of [ProductData] objects that match
+  /// the specified criteria.
+  Stream<List<ProductData>> getFilteredProducts({
+    String? text,
+    bool? onlyLiquids,
+  }) {
+    return _getFilteredProducts(text, onlyLiquids ?? false).watch();
+  }
+
+  /// Retrieves a list of products filtered by the specified search text.
+  ///
+  /// Parameters:
+  /// - [text]: The text to search for in the product name, brand, or code.
+  ///  If `null`, all products are returned.
+  /// - [onlyLiquids]: If `true`, only liquid products are returned.
+  ///  If `false`, both liquid and solid products are returned.
+  ///
+  /// Returns a [Future] that emits a list of [ProductData] objects that match
+  /// the specified criteria.
+  Future<List<ProductData>> getFilteredProductsAsync({
+    String? text,
+    bool? onlyLiquids,
+  }) {
+    return _getFilteredProducts(text, onlyLiquids ?? false).get();
   }
 
   /// Retrieves the count of products from the database.

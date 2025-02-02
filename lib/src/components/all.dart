@@ -1,5 +1,6 @@
 export 'add_meal/all.dart';
 export 'add_product/all.dart';
+export 'add_recipe/all.dart';
 export 'dialogs/all.dart';
 export 'profile/dialogs/all.dart';
 export 'search_product_or_recipe/all.dart';

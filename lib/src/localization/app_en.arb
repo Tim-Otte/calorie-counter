@@ -89,6 +89,13 @@
   "recipeInformationTitle": "Recipe information",
   "recipeName": "Name of the recipe",
   "totalServingQty": "Total servings",
+  "ingredient": "Ingredient",
+  "ingredients": "Ingredients",
+  "ingredientsEmpty": "No ingredients added yet...",
+  "addIngredientTooltip": "Add ingredient",
+  "addIngredientTitle": "Add ingredient",
+  "editIngredientTitle": "Edit ingredient",
+  "selectIngredientTitle": "Select ingredient",
 
   "customServingSizesTitle": "Custom serving sizes",
   "addCustomServingSizeTooltip": "Add custom serving size",
